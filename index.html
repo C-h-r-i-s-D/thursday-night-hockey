@@ -293,33 +293,24 @@ body{font-family:'DM Sans',sans-serif;background:#eef1f5;color:var(--text);min-h
 <div class="toast" id="toast"></div>
 
 <script>
-const SCRIPT_URL='https://script.google.com/macros/s/AKfycbyKu7hT8tyz0z_9EihqXCTMdog4tKdrJ77jxzxtkBk5Wmg42Ngi3wD5iKp411LyDipJUA/exec';
+const SCRIPT_URL='https://restless-thunder-384c.christopher-robert-david.workers.dev';
 let S={players:[],seasons:[],roster:[],payments:[],config:{}};
 let activeSeason=null,rosterFilter='all',rosterView='fulltime',playerFilter='all',spareFilter='all';
 let editingPlayer=null,payRosterId=null,searchTimer=null;
 
 async function api(action,data){
   data=data||{};showSaving();
-  return new Promise((resolve,reject)=>{
-    const cbName='cb_'+Math.random().toString(36).slice(2);
-    const url=SCRIPT_URL+'?action='+encodeURIComponent(action)+'&data='+encodeURIComponent(JSON.stringify(data))+'&callback='+cbName;
-    window[cbName]=function(json){
-      delete window[cbName];
-      document.head.removeChild(script);
-      hideSaving();
-      if(!json.ok){reject(new Error(json.error));return;}
-      resolve(json.result);
-    };
-    const script=document.createElement('script');
-    script.src=url;
-    script.onerror=function(){
-      delete window[cbName];
-      document.head.removeChild(script);
-      hideSaving();
-      reject(new Error('Network error'));
-    };
-    document.head.appendChild(script);
-  });
+  try{
+    const res=await fetch(SCRIPT_URL,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({action,data})
+    });
+    const json=await res.json();
+    hideSaving();
+    if(!json.ok)throw new Error(json.error);
+    return json.result;
+  }catch(e){hideSaving();throw e;}
 }
 
 window.onload=async function(){
