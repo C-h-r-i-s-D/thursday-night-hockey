@@ -301,7 +301,8 @@ let editingPlayer=null,payRosterId=null,searchTimer=null;
 async function api(action,data){
   data=data||{};showSaving();
   try{
-    const res=await fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify({action,data}),headers:{'Content-Type':'text/plain'}});
+    const url=SCRIPT_URL+'?action='+encodeURIComponent(action)+'&data='+encodeURIComponent(JSON.stringify(data));
+    const res=await fetch(url,{redirect:'follow'});
     const json=await res.json();
     hideSaving();
     if(!json.ok)throw new Error(json.error);
