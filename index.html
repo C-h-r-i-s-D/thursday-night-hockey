@@ -16,21 +16,16 @@
 :root{--navy:#0d1b2a;--navy-mid:#1a3248;--accent:#3a9fd4;--accent-light:#d0eaf8;--green:#1a7a4a;--green-light:#d4f0e2;--amber:#c47a1a;--amber-light:#fef0d0;--red:#c0392b;--red-light:#fde8e8;--purple:#6b3fa0;--purple-light:#ede0f8;--gray:#f5f6f8;--border:#e2e6ea;--text:#1a1a2a;--muted:#6b7280;--radius:10px;--radius-lg:14px;--shadow:0 1px 3px rgba(0,0,0,0.08),0 4px 12px rgba(0,0,0,0.04);}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 body{font-family:'DM Sans',sans-serif;background:#eef1f5;color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased;overscroll-behavior:none;}
-
-/* Loading */
 #loading-screen{position:fixed;inset:0;background:var(--navy);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:999;gap:12px;}
 #loading-screen h1{color:white;font-size:24px;font-weight:600;}
-#loading-msg{color:rgba(255,255,255,0.6);font-size:14px;min-height:20px;text-align:center;}
-.load-steps{display:flex;flex-direction:column;gap:6px;margin-top:4px;width:220px;}
-.load-step{display:flex;align-items:center;gap:10px;font-size:13px;color:rgba(255,255,255,0.4);transition:color 0.3s;}
+.load-steps{display:flex;flex-direction:column;gap:6px;margin-top:4px;width:240px;}
+.load-step{display:flex;align-items:center;gap:10px;font-size:13px;color:rgba(255,255,255,0.35);transition:color 0.3s;}
 .load-step.active{color:rgba(255,255,255,0.9);}
-.load-step.done{color:var(--accent);}
-.load-step .ls-icon{width:18px;text-align:center;font-size:14px;}
+.load-step.done{color:#3a9fd4;}
+.load-step .ls-icon{width:18px;text-align:center;}
 .spinner{width:32px;height:32px;border:3px solid rgba(255,255,255,0.2);border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg);}}
 #app{display:none;}
-
-/* Desktop */
 .d-topbar{background:var(--navy);height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;position:sticky;top:0;z-index:50;}
 .d-topbar-left{display:flex;align-items:center;gap:12px;}
 .d-topbar-title{color:white;font-size:17px;font-weight:600;}
@@ -43,8 +38,6 @@ body{font-family:'DM Sans',sans-serif;background:#eef1f5;color:var(--text);min-h
 .d-nav-btn.active{color:var(--navy);border-bottom-color:var(--navy);}
 .d-page{display:none;padding:24px;max-width:1100px;margin:0 auto;}
 .d-page.active{display:block;}
-
-/* Mobile */
 .m-topbar{background:var(--navy);padding:0 16px;padding-top:env(safe-area-inset-top,0);height:calc(56px + env(safe-area-inset-top,0));display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;}
 .m-topbar-title{color:white;font-size:18px;font-weight:600;}
 .m-season-btn{color:rgba(255,255,255,0.75);font-size:12px;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);border-radius:20px;padding:6px 14px;cursor:pointer;max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
@@ -64,20 +57,16 @@ body{font-family:'DM Sans',sans-serif;background:#eef1f5;color:var(--text);min-h
 .more-item .mi{font-size:24px;width:32px;text-align:center;}
 .m-page{display:none;padding:16px;padding-bottom:calc(90px + env(safe-area-inset-bottom,0));}
 .m-page.active{display:block;}
-
 .desktop-only{display:block;}
 .mobile-only{display:none;}
 @media(max-width:767px){.desktop-only{display:none!important;}.mobile-only{display:block!important;}}
-
 .saving-dot{width:7px;height:7px;border-radius:50%;background:var(--accent);opacity:0;transition:opacity 0.3s;display:inline-block;margin-left:8px;}
 .saving-dot.active{opacity:1;animation:pulse 1s ease-in-out infinite;}
 @keyframes pulse{0%,100%{opacity:0.4;}50%{opacity:1;}}
-
 .card{background:white;border-radius:var(--radius-lg);border:1px solid var(--border);padding:20px;margin-bottom:14px;box-shadow:var(--shadow);}
 .card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px;}
 .card-title{font-size:15px;font-weight:600;}
 @media(max-width:767px){.card{padding:18px;border-radius:16px;}.card-title{font-size:17px;}}
-
 .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px;margin-bottom:16px;}
 .stat-card{background:var(--gray);border-radius:var(--radius);padding:14px;cursor:pointer;transition:all 0.15s;}
 .stat-card:hover{background:#e8eaed;transform:translateY(-1px);}
@@ -86,9 +75,7 @@ body{font-family:'DM Sans',sans-serif;background:#eef1f5;color:var(--text);min-h
 .stat-value{font-size:26px;font-weight:600;color:var(--text);line-height:1;}
 .stat-value.green{color:var(--green);}
 .stat-value.amber{color:var(--amber);}
-.stat-value.red{color:var(--red);}
 @media(max-width:767px){.stats-grid{grid-template-columns:repeat(3,1fr);}.stat-card{padding:12px 8px;text-align:center;}.stat-label{font-size:11px;}.stat-value{font-size:22px;}}
-
 .field{display:flex;flex-direction:column;gap:6px;margin-bottom:14px;}
 .field label{font-size:13px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.4px;}
 .field input,.field select,.field textarea{padding:10px 12px;border:1px solid var(--border);border-radius:var(--radius);font-size:15px;font-family:'DM Sans',sans-serif;color:var(--text);background:white;transition:border 0.15s;width:100%;}
@@ -98,7 +85,6 @@ body{font-family:'DM Sans',sans-serif;background:#eef1f5;color:var(--text);min-h
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
 .form-row.cols3{grid-template-columns:1fr 1fr 1fr;}
 @media(max-width:767px){.form-row,.form-row.cols3{grid-template-columns:1fr;}}
-
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:10px 18px;border-radius:var(--radius);font-size:14px;font-weight:600;cursor:pointer;border:none;font-family:'DM Sans',sans-serif;transition:all 0.15s;white-space:nowrap;}
 .btn:active{transform:scale(0.97);}
 .btn-primary{background:var(--navy);color:white;}
@@ -113,7 +99,6 @@ body{font-family:'DM Sans',sans-serif;background:#eef1f5;color:var(--text);min-h
 .btn-xs{padding:5px 10px;font-size:12px;}
 .btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;align-items:center;}
 @media(max-width:767px){.btn{padding:13px 20px;font-size:16px;border-radius:12px;}.btn-sm{padding:10px 16px;font-size:14px;}.btn-xs{padding:8px 12px;font-size:13px;}}
-
 .badge{display:inline-block;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600;white-space:nowrap;}
 .badge-in{background:var(--green-light);color:var(--green);}
 .badge-out{background:var(--red-light);color:var(--red);}
@@ -128,7 +113,7 @@ body{font-family:'DM Sans',sans-serif;background:#eef1f5;color:var(--text);min-h
 .badge-goalie{background:var(--accent-light);color:#1a5c8a;}
 .badge-forward{background:var(--gray);color:var(--muted);}
 .badge-defence{background:#fef3e2;color:#92400e;}
-
+.badge-player{background:var(--gray);color:var(--muted);}
 .pay-bar{display:flex;align-items:center;gap:8px;}
 .pay-track{flex:1;height:5px;background:#eee;border-radius:3px;min-width:40px;overflow:hidden;}
 .pay-fill{height:100%;border-radius:3px;transition:width 0.3s;}
@@ -136,59 +121,43 @@ body{font-family:'DM Sans',sans-serif;background:#eef1f5;color:var(--text);min-h
 .pay-fill.partial{background:var(--amber);}
 .pay-fill.none{width:0!important;}
 .pay-label{font-size:12px;color:var(--muted);white-space:nowrap;font-family:'DM Mono',monospace;}
-
 .data-table{width:100%;border-collapse:collapse;font-size:14px;}
 .data-table th{text-align:left;padding:8px 12px;font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;border-bottom:1px solid var(--border);}
 .data-table td{padding:11px 12px;border-bottom:1px solid #f3f4f6;vertical-align:middle;}
 .data-table tr:last-child td{border-bottom:none;}
 .data-table tr:hover td{background:#fafbfc;}
 .overflow-x{overflow-x:auto;-webkit-overflow-scrolling:touch;}
-
 .m-list-item{display:flex;align-items:flex-start;justify-content:space-between;padding:16px 0;border-bottom:1px solid #f0f0f0;gap:12px;}
 .m-list-item:last-child{border-bottom:none;}
 .m-list-name{font-size:17px;font-weight:500;}
 .m-list-sub{font-size:14px;color:var(--muted);margin-top:3px;}
 .m-list-right{display:flex;flex-direction:column;align-items:flex-end;gap:8px;flex-shrink:0;}
-
 .filter-row{display:flex;gap:8px;flex-wrap:nowrap;overflow-x:auto;margin-bottom:16px;padding-bottom:4px;scrollbar-width:none;}
 .filter-row::-webkit-scrollbar{display:none;}
 .pill{padding:8px 16px;border-radius:20px;font-size:14px;border:1px solid var(--border);background:white;cursor:pointer;color:var(--muted);transition:all 0.15s;white-space:nowrap;font-family:'DM Sans',sans-serif;}
 .pill.active{background:var(--navy);color:white;border-color:var(--navy);}
-
 .search-box{width:100%;padding:12px 14px;border:1px solid var(--border);border-radius:var(--radius);font-size:16px;font-family:'DM Sans',sans-serif;margin-bottom:14px;color:var(--text);background:white;}
 .search-box:focus{outline:none;border-color:var(--accent);}
 @media(max-width:767px){.search-box{font-size:17px;padding:14px;border-radius:12px;}}
-
-.sub-tabs{display:flex;gap:6px;margin-bottom:18px;overflow-x:auto;scrollbar-width:none;}
-.sub-tabs::-webkit-scrollbar{display:none;}
-.sub-tab{padding:9px 18px;border-radius:10px;font-size:14px;font-weight:500;border:1px solid var(--border);background:white;cursor:pointer;color:var(--muted);transition:all 0.15s;white-space:nowrap;font-family:'DM Sans',sans-serif;}
-.sub-tab.active{background:var(--navy);color:white;border-color:var(--navy);}
-@media(max-width:767px){.sub-tab{padding:12px 20px;font-size:15px;border-radius:12px;}}
-
 .alert{padding:12px 16px;border-radius:var(--radius);font-size:14px;margin-bottom:14px;}
 .alert-amber{background:var(--amber-light);color:var(--amber);border:1px solid #f5d78c;}
 .alert-green{background:var(--green-light);color:var(--green);border:1px solid #a7d7bc;}
-
 .empty{text-align:center;padding:48px 20px;color:var(--muted);font-size:15px;}
 .empty .icon{font-size:36px;margin-bottom:10px;}
-
 .email-wrap{background:#fafbfc;border:1px solid var(--border);border-radius:var(--radius);padding:18px;font-size:15px;line-height:1.75;white-space:pre-wrap;font-family:'DM Sans',sans-serif;}
 .email-subj{font-size:13px;font-weight:600;color:var(--muted);margin-bottom:10px;}
-
 .overlay{position:fixed;inset:0;background:rgba(13,27,42,0.55);z-index:200;display:flex;align-items:center;justify-content:center;padding:16px;}
 .modal{background:white;border-radius:var(--radius-lg);padding:24px;width:100%;max-width:500px;max-height:92vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.2);}
 .modal-sm{max-width:400px;}
 .modal h2{font-size:18px;font-weight:600;margin-bottom:18px;}
 @media(max-width:767px){.overlay{align-items:flex-end;padding:0;}.modal{border-radius:20px 20px 0 0;max-width:100%;padding:24px 20px;}.modal h2{font-size:20px;}}
-
-.contact-dd{display:none;position:absolute;top:100%;left:0;right:0;background:white;border:1px solid var(--border);border-top:none;border-radius:0 0 var(--radius) var(--radius);z-index:300;box-shadow:0 4px 16px rgba(0,0,0,0.1);max-height:240px;overflow-y:auto;}
+.contact-dd{display:none;position:absolute;top:100%;left:0;right:0;background:white;border:1px solid var(--border);border-top:none;border-radius:0 0 var(--radius) var(--radius);z-index:300;box-shadow:0 4px 16px rgba(0,0,0,0.1);max-height:260px;overflow-y:auto;}
 .contact-opt{padding:12px 14px;cursor:pointer;border-bottom:1px solid #f3f4f6;}
 .contact-opt:last-child{border-bottom:none;}
 .contact-opt:hover,.contact-opt:active{background:var(--accent-light);}
 .co-name{font-size:15px;font-weight:500;}
 .co-sub{font-size:13px;color:var(--muted);margin-top:2px;}
 .contact-searching{padding:14px;font-size:14px;color:var(--muted);}
-
 .pay-entry{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid #f3f4f6;font-size:14px;}
 .pay-entry:last-child{border-bottom:none;}
 .pay-entry .amt{font-weight:600;color:var(--green);font-family:'DM Mono',monospace;font-size:15px;}
@@ -196,41 +165,37 @@ body{font-family:'DM Sans',sans-serif;background:#eef1f5;color:var(--text);min-h
 .del-pay:hover{color:var(--red);}
 .del-btn{background:none;border:none;cursor:pointer;color:#ccc;font-size:18px;padding:4px 8px;min-width:36px;min-height:36px;display:inline-flex;align-items:center;justify-content:center;border-radius:6px;}
 .del-btn:hover{color:var(--red);background:var(--red-light);}
-
 .calc-result{background:var(--navy);color:white;border-radius:var(--radius-lg);padding:20px;margin-top:16px;}
 .calc-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.1);font-size:15px;}
 .calc-row:last-child{border-bottom:none;}
 .cl{color:rgba(255,255,255,0.65);}
 .cv{font-weight:600;font-family:'DM Mono',monospace;}
 .cv.hl{color:#7dd3fc;font-size:22px;}
-
 .season-pick{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border:1px solid var(--border);border-radius:var(--radius);margin-bottom:10px;cursor:pointer;transition:all 0.15s;}
 .season-pick:hover{border-color:var(--accent);background:var(--accent-light);}
 .season-pick.cur{border-color:var(--navy);background:#f0f4f8;}
-
-/* Batch select */
 .batch-item{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid #f3f4f6;cursor:pointer;}
 .batch-item:last-child{border-bottom:none;}
 .batch-item:active{background:#f9fafb;}
 .batch-cb{width:22px;height:22px;accent-color:var(--navy);cursor:pointer;flex-shrink:0;}
-
-/* Roster group heading */
 .roster-group-label{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.6px;padding:12px 0 6px;border-bottom:1px solid var(--border);margin-bottom:4px;}
-
 .chk-label{display:flex;align-items:center;gap:10px;cursor:pointer;font-size:15px;}
 .chk-label input{width:20px;height:20px;cursor:pointer;accent-color:var(--navy);}
 .divider{border:none;border-top:1px solid var(--border);margin:16px 0;}
 .section-label{font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px;}
 .text-muted{color:var(--muted);font-size:13px;}
 .mono{font-family:'DM Mono',monospace;}
-
 .toast{position:fixed;left:50%;transform:translateX(-50%);background:var(--navy);color:white;padding:12px 24px;border-radius:10px;font-size:15px;font-weight:500;z-index:999;opacity:0;transition:opacity 0.25s;pointer-events:none;white-space:nowrap;bottom:24px;}
 .toast.show{opacity:1;}
 @media(max-width:767px){.toast{bottom:calc(90px + env(safe-area-inset-bottom,0));font-size:16px;}}
-
 .copy-btn-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;}
 .copy-pill{padding:8px 14px;border-radius:20px;font-size:13px;border:1px solid var(--border);background:white;cursor:pointer;color:var(--text);transition:all 0.15s;font-family:'DM Sans',sans-serif;font-weight:500;}
 .copy-pill:hover{background:var(--accent-light);border-color:var(--accent);}
+.sub-tab{padding:9px 18px;border-radius:10px;font-size:14px;font-weight:500;border:1px solid var(--border);background:white;cursor:pointer;color:var(--muted);transition:all 0.15s;white-space:nowrap;font-family:'DM Sans',sans-serif;}
+.sub-tab.active{background:var(--navy);color:white;border-color:var(--navy);}
+.sub-tabs{display:flex;gap:6px;margin-bottom:18px;overflow-x:auto;scrollbar-width:none;}
+.sub-tabs::-webkit-scrollbar{display:none;}
+@media(max-width:767px){.sub-tab{padding:12px 20px;font-size:15px;border-radius:12px;}}
 </style>
 </head>
 <body>
@@ -241,14 +206,13 @@ body{font-family:'DM Sans',sans-serif;background:#eef1f5;color:var(--text);min-h
   <div class="spinner"></div>
   <div class="load-steps">
     <div class="load-step active" id="ls-connect"><span class="ls-icon">📡</span>Connecting to Google Sheets</div>
-    <div class="load-step" id="ls-players"><span class="ls-icon">👤</span>Loading contacts</div>
-    <div class="load-step" id="ls-roster"><span class="ls-icon">📋</span>Loading roster</div>
+    <div class="load-step" id="ls-data"><span class="ls-icon">📋</span>Loading season data</div>
+    <div class="load-step" id="ls-contacts"><span class="ls-icon">👤</span>Loading contacts</div>
     <div class="load-step" id="ls-ready"><span class="ls-icon">✓</span>Ready</div>
   </div>
 </div>
 
 <div id="app">
-
 <!-- DESKTOP -->
 <div class="desktop-only">
   <div class="d-topbar">
@@ -270,9 +234,33 @@ body{font-family:'DM Sans',sans-serif;background:#eef1f5;color:var(--text);min-h
     <button class="d-nav-btn" onclick="showPage('settings',this)">Settings</button>
   </div>
   <div class="d-page active" id="dp-dashboard"><div id="dd-alerts"></div><div class="stats-grid" id="dd-stats"></div><div class="card"><div class="card-header"><span class="card-title">Payment tracker</span></div><div id="dd-pay"></div></div><div class="card" id="dd-nr-card" style="display:none"><div class="card-header"><span class="card-title">No response yet</span></div><div id="dd-nr"></div></div></div>
-  <div class="d-page" id="dp-contacts"><div class="card"><div class="card-header"><span class="card-title">Contact list</span><button class="btn btn-primary btn-sm" onclick="openPlayerModal()">+ Add contact</button></div><input class="search-box" placeholder="Search by name or email..." oninput="renderPlayers(this.value)"><div class="filter-row" id="dpf"><button class="pill active" onclick="setPF('all',this)">All</button><button class="pill" onclick="setPF('Full-time',this)">Full-time</button><button class="pill" onclick="setPF('Spare',this)">Spares</button><button class="pill" onclick="setPF('Contact-only',this)">Contacts only</button></div><div class="overflow-x"><div id="dp-list"></div></div></div></div>
-  <div class="d-page" id="dp-roster"><div class="card"><div class="card-header"><span class="card-title" id="dr-title">Season roster</span><button class="btn btn-primary btn-sm" onclick="openRosterModal()">+ Add players</button></div><div class="filter-row" id="drf"><button class="pill active" onclick="setRF('all',this)">All</button><button class="pill" onclick="setRF('in',this)">In</button><button class="pill" onclick="setRF('pending',this)">Pending</button><button class="pill" onclick="setRF('out',this)">Out</button><button class="pill" onclick="setRF('waitlist',this)">Waitlist</button></div><div class="overflow-x"><div id="dr-list"></div></div></div></div>
-  <div class="d-page" id="dp-spares"><div class="card"><div class="card-header"><span class="card-title" id="ds-title">Spares list</span></div><div class="filter-row" id="dsf"><button class="pill active" onclick="setSF('all',this)">All positions</button><button class="pill" onclick="setSF('Forward',this)">Forwards</button><button class="pill" onclick="setSF('Defence',this)">Defence</button><button class="pill" onclick="setSF('Goalie',this)">Goalies</button></div><div class="overflow-x"><div id="ds-list"></div></div></div></div>
+  <div class="d-page" id="dp-contacts">
+    <div class="card">
+      <div class="card-header"><span class="card-title">Contact list</span><button class="btn btn-primary btn-sm" onclick="openPlayerModal()">+ Add contact</button></div>
+      <input class="search-box" placeholder="Search by name or email..." oninput="renderPlayers(this.value)">
+      <div class="filter-row" id="dpf">
+        <button class="pill active" onclick="setPF('all',this)">All</button>
+        <button class="pill" onclick="setPF('Full-time',this)">Full-time</button>
+        <button class="pill" onclick="setPF('Spare',this)">Spares</button>
+        <button class="pill" onclick="setPF('Contact-only',this)">Contacts only</button>
+      </div>
+      <div class="overflow-x"><div id="dp-list"></div></div>
+    </div>
+  </div>
+  <div class="d-page" id="dp-roster">
+    <div class="card">
+      <div class="card-header"><span class="card-title" id="dr-title">Season roster</span><button class="btn btn-primary btn-sm" onclick="openRosterModal()">+ Add players</button></div>
+      <div class="filter-row" id="drf">
+        <button class="pill active" onclick="setRF('all',this)">All</button>
+        <button class="pill" onclick="setRF('in',this)">In</button>
+        <button class="pill" onclick="setRF('pending',this)">Pending</button>
+        <button class="pill" onclick="setRF('out',this)">Out</button>
+        <button class="pill" onclick="setRF('waitlist',this)">Waitlist</button>
+      </div>
+      <div class="overflow-x"><div id="dr-list"></div></div>
+    </div>
+  </div>
+  <div class="d-page" id="dp-spares"><div class="card"><div class="card-header"><span class="card-title" id="ds-title">Spares list</span></div><div class="filter-row" id="dsf"><button class="pill active" onclick="setSF('all',this)">All</button><button class="pill" onclick="setSF('Forward',this)">Forwards</button><button class="pill" onclick="setSF('Defence',this)">Defence</button><button class="pill" onclick="setSF('Goalie',this)">Goalies</button></div><div class="overflow-x"><div id="ds-list"></div></div></div></div>
   <div class="d-page" id="dp-email"><div id="de-content"></div></div>
   <div class="d-page" id="dp-calculator"><div id="dc-content"></div></div>
   <div class="d-page" id="dp-seasons"><div id="dsn-content"></div></div>
@@ -286,14 +274,37 @@ body{font-family:'DM Sans',sans-serif;background:#eef1f5;color:var(--text);min-h
     <span class="m-season-btn" id="mt-season" onclick="openSeasonPicker()">Select season</span>
   </div>
   <div class="m-page active" id="mp-dashboard"><div id="md-alerts"></div><div class="stats-grid" id="md-stats"></div><div class="card"><div class="card-header"><span class="card-title">Payment tracker</span><span class="saving-dot" id="sd-m"></span></div><div id="md-pay"></div></div><div class="card" id="md-nr-card" style="display:none"><div class="card-header"><span class="card-title">No response yet</span></div><div id="md-nr"></div></div></div>
-  <div class="m-page" id="mp-contacts"><div class="card"><div class="card-header"><span class="card-title">Contacts</span><button class="btn btn-primary btn-sm" onclick="openPlayerModal()">+ Add</button></div><input class="search-box" placeholder="Search..." oninput="renderPlayers(this.value)"><div class="filter-row" id="mpf"><button class="pill active" onclick="setPF('all',this)">All</button><button class="pill" onclick="setPF('Full-time',this)">Full-time</button><button class="pill" onclick="setPF('Spare',this)">Spares</button><button class="pill" onclick="setPF('Contact-only',this)">Contacts</button></div><div id="mp-list"></div></div></div>
-  <div class="m-page" id="mp-roster"><div class="card"><div class="card-header"><span class="card-title" id="mr-title">Roster</span><button class="btn btn-primary btn-sm" onclick="openRosterModal()">+ Add</button></div><div class="filter-row" id="mrf"><button class="pill active" onclick="setRF('all',this)">All</button><button class="pill" onclick="setRF('in',this)">In</button><button class="pill" onclick="setRF('pending',this)">Pending</button><button class="pill" onclick="setRF('out',this)">Out</button><button class="pill" onclick="setRF('waitlist',this)">Waitlist</button></div><div id="mr-list"></div></div></div>
+  <div class="m-page" id="mp-contacts">
+    <div class="card">
+      <div class="card-header"><span class="card-title">Contacts</span><button class="btn btn-primary btn-sm" onclick="openPlayerModal()">+ Add</button></div>
+      <input class="search-box" placeholder="Search..." oninput="renderPlayers(this.value)">
+      <div class="filter-row" id="mpf">
+        <button class="pill active" onclick="setPF('all',this)">All</button>
+        <button class="pill" onclick="setPF('Full-time',this)">Full-time</button>
+        <button class="pill" onclick="setPF('Spare',this)">Spares</button>
+        <button class="pill" onclick="setPF('Contact-only',this)">Contacts</button>
+      </div>
+      <div id="mp-list"></div>
+    </div>
+  </div>
+  <div class="m-page" id="mp-roster">
+    <div class="card">
+      <div class="card-header"><span class="card-title" id="mr-title">Roster</span><button class="btn btn-primary btn-sm" onclick="openRosterModal()">+ Add</button></div>
+      <div class="filter-row" id="mrf">
+        <button class="pill active" onclick="setRF('all',this)">All</button>
+        <button class="pill" onclick="setRF('in',this)">In</button>
+        <button class="pill" onclick="setRF('pending',this)">Pending</button>
+        <button class="pill" onclick="setRF('out',this)">Out</button>
+        <button class="pill" onclick="setRF('waitlist',this)">Waitlist</button>
+      </div>
+      <div id="mr-list"></div>
+    </div>
+  </div>
   <div class="m-page" id="mp-email"><div id="me-content"></div></div>
   <div class="m-page" id="mp-spares"><div id="ms-content"></div></div>
   <div class="m-page" id="mp-calculator"><div id="mc-content"></div></div>
   <div class="m-page" id="mp-seasons"><div id="msn-content"></div></div>
   <div class="m-page" id="mp-settings"><div id="mset-content"></div></div>
-
   <div class="m-bottom-nav">
     <button class="m-tab active" id="mt-dashboard" onclick="showPage('dashboard',this)"><span class="ti">📊</span><span class="tl">Dashboard</span></button>
     <button class="m-tab" id="mt-contacts" onclick="showPage('contacts',this)"><span class="ti">👤</span><span class="tl">Contacts</span></button>
@@ -320,8 +331,8 @@ body{font-family:'DM Sans',sans-serif;background:#eef1f5;color:var(--text);min-h
 <div class="overlay" id="player-overlay" style="display:none" onclick="if(event.target===this)closePlayerModal()">
   <div class="modal">
     <h2 id="pm-title">Add contact</h2>
-    <div class="field"><label>Full name</label><div style="position:relative"><input id="pm-name" placeholder="Start typing to search contacts..." autocomplete="off" oninput="onContactSearch(this.value)"><div class="contact-dd" id="contact-dd"></div></div></div>
-    <div class="field"><label>Email</label><input id="pm-email" type="email" placeholder="email@example.com"></div>
+    <div class="field"><label>Full name</label><div style="position:relative"><input id="pm-name" placeholder="Type name to search contacts..." autocomplete="off" oninput="onContactSearch('name',this.value)"><div class="contact-dd" id="contact-dd-name"></div></div></div>
+    <div class="field"><label>Email</label><div style="position:relative"><input id="pm-email" type="email" placeholder="email@example.com" autocomplete="off" oninput="onContactSearch('email',this.value)"><div class="contact-dd" id="contact-dd-email"></div></div></div>
     <div class="field"><label>Phone (optional)</label><input id="pm-phone" type="tel" placeholder="604-555-0100" oninput="sanitizePhone(this)"></div>
     <div class="form-row"><div class="field"><label>Position</label><select id="pm-pos"><option value="Forward">Forward</option><option value="Defence">Defence</option><option value="Goalie">Goalie</option></select></div><div class="field"><label>Player type</label><select id="pm-type"><option value="Full-time">Full-time</option><option value="Spare">Spare</option><option value="Contact-only">Contact only</option></select></div></div>
     <div class="field"><label>Notes (optional)</label><textarea id="pm-notes" placeholder="e.g. reliable backup goalie"></textarea></div>
@@ -371,8 +382,9 @@ body{font-family:'DM Sans',sans-serif;background:#eef1f5;color:var(--text);min-h
 <script>
 const SCRIPT_URL='https://restless-thunder-384c.christopher-robert-david.workers.dev';
 let S={players:[],seasons:[],roster:[],payments:[],config:{}};
-let activeSeason=null,rosterFilter='all',rosterView='fulltime',playerFilter='all',spareFilter='all';
-let editingPlayer=null,payRosterId=null,searchTimer=null;
+let GC=[]; // Google Contacts cache
+let activeSeason=null,rosterFilter='all',playerFilter='all',spareFilter='all';
+let editingPlayer=null,payRosterId=null,contactSearchTimer=null;
 
 // ── API ───────────────────────────────────────────────────────
 async function api(action,data){
@@ -388,28 +400,32 @@ async function api(action,data){
 // ── Boot ──────────────────────────────────────────────────────
 function setStep(id){
   document.querySelectorAll('.load-step').forEach(el=>{
-    if(el.id===id)el.classList.add('active');
-    else if(el.classList.contains('active')&&el.id!==id){el.classList.remove('active');el.classList.add('done');}
+    if(el.id===id){el.classList.add('active');el.classList.remove('done');}
+    else if(el.classList.contains('active')){el.classList.remove('active');el.classList.add('done');}
   });
 }
 
 window.onload=async function(){
   try{
     setStep('ls-connect');
-    const all=await api('getAll');
-    setStep('ls-players');
-    S=all;
-    await new Promise(r=>setTimeout(r,300));
-    setStep('ls-roster');
+    const [allData]=await Promise.all([api('getAll')]);
+    setStep('ls-data');
+    S=allData;
     activeSeason=S.config.activeSeason||(S.seasons[0]?S.seasons[0].id:null);
-    await new Promise(r=>setTimeout(r,300));
+    await new Promise(r=>setTimeout(r,200));
+    setStep('ls-contacts');
+    // Load Google Contacts in background — don't block app load
+    api('getAllContacts').then(results=>{
+      if(Array.isArray(results))GC=results;
+    }).catch(()=>{});
+    await new Promise(r=>setTimeout(r,200));
     setStep('ls-ready');
     await new Promise(r=>setTimeout(r,400));
     document.getElementById('loading-screen').style.display='none';
     document.getElementById('app').style.display='block';
     applyAppName();renderAll();
   }catch(e){
-    document.getElementById('loading-msg').textContent='Error: '+e.message;
+    document.querySelector('.load-step.active').textContent='Error: '+e.message;
     document.querySelector('.spinner').style.display='none';
   }
 };
@@ -417,13 +433,19 @@ window.onload=async function(){
 // ── Helpers ───────────────────────────────────────────────────
 function showSaving(){document.querySelectorAll('.saving-dot').forEach(d=>d.classList.add('active'));}
 function hideSaving(){document.querySelectorAll('.saving-dot').forEach(d=>d.classList.remove('active'));}
-function toast(msg,dur){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),dur||2200);}
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200);}
 function getAS(){return S.seasons.find(s=>s.id===activeSeason)||null;}
 function getP(id){return S.players.find(p=>p.id===id);}
 function getPaid(rid){return S.payments.filter(p=>p.rosterId===rid).reduce((s,p)=>s+parseFloat(p.amount||0),0);}
 function getAppName(){return S.config.appName||'Thursday Night Hockey';}
-function pb(pos){return`<span class="badge badge-${(pos||'forward').toLowerCase()}">${pos||'Forward'}</span>`;}
+function pb(pos){
+  if(pos==='Goalie')return'<span class="badge badge-goalie">Goalie</span>';
+  if(pos==='Defence')return'<span class="badge badge-defence">Defence</span>';
+  return'<span class="badge badge-forward">Forward</span>';
+}
+function posLabel(p){return p.position==='Goalie'?'<span class="badge badge-goalie">Goalie</span>':'<span class="badge badge-player">Player</span>';}
 function sanitizePhone(input){input.value=input.value.replace(/[^0-9+\-() ]/g,'');}
+function cleanPhone(v){return(v&&v.toString().includes('ERROR'))?'':v||'';}
 
 function applyAppName(){
   const n=getAppName();document.title=n;
@@ -441,7 +463,8 @@ function showPage(name,btn){
   document.querySelectorAll('.d-page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.d-nav-btn').forEach(b=>b.classList.remove('active'));
   const dp=document.getElementById('dp-'+name);if(dp)dp.classList.add('active');
-  if(btn&&btn.classList.contains('d-nav-btn'))btn.classList.add('active');
+  if(btn&&btn.classList&&btn.classList.contains('d-nav-btn'))btn.classList.add('active');
+  else{document.querySelectorAll('.d-nav-btn').forEach(b=>{if(b.getAttribute('onclick')&&b.getAttribute('onclick').includes("'"+name+"'"))b.classList.add('active');});}
   document.querySelectorAll('.m-page').forEach(p=>p.classList.remove('active'));
   const mp=document.getElementById('mp-'+name);if(mp)mp.classList.add('active');
   document.querySelectorAll('.m-tab').forEach(b=>b.classList.remove('active'));
@@ -453,11 +476,9 @@ function showPage(name,btn){
   if(name==='spares')renderSpares();
   if(['email','calculator','seasons','settings'].includes(name))renderDynamic(name);
 }
-function showPageFiltered(name,filter,view){
-  if(view)rosterView=view;
+function showPageFiltered(name,filter){
   if(filter)rosterFilter=filter;
   showPage(name);
-  document.querySelectorAll('.d-nav-btn').forEach(b=>{if(b.onclick&&b.onclick.toString().includes("'"+name+"'"))b.classList.add('active');});
 }
 function openMoreMenu(){document.getElementById('more-sheet').classList.add('open');document.getElementById('more-overlay').classList.add('open');}
 function closeMoreMenu(){document.getElementById('more-sheet').classList.remove('open');document.getElementById('more-overlay').classList.remove('open');}
@@ -478,60 +499,33 @@ function renderDashboard(){
     const nrC=document.getElementById(nrCId);const nrEl=document.getElementById(nrId);
     if(!s){aEl.innerHTML='<div class="alert alert-amber">No active season. Go to Seasons to create one.</div>';stEl.innerHTML='';pEl.innerHTML='';nrC.style.display='none';return;}
     aEl.innerHTML=s.emailSent==='true'?`<div class="alert alert-green">Season invite sent for ${s.label}.</div>`:`<div class="alert alert-amber">Season invite not yet sent for ${s.label}.</div>`;
-    const ents=S.roster.filter(r=>r.seasonId===s.id);
-    // Only count players that still exist in the players list
-    const validEnts=ents.filter(r=>getP(r.playerId));
+    const validEnts=S.roster.filter(r=>r.seasonId===s.id&&getP(r.playerId));
     const inAll=validEnts.filter(r=>r.status==='in');
     const pending=validEnts.filter(r=>r.status==='pending');
     const waitlist=validEnts.filter(r=>r.status==='waitlist');
-    const skaters=inAll.filter(r=>{const p=getP(r.playerId);return p&&p.position!=='Goalie';});
-    const goaliesIn=inAll.filter(r=>{const p=getP(r.playerId);return p&&p.position==='Goalie';});
+    const skaters=inAll.filter(r=>getP(r.playerId)?.position!=='Goalie');
+    const goaliesIn=inAll.filter(r=>getP(r.playerId)?.position==='Goalie');
     const fee=parseFloat(s.fee)||0;
     const totalPaid=skaters.reduce((sum,r)=>sum+getPaid(r.id),0);
-    const totalOwed=skaters.length*fee;
-    const outstanding=Math.max(0,totalOwed-totalPaid);
+    const outstanding=Math.max(0,skaters.length*fee-totalPaid);
     const goalieSecured=s.goalieSecured==='true';
-
     stEl.innerHTML=`
-      <div class="stat-card" onclick="showPageFiltered('roster','in','fulltime')" title="Click to view confirmed skaters">
-        <div class="stat-label">Skaters</div>
-        <div class="stat-value">${skaters.length}${s.targetSkaters&&s.targetSkaters!='0'?' / '+s.targetSkaters:''}</div>
-      </div>
-      <div class="stat-card" onclick="toggleGoalieSecured()" title="Click to toggle goalie status" style="position:relative">
-        <div class="stat-label">Goalies</div>
-        <div class="stat-value ${goalieSecured?'green':'amber'}">${goalieSecured?'✓':'?'}</div>
-        <div style="font-size:10px;color:var(--muted);margin-top:3px">${goaliesIn.length} on roster</div>
-      </div>
-      <div class="stat-card" onclick="showPageFiltered('roster','pending','fulltime')" title="Click to view pending">
-        <div class="stat-label">Pending</div>
-        <div class="stat-value ${pending.length>0?'amber':''}">${pending.length}</div>
-      </div>
-      <div class="stat-card" onclick="showPageFiltered('roster','all','waitlist')" title="Click to view waitlist">
-        <div class="stat-label">Waitlist</div>
-        <div class="stat-value">${waitlist.length}</div>
-      </div>
-      <div class="stat-card" title="Total collected">
-        <div class="stat-label">Collected</div>
-        <div class="stat-value green">$${totalPaid.toFixed(0)}</div>
-      </div>
-      <div class="stat-card" onclick="${outstanding>0?`showPageFiltered('roster','all','fulltime')`:''}" title="${outstanding>0?'Click to view roster':'All paid up'}">
-        <div class="stat-label">Outstanding</div>
-        <div class="stat-value ${outstanding>0?'amber':'green'}">$${outstanding.toFixed(0)}</div>
-      </div>`;
-
+      <div class="stat-card" onclick="showPageFiltered('roster','in')"><div class="stat-label">Skaters</div><div class="stat-value">${skaters.length}${s.targetSkaters&&s.targetSkaters!='0'?' / '+s.targetSkaters:''}</div></div>
+      <div class="stat-card" onclick="toggleGoalieSecured()"><div class="stat-label">Goalies</div><div class="stat-value ${goalieSecured?'green':'amber'}">${goalieSecured?'✓':'?'}</div><div style="font-size:10px;color:var(--muted);margin-top:3px">${goaliesIn.length} on roster</div></div>
+      <div class="stat-card" onclick="showPageFiltered('roster','pending')"><div class="stat-label">Pending</div><div class="stat-value ${pending.length>0?'amber':''}">${pending.length}</div></div>
+      <div class="stat-card" onclick="showPageFiltered('roster','waitlist')"><div class="stat-label">Waitlist</div><div class="stat-value">${waitlist.length}</div></div>
+      <div class="stat-card"><div class="stat-label">Collected</div><div class="stat-value green">$${totalPaid.toFixed(0)}</div></div>
+      <div class="stat-card" onclick="${outstanding>0?`showPageFiltered('roster','in')`:``}"><div class="stat-label">Outstanding</div><div class="stat-value ${outstanding>0?'amber':'green'}">$${outstanding.toFixed(0)}</div></div>`;
     if(!skaters.length){pEl.innerHTML='<div class="empty"><div class="icon">💰</div>No confirmed skaters yet.</div>';}
-    else{
-      const unpaidSkaters=skaters.filter(r=>getPaid(r.id)<fee);
-      pEl.innerHTML=`<div class="overflow-x"><table class="data-table"><thead><tr><th>Player</th><th>Owing</th><th>Paid</th><th>Status</th><th></th></tr></thead><tbody>${skaters.map(r=>{
-        const p=getP(r.playerId);if(!p)return'';
-        const paid=getPaid(r.id);const pct=fee>0?Math.min(100,Math.round(paid/fee*100)):100;
-        const st=paid>=fee?'paid':paid>0?'partial':'unpaid';
-        return`<tr><td style="font-weight:500">${p.name}</td><td class="mono">$${fee.toFixed(0)}</td>
-          <td><div class="pay-bar"><div class="pay-track"><div class="pay-fill ${pct>=100?'full':pct>0?'partial':'none'}" style="width:${pct}%"></div></div><span class="pay-label">$${paid.toFixed(0)}</span></div></td>
-          <td><span class="badge badge-${st}">${st==='paid'?'Paid':st==='partial'?'Partial':'Unpaid'}</span></td>
-          <td><button class="btn btn-secondary btn-xs" onclick="openPaymentModal('${r.id}')">+ Pay</button></td></tr>`;
-      }).join('')}</tbody></table></div>`;
-    }
+    else{pEl.innerHTML=`<div class="overflow-x"><table class="data-table"><thead><tr><th>Player</th><th>Owing</th><th>Paid</th><th>Status</th><th></th></tr></thead><tbody>${skaters.map(r=>{
+      const p=getP(r.playerId);if(!p)return'';
+      const paid=getPaid(r.id);const pct=fee>0?Math.min(100,Math.round(paid/fee*100)):100;
+      const st=paid>=fee?'paid':paid>0?'partial':'unpaid';
+      return`<tr><td style="font-weight:500">${p.name}</td><td class="mono">$${fee.toFixed(0)}</td>
+        <td><div class="pay-bar"><div class="pay-track"><div class="pay-fill ${pct>=100?'full':pct>0?'partial':'none'}" style="width:${pct}%"></div></div><span class="pay-label">$${paid.toFixed(0)}</span></div></td>
+        <td><span class="badge badge-${st}">${st==='paid'?'Paid':st==='partial'?'Partial':'Unpaid'}</span></td>
+        <td><button class="btn btn-secondary btn-xs" onclick="openPaymentModal('${r.id}')">+ Pay</button></td></tr>`;
+    }).join('')}</tbody></table></div>`;}
     if(pending.length){nrC.style.display='block';nrEl.innerHTML=pending.map(r=>{const p=getP(r.playerId);if(!p)return'';return`<div class="m-list-item"><div><div class="m-list-name">${p.name}</div><div class="m-list-sub">${p.email}</div></div></div>`;}).join('');}
     else nrC.style.display='none';
   });
@@ -545,99 +539,101 @@ async function toggleGoalieSecured(){
   toast(s.goalieSecured==='true'?'Goalies secured ✓':'Goalies not yet secured');
 }
 
-// ── Contacts (Players) ────────────────────────────────────────
+// ── Contacts ──────────────────────────────────────────────────
 function setPF(f,btn){
   playerFilter=f;
   document.querySelectorAll('#dpf .pill,#mpf .pill').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');renderPlayers('');
 }
+
 function renderPlayers(search){
   let list=S.players.slice();
   if(playerFilter!=='all')list=list.filter(p=>p.playerType===playerFilter);
   if(search)list=list.filter(p=>p.name.toLowerCase().includes(search.toLowerCase())||p.email.toLowerCase().includes(search.toLowerCase()));
   list.sort((a,b)=>a.name.localeCompare(b.name));
-  list=list.map(p=>({...p,phone:(p.phone&&p.phone.toString().includes('ERROR'))?'':p.phone}));
+  list=list.map(p=>({...p,phone:cleanPhone(p.phone)}));
 
-  // Group by position/type
   const goalies=list.filter(p=>p.position==='Goalie');
   const players=list.filter(p=>p.position!=='Goalie'&&p.playerType!=='Contact-only');
   const contacts=list.filter(p=>p.playerType==='Contact-only');
 
-  function contactRow(p){
-    return`<tr><td style="font-weight:500;white-space:nowrap">${p.name}</td><td>${pb(p.position)}</td>
-      <td><span class="badge badge-${p.playerType==='Full-time'?'fulltime':p.playerType==='Spare'?'spare':'contact'}">${p.playerType||'Full-time'}</span></td>
+  function crow(p){
+    return`<tr>
+      <td style="font-weight:500;white-space:nowrap">${p.name}</td>
+      <td>${posLabel(p)}</td>
       <td style="color:var(--muted);font-size:13px">${p.email}</td>
       <td style="color:var(--muted);font-size:13px;white-space:nowrap">${p.phone?`<a href="tel:${p.phone}" style="color:var(--accent);text-decoration:none">${p.phone}</a>`:'—'}</td>
       <td>${sbadge(p.id)}</td>
-      <td style="color:var(--muted);font-size:12px;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${p.notes||'—'}</td>
-      <td style="white-space:nowrap"><button class="btn btn-secondary btn-xs" onclick="openPlayerModal('${p.id}')">Edit</button> <button class="del-btn" onclick="deletePlayer('${p.id}')">✕</button></td></tr>`;
+      <td style="color:var(--muted);font-size:12px;max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${p.notes||'—'}</td>
+      <td style="white-space:nowrap"><button class="btn btn-secondary btn-xs" onclick="openPlayerModal('${p.id}')">Edit</button> <button class="del-btn" onclick="deletePlayer('${p.id}')">✕</button></td>
+    </tr>`;
   }
-
-  function contactCard(p){
+  function ccard(p){
     return`<div class="m-list-item">
       <div style="flex:1;min-width:0">
         <div class="m-list-name">${p.name}</div>
         <div class="m-list-sub">${p.email}${p.phone?' · '+p.phone:''}</div>
-        <div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap">${pb(p.position)}<span class="badge badge-${p.playerType==='Full-time'?'fulltime':p.playerType==='Spare'?'spare':'contact'}">${p.playerType||'Full-time'}</span>${sbadge(p.id)}</div>
+        <div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap">${posLabel(p)}${sbadge(p.id)}</div>
       </div>
       <div class="m-list-right">
         <button class="btn btn-secondary btn-sm" onclick="openPlayerModal('${p.id}')">Edit</button>
         <button class="del-btn" onclick="deletePlayer('${p.id}')">✕</button>
       </div></div>`;
   }
-
-  function groupHeaderD(txt,count){return`<tr><td colspan="8"><div class="roster-group-label" style="margin:0;padding:10px 12px 6px">${txt} (${count})</div></td></tr>`;}
-  function groupHeaderM(txt,count){return`<div class="roster-group-label">${txt} (${count})</div>`;}
+  function ghD(txt,n){return`<tr><td colspan="7"><div class="roster-group-label" style="margin:0;padding:10px 12px 6px">${txt} (${n})</div></td></tr>`;}
+  function ghM(txt,n){return`<div class="roster-group-label">${txt} (${n})</div>`;}
 
   const dl=document.getElementById('dp-list');
   if(dl){
     if(!list.length){dl.innerHTML='<div class="empty"><div class="icon">👤</div>No contacts found.</div>';}
     else{
-      let html=`<table class="data-table"><thead><tr><th>Name</th><th>Position</th><th>Type</th><th>Email</th><th>Phone</th><th>Seasons</th><th>Notes</th><th></th></tr></thead><tbody>`;
-      if(goalies.length)html+=groupHeaderD('Goalies',goalies.length)+goalies.map(contactRow).join('');
-      if(players.length)html+=groupHeaderD('Players',players.length)+players.map(contactRow).join('');
-      if(contacts.length)html+=groupHeaderD('Contacts only',contacts.length)+contacts.map(contactRow).join('');
-      html+='</tbody></table>';
-      dl.innerHTML=html;
+      let h=`<table class="data-table"><thead><tr><th>Name</th><th>Role</th><th>Email</th><th>Phone</th><th>Seasons</th><th>Notes</th><th></th></tr></thead><tbody>`;
+      if(goalies.length)h+=ghD('Goalies',goalies.length)+goalies.map(crow).join('');
+      if(players.length)h+=ghD('Players',players.length)+players.map(crow).join('');
+      if(contacts.length)h+=ghD('Contacts only',contacts.length)+contacts.map(crow).join('');
+      dl.innerHTML=h+'</tbody></table>';
     }
   }
-
   const ml=document.getElementById('mp-list');
   if(ml){
     if(!list.length){ml.innerHTML='<div class="empty"><div class="icon">👤</div>No contacts found.</div>';}
     else{
-      let html='';
-      if(goalies.length)html+=groupHeaderM('Goalies',goalies.length)+goalies.map(contactCard).join('');
-      if(players.length)html+=groupHeaderM('Players',players.length)+players.map(contactCard).join('');
-      if(contacts.length)html+=groupHeaderM('Contacts only',contacts.length)+contacts.map(contactCard).join('');
-      ml.innerHTML=html;
+      let h='';
+      if(goalies.length)h+=ghM('Goalies',goalies.length)+goalies.map(ccard).join('');
+      if(players.length)h+=ghM('Players',players.length)+players.map(ccard).join('');
+      if(contacts.length)h+=ghM('Contacts only',contacts.length)+contacts.map(ccard).join('');
+      ml.innerHTML=h;
     }
   }
-  
+}
+
 function openPlayerModal(id){
   editingPlayer=id||null;
-  if(id){const p=getP(id);if(!p)return;
+  if(id){
+    const p=getP(id);if(!p)return;
     document.getElementById('pm-title').textContent='Edit contact';
-    document.getElementById('pm-name').value=p.name;document.getElementById('pm-email').value=p.email;
-    const ph=p.phone&&p.phone.toString().includes('ERROR')?'':p.phone||'';
-    document.getElementById('pm-phone').value=ph;
-    document.getElementById('pm-pos').value=p.position||'Forward';document.getElementById('pm-type').value=p.playerType||'Full-time';document.getElementById('pm-notes').value=p.notes||'';
+    document.getElementById('pm-name').value=p.name;
+    document.getElementById('pm-email').value=p.email;
+    document.getElementById('pm-phone').value=cleanPhone(p.phone);
+    document.getElementById('pm-pos').value=p.position||'Forward';
+    document.getElementById('pm-type').value=p.playerType||'Full-time';
+    document.getElementById('pm-notes').value=p.notes||'';
   }else{
     document.getElementById('pm-title').textContent='Add contact';
     ['pm-name','pm-email','pm-phone','pm-notes'].forEach(i=>document.getElementById(i).value='');
-    document.getElementById('pm-pos').value='Forward';document.getElementById('pm-type').value='Full-time';
-    document.getElementById('contact-dd').style.display='none';
+    document.getElementById('pm-pos').value='Forward';
+    document.getElementById('pm-type').value='Full-time';
+    ['contact-dd-name','contact-dd-email'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='none';});
   }
   document.getElementById('player-overlay').style.display='flex';
 }
 function closePlayerModal(){document.getElementById('player-overlay').style.display='none';}
 
 async function savePlayer(){
-  const name=document.getElementById('pm-name').value.trim();const email=document.getElementById('pm-email').value.trim();
+  const name=document.getElementById('pm-name').value.trim();
+  const email=document.getElementById('pm-email').value.trim();
   if(!name||!email){toast('Name and email are required');return;}
-  const rawPhone=document.getElementById('pm-phone').value.trim();
-  const phone=rawPhone.replace(/[^0-9+\-() ]/g,'');
-  // Prevent duplicate emails
+  const phone=document.getElementById('pm-phone').value.trim().replace(/[^0-9+\-() ]/g,'');
   const existing=S.players.find(p=>p.email.toLowerCase()===email.toLowerCase()&&p.id!==editingPlayer);
   if(existing){toast('A contact with this email already exists');return;}
   const data={id:editingPlayer||undefined,name,email,phone,position:document.getElementById('pm-pos').value,playerType:document.getElementById('pm-type').value,notes:document.getElementById('pm-notes').value.trim()};
@@ -645,126 +641,156 @@ async function savePlayer(){
   if(isNew){data.id=tempId;S.players.push({...data});}
   else{const idx=S.players.findIndex(p=>p.id===editingPlayer);if(idx>=0)S.players[idx]=Object.assign({},S.players[idx],data);}
   closePlayerModal();renderPlayers('');renderDashboard();toast(isNew?'Contact added':'Contact updated');
-  try{const result=await api('savePlayer',{...data,id:isNew?undefined:data.id});
+  try{
+    const result=await api('savePlayer',{...data,id:isNew?undefined:data.id});
     if(isNew){const idx=S.players.findIndex(p=>p.id===tempId);if(idx>=0)S.players[idx].id=result.inserted;}
   }catch(e){if(isNew)S.players=S.players.filter(p=>p.id!==tempId);renderPlayers('');toast('Sync failed — please try again');}
 }
 
 async function deletePlayer(id){
   if(!confirm('Remove this contact?'))return;
-  const removed=S.players.filter(p=>p.id===id);const removedRoster=S.roster.filter(r=>r.playerId===id);
-  S.players=S.players.filter(p=>p.id!==id);S.roster=S.roster.filter(r=>r.playerId!==id);
+  const removed=S.players.filter(p=>p.id===id);
+  const removedRoster=S.roster.filter(r=>r.playerId===id);
+  S.players=S.players.filter(p=>p.id!==id);
+  S.roster=S.roster.filter(r=>r.playerId!==id);
   renderPlayers('');renderRoster();renderDashboard();renderSpares();toast('Contact removed');
   try{await api('deletePlayer',{id});}
-  catch(e){S.players=[...S.players,...removed];S.roster=[...S.roster,...removedRoster];renderPlayers('');renderRoster();renderDashboard();renderSpares();toast('Sync failed — please try again');}
+  catch(e){S.players=[...S.players,...removed];S.roster=[...S.roster,...removedRoster];renderPlayers('');renderRoster();toast('Sync failed');}
 }
 
-// ── Contact search ────────────────────────────────────────────
-function onContactSearch(val){
-  clearTimeout(searchTimer);const dd=document.getElementById('contact-dd');
-  if(val.length<2){dd.style.display='none';return;}
-  dd.style.display='block';dd.innerHTML='<div class="contact-searching">Searching...</div>';
-  searchTimer=setTimeout(()=>doContactSearch(val),400);
+// ── Contact autocomplete ──────────────────────────────────────
+function onContactSearch(field,val){
+  clearTimeout(contactSearchTimer);
+  const ddId=field==='name'?'contact-dd-name':'contact-dd-email';
+  const otherDdId=field==='name'?'contact-dd-email':'contact-dd-name';
+  const dd=document.getElementById(ddId);
+  const otherDd=document.getElementById(otherDdId);
+  if(otherDd)otherDd.style.display='none';
+  if(!val||val.length<2){if(dd)dd.style.display='none';return;}
+  // Search cached Google Contacts instantly
+  const q=val.toLowerCase();
+  const matches=GC.filter(c=>{
+    if(field==='name')return c.name.toLowerCase().includes(q);
+    return c.email.toLowerCase().includes(q);
+  }).slice(0,8);
+  if(dd){
+    if(!matches.length){
+      dd.style.display='block';
+      dd.innerHTML='<div class="contact-searching">No matches — fill in manually.</div>';
+    }else{
+      dd._results=matches;
+      dd.style.display='block';
+      dd.innerHTML=matches.map((c,i)=>`<div class="contact-opt" onclick="selectContact(${i},'${ddId}')"><div class="co-name">${c.name}</div><div class="co-sub">${c.email}${c.phone?' · '+c.phone:''}</div></div>`).join('');
+    }
+  }
 }
-async function doContactSearch(query){
-  const dd=document.getElementById('contact-dd');
-  try{
-    const results=await api('searchContacts',{query});
-    if(!Array.isArray(results)||!results.length){dd.innerHTML='<div class="contact-searching">No contacts found — fill in manually.</div>';return;}
-    dd._google=results;dd.style.display='block';
-    dd.innerHTML=results.map((c,i)=>`<div class="contact-opt" onclick="selectGoogleContact(${i})"><div class="co-name">${c.name}</div><div class="co-sub">${c.email}${c.phone?' · '+c.phone:''}</div></div>`).join('');
-  }catch(e){dd.innerHTML='<div class="contact-searching">Could not search — fill in manually.</div>';}
-}
-function selectLocalContact(id){
-  const p=getP(id);if(!p)return;
-  document.getElementById('pm-name').value=p.name;document.getElementById('pm-email').value=p.email;
-  if(p.phone)document.getElementById('pm-phone').value=p.phone;
-  document.getElementById('pm-pos').value=p.position||'Forward';
-  document.getElementById('pm-type').value=p.playerType||'Full-time';
-  document.getElementById('contact-dd').style.display='none';
+function selectContact(i,ddId){
+  const dd=document.getElementById(ddId);
+  const c=dd&&dd._results&&dd._results[i];if(!c)return;
+  document.getElementById('pm-name').value=c.name;
+  document.getElementById('pm-email').value=c.email;
+  if(c.phone)document.getElementById('pm-phone').value=c.phone.replace(/[^0-9+\-() ]/g,'');
+  ['contact-dd-name','contact-dd-email'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='none';});
   document.getElementById('pm-pos').focus();
 }
-function selectGoogleContact(i){
-  const dd=document.getElementById('contact-dd');const c=dd._google&&dd._google[i];if(!c)return;
-  document.getElementById('pm-name').value=c.name;document.getElementById('pm-email').value=c.email;
-  if(c.phone)document.getElementById('pm-phone').value=c.phone.replace(/[^0-9+\-() ]/g,'');
-  dd.style.display='none';document.getElementById('pm-pos').focus();
-}
-document.addEventListener('click',e=>{const dd=document.getElementById('contact-dd');if(dd&&!dd.contains(e.target)&&e.target.id!=='pm-name')dd.style.display='none';});
+document.addEventListener('click',e=>{
+  ['contact-dd-name','contact-dd-email'].forEach(id=>{
+    const dd=document.getElementById(id);
+    if(dd&&!dd.contains(e.target)&&e.target.id!=='pm-name'&&e.target.id!=='pm-email')dd.style.display='none';
+  });
+});
 
 // ── Roster ────────────────────────────────────────────────────
-function setRF(f,btn){rosterFilter=f;document.querySelectorAll('#drf .pill,#mrf .pill').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderRoster();}
+function setRF(f,btn){
+  rosterFilter=f;
+  document.querySelectorAll('#drf .pill,#mrf .pill').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');renderRoster();
+}
 
 function renderRoster(){
   const s=getAS();
   ['dr-title','mr-title'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=s?s.label+' roster':'Season roster';});
   if(!s){
-    ['dr-list','mr-list'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML='<div class="empty"><div class="icon">📋</div>No active season.</div>';});
-    return;
+    ['dr-list','mr-list'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML='<div class="empty"><div class="icon">📋</div>No active season.</div>';});return;
   }
   let ents=S.roster.filter(r=>r.seasonId===s.id&&getP(r.playerId));
   if(rosterFilter!=='all')ents=ents.filter(r=>r.status===rosterFilter);
-  ents.sort((a,b)=>{const pa=getP(a.playerId);const pb2=getP(b.playerId);return(pa?.name||'').localeCompare(pb2?.name||'');});
-  const fee=s?parseFloat(s.fee)||0:0;
+  ents.sort((a,b)=>(getP(a.playerId)?.name||'').localeCompare(getP(b.playerId)?.name||''));
+  const fee=parseFloat(s.fee)||0;
   const sc={'in':'badge-in','pending':'badge-pending','out':'badge-out','waitlist':'badge-waitlist'};
 
   const goalies=ents.filter(r=>getP(r.playerId)?.position==='Goalie'&&r.status!=='waitlist');
   const skaters=ents.filter(r=>getP(r.playerId)?.position!=='Goalie'&&r.status!=='waitlist');
   const waitlist=ents.filter(r=>r.status==='waitlist');
 
-  function rosterRowDesktop(r){
+  function rosterRowD(r){
     const p=getP(r.playerId);if(!p)return'';
     const isG=p.position==='Goalie';const paid=getPaid(r.id);const pct=fee>0?Math.min(100,Math.round(paid/fee*100)):100;
-    return`<tr><td style="font-weight:500;white-space:nowrap">${p.name}</td><td>${pb(p.position)}</td>
-      <td><select class="btn btn-secondary btn-xs" style="padding:4px 8px;cursor:pointer" onchange="updateStatus('${r.id}',this.value)"><option value="pending" ${r.status==='pending'?'selected':''}>Pending</option><option value="in" ${r.status==='in'?'selected':''}>In</option><option value="waitlist" ${r.status==='waitlist'?'selected':''}>Waitlist</option><option value="out" ${r.status==='out'?'selected':''}>Out</option></select></td>
+    const spare=p.playerType==='Spare'?'<span class="badge badge-spare" style="margin-left:4px;font-size:10px">Spare</span>':'';
+    return`<tr>
+      <td style="font-weight:500;white-space:nowrap">${p.name}${spare}</td>
+      <td>${pb(p.position)}</td>
+      <td><select class="btn btn-secondary btn-xs" style="padding:4px 8px;cursor:pointer" onchange="updateStatus('${r.id}',this.value)">
+        <option value="pending" ${r.status==='pending'?'selected':''}>Pending</option>
+        <option value="in" ${r.status==='in'?'selected':''}>In</option>
+        <option value="waitlist" ${r.status==='waitlist'?'selected':''}>Waitlist</option>
+        <option value="out" ${r.status==='out'?'selected':''}>Out</option>
+      </select></td>
       <td style="min-width:130px">${isG?'<span class="badge badge-goalie">No fee</span>':`<div class="pay-bar"><div class="pay-track"><div class="pay-fill ${pct>=100?'full':pct>0?'partial':'none'}" style="width:${pct}%"></div></div><span class="pay-label">$${paid.toFixed(0)} / $${fee.toFixed(0)}</span></div>`}</td>
-      <td style="white-space:nowrap">${!isG?`<button class="btn btn-secondary btn-xs" onclick="openPaymentModal('${r.id}')">+ Pay</button>`:''} <button class="del-btn" onclick="removeFromRoster('${r.id}')">✕</button></td></tr>`;
+      <td style="white-space:nowrap">${!isG?`<button class="btn btn-secondary btn-xs" onclick="openPaymentModal('${r.id}')">+ Pay</button>`:''} <button class="del-btn" onclick="removeFromRoster('${r.id}')">✕</button></td>
+    </tr>`;
   }
 
-  function rosterRowMobile(r){
+  function rosterRowM(r){
     const p=getP(r.playerId);if(!p)return'';
     const isG=p.position==='Goalie';const paid=getPaid(r.id);const pct=fee>0?Math.min(100,Math.round(paid/fee*100)):100;
     return`<div class="m-list-item">
       <div style="flex:1;min-width:0">
-        <div class="m-list-name">${p.name}</div>
+        <div class="m-list-name">${p.name}${p.playerType==='Spare'?'<span class="badge badge-spare" style="margin-left:6px;font-size:10px;vertical-align:middle">Spare</span>':''}</div>
         <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap">${pb(p.position)}<span class="badge ${sc[r.status]||'badge-pending'}">${r.status.charAt(0).toUpperCase()+r.status.slice(1)}</span></div>
         ${!isG?`<div style="margin-top:8px"><div class="pay-bar"><div class="pay-track"><div class="pay-fill ${pct>=100?'full':pct>0?'partial':'none'}" style="width:${pct}%"></div></div><span class="pay-label">$${paid.toFixed(0)} / $${fee.toFixed(0)}</span></div></div>`:'<div style="margin-top:6px"><span class="badge badge-goalie">No fee</span></div>'}
       </div>
       <div class="m-list-right">
-        <select class="btn btn-secondary btn-sm" style="cursor:pointer" onchange="updateStatus('${r.id}',this.value)"><option value="pending" ${r.status==='pending'?'selected':''}>Pending</option><option value="in" ${r.status==='in'?'selected':''}>In</option><option value="waitlist" ${r.status==='waitlist'?'selected':''}>Waitlist</option><option value="out" ${r.status==='out'?'selected':''}>Out</option></select>
+        <select class="btn btn-secondary btn-sm" style="cursor:pointer" onchange="updateStatus('${r.id}',this.value)">
+          <option value="pending" ${r.status==='pending'?'selected':''}>Pending</option>
+          <option value="in" ${r.status==='in'?'selected':''}>In</option>
+          <option value="waitlist" ${r.status==='waitlist'?'selected':''}>Waitlist</option>
+          <option value="out" ${r.status==='out'?'selected':''}>Out</option>
+        </select>
         ${!isG?`<button class="btn btn-secondary btn-sm" onclick="openPaymentModal('${r.id}')">+ Pay</button>`:''}
         <button class="del-btn" onclick="removeFromRoster('${r.id}')">✕</button>
       </div></div>`;
   }
 
-  function groupLabel(txt){return`<div class="roster-group-label">${txt}</div>`;}
+  function ghD(txt,n){return`<tr><td colspan="5"><div class="roster-group-label" style="margin:0;padding:10px 12px 6px">${txt} (${n})</div></td></tr>`;}
+  function ghM(txt,n){return`<div class="roster-group-label">${txt} (${n})</div>`;}
 
-  function buildDesktop(groups){
-    if(!groups.some(g=>g.rows.length))return'<div class="empty"><div class="icon">📋</div>No players match.</div>';
-    return`<table class="data-table"><thead><tr><th>Player</th><th>Position</th><th>Status</th><th>Payment</th><th></th></tr></thead><tbody>`+
-      groups.filter(g=>g.rows.length).map(g=>`<tr><td colspan="5" style="padding:0"><div class="roster-group-label" style="margin:0;padding:10px 12px 6px">${g.label} (${g.rows.length})</div></td></tr>${g.rows.map(rosterRowDesktop).join('')}`).join('')+
-    `</tbody></table>`;
+  const groups=[{label:'Goalies',rows:goalies},{label:'Skaters',rows:skaters},{label:'Waitlist',rows:waitlist}];
+  const hasAny=groups.some(g=>g.rows.length);
+
+  const dl=document.getElementById('dr-list');
+  if(dl){
+    if(!hasAny){dl.innerHTML='<div class="empty"><div class="icon">📋</div>No players match.</div>';}
+    else{
+      let h=`<table class="data-table"><thead><tr><th>Player</th><th>Position</th><th>Status</th><th>Payment</th><th></th></tr></thead><tbody>`;
+      groups.filter(g=>g.rows.length).forEach(g=>{h+=ghD(g.label,g.rows.length)+g.rows.map(rosterRowD).join('');});
+      dl.innerHTML=h+'</tbody></table>';
+    }
   }
-
-  function buildMobile(groups){
-    if(!groups.some(g=>g.rows.length))return'<div class="empty"><div class="icon">📋</div>No players match.</div>';
-    return groups.filter(g=>g.rows.length).map(g=>`${groupLabel(g.label+' ('+g.rows.length+')')}${g.rows.map(rosterRowMobile).join('')}`).join('');
+  const ml=document.getElementById('mr-list');
+  if(ml){
+    if(!hasAny){ml.innerHTML='<div class="empty"><div class="icon">📋</div>No players match.</div>';}
+    else{
+      let h='';
+      groups.filter(g=>g.rows.length).forEach(g=>{h+=ghM(g.label,g.rows.length)+g.rows.map(rosterRowM).join('');});
+      ml.innerHTML=h;
+    }
   }
-
-  const groups=[
-    {label:'Goalies',rows:goalies},
-    {label:'Skaters',rows:skaters},
-    {label:'Waitlist',rows:waitlist}
-  ];
-
-  const dl=document.getElementById('dr-list');if(dl)dl.innerHTML=buildDesktop(groups);
-  const ml=document.getElementById('mr-list');if(ml)ml.innerHTML=buildMobile(groups);
 }
 
 function openRosterModal(){
   const s=getAS();if(!s){toast('Create and select a season first');return;}
-  // Only exclude players already on roster with a real (non-temp) id
-  const onRoster=new Set(S.roster.filter(r=>r.seasonId===s.id&&!r.id.toString().startsWith('tmp_')).map(r=>r.playerId));
+  const onRoster=new Set(S.roster.filter(r=>r.seasonId===s.id&&!String(r.id).startsWith('tmp_')).map(r=>r.playerId));
   const avail=S.players.filter(p=>!onRoster.has(p.id)).sort((a,b)=>a.name.localeCompare(b.name));
   if(!avail.length){toast('All contacts are already on this roster');return;}
   document.getElementById('rm-player-list').innerHTML=avail.map(p=>`
@@ -782,17 +808,17 @@ function toggleBatchItem(id,row){
   document.getElementById('rm-count').textContent=total+' selected';
 }
 function closeRosterModal(){document.getElementById('roster-overlay').style.display='none';}
+
 async function addToRoster(){
   const s=getAS();const status=document.getElementById('rm-status').value;
   const checked=[...document.querySelectorAll('#rm-player-list .batch-cb:checked')].map(cb=>cb.id.replace('bc_',''));
   if(!checked.length){toast('Select at least one player');return;}
-  // Optimistically add
   const tempEntries=checked.map(pid=>({id:'tmp_'+Date.now()+'_'+pid,seasonId:s.id,playerId:pid,status}));
   S.roster.push(...tempEntries);
   closeRosterModal();renderRoster();renderDashboard();toast(checked.length+' player'+(checked.length>1?'s':'')+' added');
-  // Sync in background
   for(const entry of tempEntries){
-    try{const result=await api('saveRosterEntry',{seasonId:s.id,playerId:entry.playerId,status});
+    try{
+      const result=await api('saveRosterEntry',{seasonId:s.id,playerId:entry.playerId,status});
       const idx=S.roster.findIndex(r=>r.id===entry.id);if(idx>=0)S.roster[idx].id=result.inserted;
     }catch(e){S.roster=S.roster.filter(r=>r.id!==entry.id);toast('Sync failed for one player');}
   }
@@ -802,15 +828,18 @@ async function updateStatus(rid,status){
   const r=S.roster.find(x=>x.id===rid);const prev=r?.status;if(r)r.status=status;
   renderDashboard();renderRoster();toast('Status updated');
   try{await api('updateRosterStatus',{id:rid,status});}
-  catch(e){if(r)r.status=prev;renderDashboard();renderRoster();toast('Sync failed — please try again');}
+  catch(e){if(r)r.status=prev;renderDashboard();renderRoster();toast('Sync failed');}
 }
+
 async function removeFromRoster(id){
   if(!confirm('Remove from roster?'))return;
-  const removed=S.roster.filter(r=>r.id===id);const removedPay=S.payments.filter(p=>p.rosterId===id);
-  S.roster=S.roster.filter(r=>r.id!==id);S.payments=S.payments.filter(p=>p.rosterId!==id);
+  const removed=S.roster.filter(r=>r.id===id);
+  const removedPay=S.payments.filter(p=>p.rosterId===id);
+  S.roster=S.roster.filter(r=>r.id!==id);
+  S.payments=S.payments.filter(p=>p.rosterId!==id);
   renderRoster();renderDashboard();toast('Removed');
   try{await api('removeFromRoster',{id});}
-  catch(e){S.roster=[...S.roster,...removed];S.payments=[...S.payments,...removedPay];renderRoster();renderDashboard();toast('Sync failed — please try again');}
+  catch(e){S.roster=[...S.roster,...removed];S.payments=[...S.payments,...removedPay];renderRoster();renderDashboard();toast('Sync failed');}
 }
 
 // ── Spares ────────────────────────────────────────────────────
@@ -821,16 +850,20 @@ function renderSpares(){
   let list=S.players.filter(p=>p.playerType==='Spare');
   if(spareFilter!=='all')list=list.filter(p=>p.position===spareFilter);
   list.sort((a,b)=>a.name.localeCompare(b.name));
+  list=list.map(p=>({...p,phone:cleanPhone(p.phone)}));
   const dl=document.getElementById('ds-list');
-  if(dl){if(!list.length){dl.innerHTML='<div class="empty"><div class="icon">🏒</div>No spares yet.</div>';}
-  else dl.innerHTML=`<table class="data-table"><thead><tr><th>Name</th><th>Position</th><th>Phone</th><th>Email</th><th>Notes</th></tr></thead><tbody>${list.map(p=>`<tr>
-    <td style="font-weight:500;white-space:nowrap">${p.name}</td><td>${pb(p.position)}</td>
-    <td style="font-size:13px;white-space:nowrap">${p.phone&&!p.phone.toString().includes('ERROR')?`<a href="tel:${p.phone}" style="color:var(--accent);text-decoration:none">${p.phone}</a>`:'—'}</td>
-    <td style="font-size:13px;color:var(--muted)">${p.email}</td>
-    <td style="font-size:12px;color:var(--muted);max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${p.notes||'—'}</td>
-    </tr>`).join('')}</tbody></table>`;}
+  if(dl){
+    if(!list.length){dl.innerHTML='<div class="empty"><div class="icon">🏒</div>No spares yet.</div>';}
+    else dl.innerHTML=`<table class="data-table"><thead><tr><th>Name</th><th>Position</th><th>Phone</th><th>Email</th><th>Notes</th></tr></thead><tbody>${list.map(p=>`<tr>
+      <td style="font-weight:500;white-space:nowrap">${p.name}</td><td>${pb(p.position)}</td>
+      <td style="font-size:13px;white-space:nowrap">${p.phone?`<a href="tel:${p.phone}" style="color:var(--accent);text-decoration:none">${p.phone}</a>`:'—'}</td>
+      <td style="font-size:13px;color:var(--muted)">${p.email}</td>
+      <td style="font-size:12px;color:var(--muted);max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${p.notes||'—'}</td>
+    </tr>`).join('')}</tbody></table>`;
+  }
   const msc=document.getElementById('ms-content');
-  if(msc){msc.innerHTML=`<div class="card"><div class="card-header"><span class="card-title">${s?s.label+' spares':'Spares list'}</span></div>
+  if(msc){msc.innerHTML=`<div class="card">
+    <div class="card-header"><span class="card-title">${s?s.label+' spares':'Spares list'}</span></div>
     <div class="filter-row">
       <button class="pill ${spareFilter==='all'?'active':''}" onclick="setSFM('all',this)">All</button>
       <button class="pill ${spareFilter==='Forward'?'active':''}" onclick="setSFM('Forward',this)">Forwards</button>
@@ -841,14 +874,17 @@ function renderSpares(){
     <div class="m-list-item">
       <div style="flex:1;min-width:0"><div class="m-list-name">${p.name}</div><div style="margin-top:6px">${pb(p.position)}</div>
       <div class="m-list-sub" style="margin-top:4px">${p.email}</div>${p.notes?`<div style="font-size:13px;color:var(--muted);margin-top:3px;font-style:italic">${p.notes}</div>`:''}</div>
-      <div class="m-list-right">${p.phone&&!p.phone.toString().includes('ERROR')?`<a href="tel:${p.phone}" class="btn btn-primary btn-sm" style="text-decoration:none">📞 Call</a>`:''}</div>
-    </div>`).join('')}</div>`;}
+      <div class="m-list-right">${p.phone?`<a href="tel:${p.phone}" class="btn btn-primary btn-sm" style="text-decoration:none">📞 Call</a>`:''}</div>
+    </div>`).join('')}
+  </div>`;}
 }
 function setSFM(f,btn){spareFilter=f;document.querySelectorAll('#ms-content .pill').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderSpares();}
 
 // ── Payments ──────────────────────────────────────────────────
 function openPaymentModal(rid){
-  payRosterId=rid;const r=S.roster.find(x=>x.id===rid);const p=r?getP(r.playerId):null;const s=r?S.seasons.find(x=>x.id===r.seasonId):null;
+  payRosterId=rid;
+  const r=S.roster.find(x=>x.id===rid);const p=r?getP(r.playerId):null;
+  const s=r?S.seasons.find(x=>x.id===r.seasonId):null;
   const fee=parseFloat(s?.fee||0);const paid=getPaid(rid);const remaining=Math.max(0,fee-paid);
   document.getElementById('pay-name').textContent=p?.name||'';
   document.getElementById('pay-sub').textContent=`Fee: $${fee.toFixed(0)} · Paid: $${paid.toFixed(0)} · Remaining: $${remaining.toFixed(0)}`;
@@ -859,24 +895,25 @@ function openPaymentModal(rid){
 function closePaymentModal(){document.getElementById('pay-overlay').style.display='none';}
 function showPartialInput(){document.getElementById('partial-input').style.display='block';document.getElementById('pay-amount').focus();}
 function hidePartialInput(){document.getElementById('partial-input').style.display='none';}
-
 function updatePaySub(rid){
   const r=S.roster.find(x=>x.id===rid);const s=r?S.seasons.find(x=>x.id===r.seasonId):null;
   const fee=parseFloat(s?.fee||0);const paid=getPaid(rid);
-  const el=document.getElementById('pay-sub');if(el)el.textContent=`Fee: $${fee.toFixed(0)} · Paid: $${paid.toFixed(0)} · Remaining: $${Math.max(0,fee-paid).toFixed(0)}`;
+  const el=document.getElementById('pay-sub');
+  if(el)el.textContent=`Fee: $${fee.toFixed(0)} · Paid: $${paid.toFixed(0)} · Remaining: $${Math.max(0,fee-paid).toFixed(0)}`;
 }
 
 async function recordFullPayment(){
   const r=S.roster.find(x=>x.id===payRosterId);const s=r?S.seasons.find(x=>x.id===r.seasonId):null;
-  const fee=parseFloat(s?.fee||0);const paid=getPaid(payRosterId);const remaining=Math.max(0,fee-paid);
+  const fee=parseFloat(s?.fee||0);const remaining=Math.max(0,fee-getPaid(payRosterId));
   if(remaining<=0){toast('Already paid in full');return;}
   const date=new Date().toISOString().split('T')[0];
   const tempId='tmp_'+Date.now();
   S.payments.push({id:tempId,rosterId:payRosterId,amount:String(remaining),date});
   renderDashboard();renderRoster();closePaymentModal();toast('Payment recorded');
-  try{const result=await api('addPayment',{rosterId:payRosterId,amount:remaining,date});
+  try{
+    const result=await api('addPayment',{rosterId:payRosterId,amount:remaining,date});
     const idx=S.payments.findIndex(p=>p.id===tempId);if(idx>=0)S.payments[idx].id=result.inserted;
-  }catch(e){S.payments=S.payments.filter(p=>p.id!==tempId);renderDashboard();renderRoster();toast('Sync failed — please try again');}
+  }catch(e){S.payments=S.payments.filter(p=>p.id!==tempId);renderDashboard();renderRoster();toast('Sync failed');}
 }
 
 async function recordPayment(){
@@ -888,9 +925,10 @@ async function recordPayment(){
   S.payments.push({id:tempId,rosterId:payRosterId,amount:String(amount),date});
   updatePaySub(payRosterId);renderPayHistory(payRosterId);renderDashboard();renderRoster();
   hidePartialInput();toast('Payment recorded');
-  try{const result=await api('addPayment',{rosterId:payRosterId,amount,date});
+  try{
+    const result=await api('addPayment',{rosterId:payRosterId,amount,date});
     const idx=S.payments.findIndex(p=>p.id===tempId);if(idx>=0)S.payments[idx].id=result.inserted;
-  }catch(e){S.payments=S.payments.filter(p=>p.id!==tempId);renderDashboard();renderRoster();toast('Sync failed — please try again');}
+  }catch(e){S.payments=S.payments.filter(p=>p.id!==tempId);renderDashboard();renderRoster();toast('Sync failed');}
 }
 
 function renderPayHistory(rid){
@@ -909,7 +947,7 @@ async function deletePayment(id,rid){
   S.payments=S.payments.filter(p=>p.id!==id);
   updatePaySub(rid);renderPayHistory(rid);renderDashboard();renderRoster();toast('Payment removed');
   try{await api('deletePayment',{id});}
-  catch(e){S.payments=[...S.payments,...removed];updatePaySub(rid);renderPayHistory(rid);renderDashboard();renderRoster();toast('Sync failed — please try again');}
+  catch(e){S.payments=[...S.payments,...removed];updatePaySub(rid);renderPayHistory(rid);renderDashboard();renderRoster();toast('Sync failed');}
 }
 
 // ── Dynamic pages ─────────────────────────────────────────────
@@ -935,33 +973,35 @@ function emailHTML(){
       <button class="copy-pill" onclick="copyEmailList('spares-goalie')">Goalie spares</button>
     </div>
   </div>
-  <div class="card"><div class="sub-tabs">
-    <button class="sub-tab active" id="etab-invite" onclick="setET('invite')">Season invite</button>
-    <button class="sub-tab" id="etab-payment" onclick="setET('payment')">Payment reminder</button>
-    <button class="sub-tab" id="etab-spare" onclick="setET('spare')">Spare callout</button>
+  <div class="card">
+    <div class="sub-tabs">
+      <button class="sub-tab active" id="etab-invite" onclick="setET('invite')">Season invite</button>
+      <button class="sub-tab" id="etab-payment" onclick="setET('payment')">Payment reminder</button>
+      <button class="sub-tab" id="etab-spare" onclick="setET('spare')">Spare callout</button>
+    </div>
+    <div id="eform-invite">
+      <div class="form-row"><div class="field"><label>Your name</label><input id="e-sender" placeholder="e.g. Chris"></div><div class="field"><label>Ice time day</label><input id="e-day" placeholder="e.g. Thursday"></div></div>
+      <div class="form-row cols3"><div class="field"><label>Start time</label><input id="e-time" placeholder="e.g. 10:00 PM"></div><div class="field"><label>Rink</label><input id="e-rink" placeholder="e.g. Richmond Ice Centre"></div><div class="field"><label>Fee per skater ($)</label><input id="e-fee" type="number" placeholder="e.g. 250"></div></div>
+      <div class="form-row"><div class="field"><label>Season start</label><input id="e-start" placeholder="e.g. September 11"></div><div class="field"><label>Season end</label><input id="e-end" placeholder="e.g. March 27"></div></div>
+      <div class="field"><label>Payment instructions (optional)</label><input id="e-pay" placeholder="e.g. e-transfer to cdhockey08@gmail.com"></div>
+      <div class="field"><label>Additional notes (optional)</label><textarea id="e-notes" placeholder="e.g. Same format as last year."></textarea></div>
+      <div class="btn-row"><button class="btn btn-primary" onclick="genEmail('invite')">Generate email</button><label class="chk-label" style="margin-left:8px"><input type="checkbox" ${sent?'checked':''} onchange="toggleSent(this.checked)"><span style="font-size:14px;color:var(--muted)">Mark as sent</span></label></div>
+    </div>
+    <div id="eform-payment" style="display:none">
+      <div class="form-row"><div class="field"><label>Your name</label><input id="ep-sender" placeholder="e.g. Chris"></div><div class="field"><label>Payment due by</label><input id="ep-due" placeholder="e.g. October 15"></div></div>
+      <div class="field"><label>Payment method</label><input id="ep-method" placeholder="e.g. e-transfer to cdhockey08@gmail.com"></div>
+      <div class="field"><label>Notes (optional)</label><textarea id="ep-notes"></textarea></div>
+      <div class="btn-row"><button class="btn btn-primary" onclick="genEmail('payment')">Generate email</button></div>
+      ${unpaid.length?`<div class="text-muted" style="margin-top:10px">${unpaid.length} player${unpaid.length>1?'s':''} still owe: ${unpaid.map(r=>getP(r.playerId)?.name).filter(Boolean).join(', ')}</div>`:''}
+    </div>
+    <div id="eform-spare" style="display:none">
+      <div class="form-row"><div class="field"><label>Your name</label><input id="es-sender" placeholder="e.g. Chris"></div><div class="field"><label>Date of skate</label><input id="es-date" placeholder="e.g. Thursday October 24"></div></div>
+      <div class="form-row cols3"><div class="field"><label>Start time</label><input id="es-time" placeholder="e.g. 10:00 PM"></div><div class="field"><label>Rink</label><input id="es-rink" placeholder="e.g. Richmond Ice Centre"></div><div class="field"><label>Drop-in fee ($)</label><input id="es-fee" type="number" placeholder="e.g. 20"></div></div>
+      <div class="field"><label>Position needed</label><select id="es-pos"><option value="skater">Skater (any)</option><option value="Forward">Forward</option><option value="Defence">Defence</option><option value="Goalie">Goalie</option></select></div>
+      <div class="field"><label>Notes (optional)</label><textarea id="es-notes"></textarea></div>
+      <div class="btn-row"><button class="btn btn-primary" onclick="genEmail('spare')">Generate email</button></div>
+    </div>
   </div>
-  <div id="eform-invite">
-    <div class="form-row"><div class="field"><label>Your name</label><input id="e-sender" placeholder="e.g. Chris"></div><div class="field"><label>Ice time day</label><input id="e-day" placeholder="e.g. Thursday"></div></div>
-    <div class="form-row cols3"><div class="field"><label>Start time</label><input id="e-time" placeholder="e.g. 10:00 PM"></div><div class="field"><label>Rink</label><input id="e-rink" placeholder="e.g. Richmond Ice Centre"></div><div class="field"><label>Fee per skater ($)</label><input id="e-fee" type="number" placeholder="e.g. 250"></div></div>
-    <div class="form-row"><div class="field"><label>Season start</label><input id="e-start" placeholder="e.g. September 11"></div><div class="field"><label>Season end</label><input id="e-end" placeholder="e.g. March 27"></div></div>
-    <div class="field"><label>Payment instructions (optional)</label><input id="e-pay" placeholder="e.g. e-transfer to cdhockey08@gmail.com"></div>
-    <div class="field"><label>Additional notes (optional)</label><textarea id="e-notes" placeholder="e.g. Same format as last year."></textarea></div>
-    <div class="btn-row"><button class="btn btn-primary" onclick="genEmail('invite')">Generate email</button><label class="chk-label" style="margin-left:8px"><input type="checkbox" ${sent?'checked':''} onchange="toggleSent(this.checked)"><span style="font-size:14px;color:var(--muted)">Mark as sent</span></label></div>
-  </div>
-  <div id="eform-payment" style="display:none">
-    <div class="form-row"><div class="field"><label>Your name</label><input id="ep-sender" placeholder="e.g. Chris"></div><div class="field"><label>Payment due by</label><input id="ep-due" placeholder="e.g. October 15"></div></div>
-    <div class="field"><label>Payment method</label><input id="ep-method" placeholder="e.g. e-transfer to cdhockey08@gmail.com"></div>
-    <div class="field"><label>Notes (optional)</label><textarea id="ep-notes"></textarea></div>
-    <div class="btn-row"><button class="btn btn-primary" onclick="genEmail('payment')">Generate email</button></div>
-    ${unpaid.length?`<div class="text-muted" style="margin-top:10px">${unpaid.length} player${unpaid.length>1?'s':''} still owe: ${unpaid.map(r=>getP(r.playerId)?.name).filter(Boolean).join(', ')}</div>`:''}
-  </div>
-  <div id="eform-spare" style="display:none">
-    <div class="form-row"><div class="field"><label>Your name</label><input id="es-sender" placeholder="e.g. Chris"></div><div class="field"><label>Date of skate</label><input id="es-date" placeholder="e.g. Thursday October 24"></div></div>
-    <div class="form-row cols3"><div class="field"><label>Start time</label><input id="es-time" placeholder="e.g. 10:00 PM"></div><div class="field"><label>Rink</label><input id="es-rink" placeholder="e.g. Richmond Ice Centre"></div><div class="field"><label>Drop-in fee ($)</label><input id="es-fee" type="number" placeholder="e.g. 20"></div></div>
-    <div class="field"><label>Position needed</label><select id="es-pos"><option value="skater">Skater (any)</option><option value="Forward">Forward</option><option value="Defence">Defence</option><option value="Goalie">Goalie</option></select></div>
-    <div class="field"><label>Notes (optional)</label><textarea id="es-notes"></textarea></div>
-    <div class="btn-row"><button class="btn btn-primary" onclick="genEmail('spare')">Generate email</button></div>
-  </div></div>
   <div id="eout-card" style="display:none" class="card">
     <div class="card-header"><span class="card-title">Email draft</span><button class="btn btn-secondary btn-sm" onclick="copyEmail()">Copy</button></div>
     <div class="email-subj" id="e-subj"></div>
@@ -979,11 +1019,14 @@ function copyEmailList(type){
   else if(type==='spares-defence'){emails=S.players.filter(p=>p.playerType==='Spare'&&p.position==='Defence').map(p=>p.email).filter(Boolean);}
   else if(type==='spares-goalie'){emails=S.players.filter(p=>p.playerType==='Spare'&&p.position==='Goalie').map(p=>p.email).filter(Boolean);}
   if(!emails.length){toast('No emails found for this list');return;}
-  navigator.clipboard.writeText(emails.join(', ')).then(()=>toast(`Copied ${emails.length} email${emails.length>1?'s':''}`)).catch(()=>toast('Could not copy'));
+  navigator.clipboard.writeText(emails.join(', ')).then(()=>toast('Copied '+emails.length+' email'+(emails.length>1?'s':''))).catch(()=>toast('Could not copy'));
 }
 
 function setET(tab){
-  ['invite','payment','spare'].forEach(t=>{const f=document.getElementById('eform-'+t);if(f)f.style.display=t===tab?'block':'none';const b=document.getElementById('etab-'+t);if(b)b.classList.toggle('active',t===tab);});
+  ['invite','payment','spare'].forEach(t=>{
+    const f=document.getElementById('eform-'+t);if(f)f.style.display=t===tab?'block':'none';
+    const b=document.getElementById('etab-'+t);if(b)b.classList.toggle('active',t===tab);
+  });
   const oc=document.getElementById('eout-card');if(oc)oc.style.display='none';
 }
 async function toggleSent(checked){
@@ -995,22 +1038,33 @@ async function toggleSent(checked){
 function genEmail(type){
   const s=getAS();const sl=s?s.label:'the upcoming season';const an=getAppName();let subject='',body='';
   if(type==='invite'){
-    const sender=document.getElementById('e-sender')?.value.trim()||'Chris';const day=document.getElementById('e-day')?.value.trim();const time=document.getElementById('e-time')?.value.trim();const rink=document.getElementById('e-rink')?.value.trim();const fee=document.getElementById('e-fee')?.value.trim();const start=document.getElementById('e-start')?.value.trim();const end=document.getElementById('e-end')?.value.trim();const payment=document.getElementById('e-pay')?.value.trim();const notes=document.getElementById('e-notes')?.value.trim();
+    const sender=document.getElementById('e-sender')?.value.trim()||'Chris';
+    const day=document.getElementById('e-day')?.value.trim();const time=document.getElementById('e-time')?.value.trim();
+    const rink=document.getElementById('e-rink')?.value.trim();const fee=document.getElementById('e-fee')?.value.trim();
+    const start=document.getElementById('e-start')?.value.trim();const end=document.getElementById('e-end')?.value.trim();
+    const payment=document.getElementById('e-pay')?.value.trim();const notes=document.getElementById('e-notes')?.value.trim();
     if(!day||!time||!rink||!start||!end){toast('Fill in day, time, rink, and dates');return;}
     subject=`${an} — ${sl}`;
     body=`Hey everyone,\n\nHope you're doing well. I'm putting together ${an} for ${sl} and wanted to reach out early to get a sense of who's in.\n\nDetails:\n\n  Day: ${day}s\n  Time: ${time}\n  Rink: ${rink}\n  Season: ${start} to ${end}`;
-    if(fee)body+=`\n  Fee: $${fee} per skater (goalies skate free)`;if(payment)body+=`\n  Payment: ${payment}`;if(notes)body+=`\n\n${notes}`;
+    if(fee)body+=`\n  Fee: $${fee} per skater (goalies skate free)`;
+    if(payment)body+=`\n  Payment: ${payment}`;if(notes)body+=`\n\n${notes}`;
     body+=`\n\nPlease reply and let me know if you're in or out.\n\nLooking forward to another great season.\n\n${sender}`;
   }else if(type==='payment'){
-    const sender=document.getElementById('ep-sender')?.value.trim()||'Chris';const due=document.getElementById('ep-due')?.value.trim();const method=document.getElementById('ep-method')?.value.trim();const notes=document.getElementById('ep-notes')?.value.trim();
+    const sender=document.getElementById('ep-sender')?.value.trim()||'Chris';
+    const due=document.getElementById('ep-due')?.value.trim();const method=document.getElementById('ep-method')?.value.trim();
+    const notes=document.getElementById('ep-notes')?.value.trim();
     if(!due||!method){toast('Fill in due date and payment method');return;}
-    const fee=s?parseFloat(s.fee)||0:0;const unpaid=s?S.roster.filter(r=>r.seasonId===s.id&&r.status==='in').filter(r=>{const p=getP(r.playerId);return p&&p.position!=='Goalie'&&getPaid(r.id)<fee;}):[];
+    const fee=s?parseFloat(s.fee)||0:0;
+    const unpaid=s?S.roster.filter(r=>r.seasonId===s.id&&r.status==='in').filter(r=>{const p=getP(r.playerId);return p&&p.position!=='Goalie'&&getPaid(r.id)<fee;}):[];
     subject=`${an} Payment Reminder — ${sl}`;
     body=`Hey guys,\n\nJust a quick reminder that payment for ${sl} is due by ${due}.\n\n  Amount: $${fee}\n  Payment: ${method}\n\nPlease use your name as the reference so I can track it easily.`;
     if(unpaid.length)body+=`\n\nThe following players still have an outstanding balance:\n${unpaid.map(r=>`  - ${getP(r.playerId)?.name} ($${Math.max(0,fee-getPaid(r.id)).toFixed(0)} remaining)`).join('\n')}`;
     if(notes)body+=`\n\n${notes}`;body+=`\n\nThanks everyone.\n\n${sender}`;
   }else if(type==='spare'){
-    const sender=document.getElementById('es-sender')?.value.trim()||'Chris';const date=document.getElementById('es-date')?.value.trim();const time=document.getElementById('es-time')?.value.trim();const rink=document.getElementById('es-rink')?.value.trim();const fee=document.getElementById('es-fee')?.value.trim();const pos=document.getElementById('es-pos')?.value;const notes=document.getElementById('es-notes')?.value.trim();
+    const sender=document.getElementById('es-sender')?.value.trim()||'Chris';
+    const date=document.getElementById('es-date')?.value.trim();const time=document.getElementById('es-time')?.value.trim();
+    const rink=document.getElementById('es-rink')?.value.trim();const fee=document.getElementById('es-fee')?.value.trim();
+    const pos=document.getElementById('es-pos')?.value;const notes=document.getElementById('es-notes')?.value.trim();
     if(!date||!time){toast('Fill in date and time');return;}
     const pl=pos==='skater'?'skater':pos.toLowerCase();subject=`${an} — Spare Needed ${date}`;
     body=`Hey,\n\nLooking for a ${pl} for ${an} this week.\n\n  Date: ${date}\n  Time: ${time}${rink?'\n  Rink: '+rink:''}${fee?'\n  Drop-in fee: $'+fee:''}`;
@@ -1021,33 +1075,38 @@ function genEmail(type){
   const oc=document.getElementById('eout-card');if(oc){oc.style.display='block';oc.scrollIntoView({behavior:'smooth',block:'start'});}
 }
 function copyEmail(){
-  const sub=document.getElementById('e-subj')?.textContent||'';const body=document.getElementById('e-body')?.textContent||'';
-  navigator.clipboard.writeText(sub+'\n\n'+body).then(()=>toast('Copied to clipboard')).catch(()=>toast('Could not copy — select manually'));
+  const sub=document.getElementById('e-subj')?.textContent||'';
+  const body=document.getElementById('e-body')?.textContent||'';
+  navigator.clipboard.writeText(sub+'\n\n'+body).then(()=>toast('Copied to clipboard')).catch(()=>toast('Could not copy'));
 }
 
 // ── Calculator ────────────────────────────────────────────────
-function calcHTML(){return`<div class="card">
-  <div class="card-title" style="margin-bottom:16px">Season cost calculator</div>
-  <div class="form-row cols3">
-    <div class="field"><label>Total ice cost ($)</label><input type="number" id="calc-cost" placeholder="e.g. 6000" oninput="runCalc()"></div>
-    <div class="field"><label>Number of skates</label><input type="number" id="calc-skates" placeholder="e.g. 25" oninput="runCalc()"></div>
-    <div class="field"><label>Number of skaters</label><input type="number" id="calc-skaters" placeholder="e.g. 20" oninput="runCalc()"></div>
-  </div>
-  <div id="calc-out" style="display:none">
-    <div class="calc-result" id="calc-res"></div>
-    <div style="margin-top:20px">
-      <div class="section-label">Explore different skater counts</div>
-      <input type="range" id="calc-slider" min="10" max="40" value="20" step="1" oninput="runCalcS(this.value)" style="width:100%;margin:8px 0;accent-color:var(--navy)">
-      <div id="calc-lbl" style="font-size:14px;color:var(--muted);text-align:center"></div>
+function calcHTML(){
+  return`<div class="card">
+    <div class="card-title" style="margin-bottom:16px">Season cost calculator</div>
+    <div class="form-row cols3">
+      <div class="field"><label>Total ice cost ($)</label><input type="number" id="calc-cost" placeholder="e.g. 6000" oninput="runCalc()"></div>
+      <div class="field"><label>Number of skates</label><input type="number" id="calc-skates" placeholder="e.g. 25" oninput="runCalc()"></div>
+      <div class="field"><label>Number of skaters</label><input type="number" id="calc-skaters" placeholder="e.g. 20" oninput="runCalc()"></div>
     </div>
-  </div></div>`;}
+    <div id="calc-out" style="display:none">
+      <div class="calc-result" id="calc-res"></div>
+      <div style="margin-top:20px">
+        <div class="section-label">Explore different skater counts</div>
+        <input type="range" id="calc-slider" min="10" max="40" value="20" step="1" oninput="runCalcS(this.value)" style="width:100%;margin:8px 0;accent-color:var(--navy)">
+        <div id="calc-lbl" style="font-size:14px;color:var(--muted);text-align:center"></div>
+      </div>
+    </div>
+  </div>`;
+}
 function runCalc(){
   const cost=parseFloat(document.getElementById('calc-cost')?.value)||0;
   const skates=parseInt(document.getElementById('calc-skates')?.value)||0;
   const skaters=parseInt(document.getElementById('calc-skaters')?.value)||0;
   const out=document.getElementById('calc-out');if(!out)return;
   if(!cost||!skates||!skaters){out.style.display='none';return;}
-  out.style.display='block';const sl=document.getElementById('calc-slider');if(sl)sl.value=skaters;
+  out.style.display='block';
+  const sl=document.getElementById('calc-slider');if(sl)sl.value=skaters;
   showCalcRes(cost,skates,skaters);
 }
 function runCalcS(val){
@@ -1065,31 +1124,36 @@ function showCalcRes(cost,skates,skaters){
     <div class="calc-row"><span class="cl">Number of skaters</span><span class="cv">${skaters}</span></div>
     <div class="calc-row"><span class="cl">Fee per skater (season)</span><span class="cv hl">$${pp.toFixed(0)}</span></div>
     <div class="calc-row"><span class="cl">Effective cost per game</span><span class="cv" style="color:#93c5fd">$${ppg.toFixed(2)}</span></div>`;
-  const lbl=document.getElementById('calc-lbl');if(lbl)lbl.textContent=`${skaters} skaters → $${pp.toFixed(0)}/season · $${ppg.toFixed(2)}/game`;
+  const lbl=document.getElementById('calc-lbl');
+  if(lbl)lbl.textContent=`${skaters} skaters → $${pp.toFixed(0)}/season · $${ppg.toFixed(2)}/game`;
 }
 
 // ── Seasons ───────────────────────────────────────────────────
-function seasonsHTML(){return`
-  <div class="card"><div class="card-title" style="margin-bottom:16px">Create new season</div>
+function seasonsHTML(){
+  return`<div class="card">
+    <div class="card-title" style="margin-bottom:16px">Create new season</div>
     <div class="form-row"><div class="field"><label>Season type</label><select id="ns-type"><option value="Fall/Winter">Fall/Winter (Sept – March)</option><option value="Spring">Spring (April – June)</option></select></div><div class="field"><label>Start year</label><input id="ns-year" type="number" placeholder="e.g. 2025"></div></div>
     <div class="form-row cols3"><div class="field"><label>Skater fee ($)</label><input id="ns-fee" type="number" placeholder="e.g. 250"></div><div class="field"><label>Spare drop-in ($)</label><input id="ns-sf" type="number" placeholder="e.g. 20"></div><div class="field"><label>Target skaters</label><input id="ns-tgt" type="number" placeholder="e.g. 20"></div></div>
     <div class="field"><label>Season notes (optional)</label><textarea id="ns-notes" placeholder="e.g. Richmond Ice Centre, pad 2."></textarea></div>
     <div class="btn-row"><button class="btn btn-primary" onclick="createSeason()">Create season</button></div>
   </div>
-  <div class="card"><div class="card-title" style="margin-bottom:14px">All seasons</div>
-    <div>${!S.seasons.length?'<div class="empty"><div class="icon">📅</div>No seasons yet.</div>':S.seasons.map(s=>`
-      <div style="display:flex;align-items:flex-start;justify-content:space-between;padding:14px 0;border-bottom:1px solid #f3f4f6;flex-wrap:wrap;gap:10px">
-        <div><div style="font-weight:500;font-size:15px">${s.label} ${s.id===activeSeason?'<span class="badge badge-in" style="font-size:11px">Active</span>':''}</div>
+  <div class="card">
+    <div class="card-title" style="margin-bottom:14px">All seasons</div>
+    ${!S.seasons.length?'<div class="empty"><div class="icon">📅</div>No seasons yet.</div>':S.seasons.map(s=>`
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;padding:14px 0;border-bottom:1px solid #f3f4f6;flex-wrap:wrap;gap:10px">
+      <div>
+        <div style="font-weight:500;font-size:15px">${s.label} ${s.id===activeSeason?'<span class="badge badge-in" style="font-size:11px">Active</span>':''}</div>
         <div style="font-size:13px;color:var(--muted);margin-top:3px">$${s.fee}/skater · $${s.spareFee||0}/spare · ${S.roster.filter(r=>r.seasonId===s.id).length} on roster</div>
-        ${s.notes?`<div style="font-size:12px;color:var(--muted);margin-top:3px;font-style:italic">${s.notes}</div>`:''}</div>
-        <div style="display:flex;gap:8px;flex-wrap:wrap">
-          <button class="btn btn-secondary btn-sm" onclick="switchSeason('${s.id}')">Set active</button>
-          <button class="btn btn-secondary btn-sm" onclick="openSeasonEdit('${s.id}')">Edit</button>
-          <button class="btn btn-danger btn-sm" onclick="deleteSeason('${s.id}')">Delete</button>
-        </div>
-      </div>`).join('')}
-    </div>
-  </div>`;}
+        ${s.notes?`<div style="font-size:12px;color:var(--muted);margin-top:3px;font-style:italic">${s.notes}</div>`:''}
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn btn-secondary btn-sm" onclick="switchSeason('${s.id}')">Set active</button>
+        <button class="btn btn-secondary btn-sm" onclick="openSeasonEdit('${s.id}')">Edit</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteSeason('${s.id}')">Delete</button>
+      </div>
+    </div>`).join('')}
+  </div>`;
+}
 
 async function createSeason(){
   const type=document.getElementById('ns-type')?.value;const year=document.getElementById('ns-year')?.value.trim();const fee=document.getElementById('ns-fee')?.value;
@@ -1101,8 +1165,7 @@ async function createSeason(){
   renderDynamic('seasons');renderDashboard();toast('Season created');
 }
 async function switchSeason(id,silent){
-  activeSeason=id;
-  updateSeasonLabel();renderDashboard();renderRoster();renderSpares();renderDynamic();
+  activeSeason=id;updateSeasonLabel();renderDashboard();renderRoster();renderSpares();renderDynamic();
   if(!silent){closeSeasonPicker();toast('Active season updated');}
   try{await api('setConfig',{key:'activeSeason',value:id});}catch(e){}
 }
@@ -1111,7 +1174,7 @@ async function deleteSeason(id){
   S.seasons=S.seasons.filter(s=>s.id!==id);S.roster=S.roster.filter(r=>r.seasonId!==id);
   if(activeSeason===id){activeSeason=S.seasons[0]?.id||null;updateSeasonLabel();}
   renderDynamic('seasons');renderDashboard();toast('Season deleted');
-  try{await api('deleteSeason',{id});}catch(e){toast('Sync failed — please try again');}
+  try{await api('deleteSeason',{id});}catch(e){}
 }
 function openSeasonEdit(id){
   const s=S.seasons.find(x=>x.id===id);if(!s)return;
@@ -1125,9 +1188,8 @@ async function saveSeasonEdit(){
   s.fee=document.getElementById('se-fee').value;s.spareFee=document.getElementById('se-sf').value;
   s.targetSkaters=document.getElementById('se-tgt').value;s.notes=document.getElementById('se-notes').value.trim();
   closeSeasonEdit();renderDynamic('seasons');renderDashboard();toast('Season updated');
-  try{await api('saveSeason',s);}catch(e){toast('Sync failed — please try again');}
+  try{await api('saveSeason',s);}catch(e){toast('Sync failed');}
 }
-
 function openSeasonPicker(){
   if(!S.seasons.length){toast('No seasons yet — create one in the Seasons tab');return;}
   document.getElementById('sp-list').innerHTML=S.seasons.map(s=>`
@@ -1141,8 +1203,6 @@ function closeSeasonPicker(){document.getElementById('season-picker-overlay').st
 
 // ── Settings ──────────────────────────────────────────────────
 function settingsHTML(){
-  const s=getAS();
-  // Find orphaned roster entries: roster entries where the player no longer exists
   const orphaned=S.roster.filter(r=>!getP(r.playerId));
   return`<div class="card">
     <div class="card-title" style="margin-bottom:16px">App settings</div>
@@ -1152,28 +1212,25 @@ function settingsHTML(){
   </div>
   <div class="card">
     <div class="card-title" style="margin-bottom:10px">Data cleanup</div>
-    <div class="text-muted" style="margin-bottom:14px">Fix phantom entries on the dashboard caused by deleted players still appearing on rosters.</div>
-    ${orphaned.length?`<div class="alert alert-amber" style="margin-bottom:14px">${orphaned.length} orphaned roster entr${orphaned.length>1?'ies':'y'} found (player was deleted but roster entry remains).</div>
-    <button class="btn btn-danger btn-sm" onclick="cleanOrphans()">Remove ${orphaned.length} orphaned entr${orphaned.length>1?'ies':'y'}</button>`
-    :`<div class="alert alert-green">No orphaned entries found — roster data is clean.</div>`}
+    <div class="text-muted" style="margin-bottom:14px">Fix phantom entries caused by deleted players still appearing on rosters.</div>
+    ${orphaned.length
+      ?`<div class="alert alert-amber" style="margin-bottom:14px">${orphaned.length} orphaned roster entr${orphaned.length>1?'ies':'y'} found.</div><button class="btn btn-danger btn-sm" onclick="cleanOrphans()">Remove ${orphaned.length} orphaned entr${orphaned.length>1?'ies':'y'}</button>`
+      :`<div class="alert alert-green">No orphaned entries — roster data is clean.</div>`}
   </div>`;
 }
-
 async function cleanOrphans(){
   const orphaned=S.roster.filter(r=>!getP(r.playerId));
   if(!orphaned.length){toast('Nothing to clean');return;}
   if(!confirm(`Remove ${orphaned.length} orphaned roster entr${orphaned.length>1?'ies':'y'}?`))return;
   S.roster=S.roster.filter(r=>getP(r.playerId));
-  renderDashboard();renderRoster();renderDynamic('settings');toast('Cleaned up '+orphaned.length+' entr'+(orphaned.length>1?'ies':'y'));
-  for(const r of orphaned){
-    try{await api('removeFromRoster',{id:r.id});}catch(e){}
-  }
+  renderDashboard();renderRoster();renderDynamic('settings');
+  toast('Cleaned up '+orphaned.length+' entr'+(orphaned.length>1?'ies':'y'));
+  for(const r of orphaned){try{await api('removeFromRoster',{id:r.id});}catch(e){}}
 }
-
 async function saveSettings(){
   const name=document.getElementById('setting-appname')?.value.trim();if(!name){toast('Enter an app name');return;}
   S.config.appName=name;applyAppName();toast('Settings saved');
-  try{await api('setConfig',{key:'appName',value:name});}catch(e){toast('Sync failed — please try again');}
+  try{await api('setConfig',{key:'appName',value:name});}catch(e){toast('Sync failed');}
 }
 </script>
 <script>
