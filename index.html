@@ -271,7 +271,7 @@ body{font-family:'DM Sans',sans-serif;background:#eef1f5;color:var(--text);min-h
   </div>
   <div class="d-page active" id="dp-dashboard"><div id="dd-alerts"></div><div class="stats-grid" id="dd-stats"></div><div class="card"><div class="card-header"><span class="card-title">Payment tracker</span></div><div id="dd-pay"></div></div><div class="card" id="dd-nr-card" style="display:none"><div class="card-header"><span class="card-title">No response yet</span></div><div id="dd-nr"></div></div></div>
   <div class="d-page" id="dp-contacts"><div class="card"><div class="card-header"><span class="card-title">Contact list</span><button class="btn btn-primary btn-sm" onclick="openPlayerModal()">+ Add contact</button></div><input class="search-box" placeholder="Search by name or email..." oninput="renderPlayers(this.value)"><div class="filter-row" id="dpf"><button class="pill active" onclick="setPF('all',this)">All</button><button class="pill" onclick="setPF('Full-time',this)">Full-time</button><button class="pill" onclick="setPF('Spare',this)">Spares</button><button class="pill" onclick="setPF('Contact-only',this)">Contacts only</button></div><div class="overflow-x"><div id="dp-list"></div></div></div></div>
-  <div class="d-page" id="dp-roster"><div class="card"><div class="card-header"><span class="card-title" id="dr-title">Season roster</span><button class="btn btn-primary btn-sm" onclick="openRosterModal()">+ Add players</button></div><div class="sub-tabs"><button class="sub-tab active" onclick="setRV('fulltime',this)">Skaters</button><button class="sub-tab" onclick="setRV('goalies',this)">Goalies</button><button class="sub-tab" onclick="setRV('waitlist',this)">Waitlist</button></div><div class="filter-row" id="drf"><button class="pill active" onclick="setRF('all',this)">All</button><button class="pill" onclick="setRF('in',this)">In</button><button class="pill" onclick="setRF('pending',this)">Pending</button><button class="pill" onclick="setRF('out',this)">Out</button></div><div class="overflow-x"><div id="dr-list"></div></div></div></div>
+  <div class="d-page" id="dp-roster"><div class="card"><div class="card-header"><span class="card-title" id="dr-title">Season roster</span><button class="btn btn-primary btn-sm" onclick="openRosterModal()">+ Add players</button></div><div class="filter-row" id="drf"><button class="pill active" onclick="setRF('all',this)">All</button><button class="pill" onclick="setRF('in',this)">In</button><button class="pill" onclick="setRF('pending',this)">Pending</button><button class="pill" onclick="setRF('out',this)">Out</button><button class="pill" onclick="setRF('waitlist',this)">Waitlist</button></div><div class="overflow-x"><div id="dr-list"></div></div></div></div>
   <div class="d-page" id="dp-spares"><div class="card"><div class="card-header"><span class="card-title" id="ds-title">Spares list</span></div><div class="filter-row" id="dsf"><button class="pill active" onclick="setSF('all',this)">All positions</button><button class="pill" onclick="setSF('Forward',this)">Forwards</button><button class="pill" onclick="setSF('Defence',this)">Defence</button><button class="pill" onclick="setSF('Goalie',this)">Goalies</button></div><div class="overflow-x"><div id="ds-list"></div></div></div></div>
   <div class="d-page" id="dp-email"><div id="de-content"></div></div>
   <div class="d-page" id="dp-calculator"><div id="dc-content"></div></div>
@@ -287,7 +287,7 @@ body{font-family:'DM Sans',sans-serif;background:#eef1f5;color:var(--text);min-h
   </div>
   <div class="m-page active" id="mp-dashboard"><div id="md-alerts"></div><div class="stats-grid" id="md-stats"></div><div class="card"><div class="card-header"><span class="card-title">Payment tracker</span><span class="saving-dot" id="sd-m"></span></div><div id="md-pay"></div></div><div class="card" id="md-nr-card" style="display:none"><div class="card-header"><span class="card-title">No response yet</span></div><div id="md-nr"></div></div></div>
   <div class="m-page" id="mp-contacts"><div class="card"><div class="card-header"><span class="card-title">Contacts</span><button class="btn btn-primary btn-sm" onclick="openPlayerModal()">+ Add</button></div><input class="search-box" placeholder="Search..." oninput="renderPlayers(this.value)"><div class="filter-row" id="mpf"><button class="pill active" onclick="setPF('all',this)">All</button><button class="pill" onclick="setPF('Full-time',this)">Full-time</button><button class="pill" onclick="setPF('Spare',this)">Spares</button><button class="pill" onclick="setPF('Contact-only',this)">Contacts</button></div><div id="mp-list"></div></div></div>
-  <div class="m-page" id="mp-roster"><div class="card"><div class="card-header"><span class="card-title" id="mr-title">Roster</span><button class="btn btn-primary btn-sm" onclick="openRosterModal()">+ Add</button></div><div class="sub-tabs"><button class="sub-tab active" onclick="setRV('fulltime',this)">Skaters</button><button class="sub-tab" onclick="setRV('goalies',this)">Goalies</button><button class="sub-tab" onclick="setRV('waitlist',this)">Waitlist</button></div><div class="filter-row" id="mrf"><button class="pill active" onclick="setRF('all',this)">All</button><button class="pill" onclick="setRF('in',this)">In</button><button class="pill" onclick="setRF('pending',this)">Pending</button><button class="pill" onclick="setRF('out',this)">Out</button></div><div id="mr-list"></div></div></div>
+  <div class="m-page" id="mp-roster"><div class="card"><div class="card-header"><span class="card-title" id="mr-title">Roster</span><button class="btn btn-primary btn-sm" onclick="openRosterModal()">+ Add</button></div><div class="filter-row" id="mrf"><button class="pill active" onclick="setRF('all',this)">All</button><button class="pill" onclick="setRF('in',this)">In</button><button class="pill" onclick="setRF('pending',this)">Pending</button><button class="pill" onclick="setRF('out',this)">Out</button><button class="pill" onclick="setRF('waitlist',this)">Waitlist</button></div><div id="mr-list"></div></div></div>
   <div class="m-page" id="mp-email"><div id="me-content"></div></div>
   <div class="m-page" id="mp-spares"><div id="ms-content"></div></div>
   <div class="m-page" id="mp-calculator"><div id="mc-content"></div></div>
@@ -556,35 +556,64 @@ function renderPlayers(search){
   if(playerFilter!=='all')list=list.filter(p=>p.playerType===playerFilter);
   if(search)list=list.filter(p=>p.name.toLowerCase().includes(search.toLowerCase())||p.email.toLowerCase().includes(search.toLowerCase()));
   list.sort((a,b)=>a.name.localeCompare(b.name));
-  // Sanitize any #ERROR! phone numbers
   list=list.map(p=>({...p,phone:(p.phone&&p.phone.toString().includes('ERROR'))?'':p.phone}));
 
+  // Group by position/type
+  const goalies=list.filter(p=>p.position==='Goalie');
+  const players=list.filter(p=>p.position!=='Goalie'&&p.playerType!=='Contact-only');
+  const contacts=list.filter(p=>p.playerType==='Contact-only');
+
+  function contactRow(p){
+    return`<tr><td style="font-weight:500;white-space:nowrap">${p.name}</td><td>${pb(p.position)}</td>
+      <td><span class="badge badge-${p.playerType==='Full-time'?'fulltime':p.playerType==='Spare'?'spare':'contact'}">${p.playerType||'Full-time'}</span></td>
+      <td style="color:var(--muted);font-size:13px">${p.email}</td>
+      <td style="color:var(--muted);font-size:13px;white-space:nowrap">${p.phone?`<a href="tel:${p.phone}" style="color:var(--accent);text-decoration:none">${p.phone}</a>`:'—'}</td>
+      <td>${sbadge(p.id)}</td>
+      <td style="color:var(--muted);font-size:12px;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${p.notes||'—'}</td>
+      <td style="white-space:nowrap"><button class="btn btn-secondary btn-xs" onclick="openPlayerModal('${p.id}')">Edit</button> <button class="del-btn" onclick="deletePlayer('${p.id}')">✕</button></td></tr>`;
+  }
+
+  function contactCard(p){
+    return`<div class="m-list-item">
+      <div style="flex:1;min-width:0">
+        <div class="m-list-name">${p.name}</div>
+        <div class="m-list-sub">${p.email}${p.phone?' · '+p.phone:''}</div>
+        <div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap">${pb(p.position)}<span class="badge badge-${p.playerType==='Full-time'?'fulltime':p.playerType==='Spare'?'spare':'contact'}">${p.playerType||'Full-time'}</span>${sbadge(p.id)}</div>
+      </div>
+      <div class="m-list-right">
+        <button class="btn btn-secondary btn-sm" onclick="openPlayerModal('${p.id}')">Edit</button>
+        <button class="del-btn" onclick="deletePlayer('${p.id}')">✕</button>
+      </div></div>`;
+  }
+
+  function groupHeaderD(txt,count){return`<tr><td colspan="8"><div class="roster-group-label" style="margin:0;padding:10px 12px 6px">${txt} (${count})</div></td></tr>`;}
+  function groupHeaderM(txt,count){return`<div class="roster-group-label">${txt} (${count})</div>`;}
+
   const dl=document.getElementById('dp-list');
-  if(dl){if(!list.length){dl.innerHTML='<div class="empty"><div class="icon">👤</div>No contacts found.</div>';}
-  else dl.innerHTML=`<table class="data-table"><thead><tr><th>Name</th><th>Position</th><th>Type</th><th>Email</th><th>Phone</th><th>Seasons</th><th>Notes</th><th></th></tr></thead><tbody>${list.map(p=>`<tr>
-    <td style="font-weight:500;white-space:nowrap">${p.name}</td><td>${pb(p.position)}</td>
-    <td><span class="badge badge-${p.playerType==='Full-time'?'fulltime':p.playerType==='Spare'?'spare':'contact'}">${p.playerType||'Full-time'}</span></td>
-    <td style="color:var(--muted);font-size:13px">${p.email}</td>
-    <td style="color:var(--muted);font-size:13px;white-space:nowrap">${p.phone&&!p.phone.toString().includes('ERROR')?`<a href="tel:${p.phone}" style="color:var(--accent);text-decoration:none">${p.phone}</a>`:'—'}</td>
-    <td>${sbadge(p.id)}</td>
-    <td style="color:var(--muted);font-size:12px;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${p.notes||'—'}</td>
-    <td style="white-space:nowrap"><button class="btn btn-secondary btn-xs" onclick="openPlayerModal('${p.id}')">Edit</button> <button class="del-btn" onclick="deletePlayer('${p.id}')">✕</button></td>
-    </tr>`).join('')}</tbody></table>`;}
+  if(dl){
+    if(!list.length){dl.innerHTML='<div class="empty"><div class="icon">👤</div>No contacts found.</div>';}
+    else{
+      let html=`<table class="data-table"><thead><tr><th>Name</th><th>Position</th><th>Type</th><th>Email</th><th>Phone</th><th>Seasons</th><th>Notes</th><th></th></tr></thead><tbody>`;
+      if(goalies.length)html+=groupHeaderD('Goalies',goalies.length)+goalies.map(contactRow).join('');
+      if(players.length)html+=groupHeaderD('Players',players.length)+players.map(contactRow).join('');
+      if(contacts.length)html+=groupHeaderD('Contacts only',contacts.length)+contacts.map(contactRow).join('');
+      html+='</tbody></table>';
+      dl.innerHTML=html;
+    }
+  }
 
   const ml=document.getElementById('mp-list');
-  if(ml){if(!list.length){ml.innerHTML='<div class="empty"><div class="icon">👤</div>No contacts found.</div>';}
-  else ml.innerHTML=list.map(p=>`<div class="m-list-item">
-    <div style="flex:1;min-width:0">
-      <div class="m-list-name">${p.name}</div>
-      <div class="m-list-sub">${p.email}${p.phone&&!p.phone.toString().includes('ERROR')?' · '+p.phone:''}</div>
-      <div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap">${pb(p.position)}<span class="badge badge-${p.playerType==='Full-time'?'fulltime':p.playerType==='Spare'?'spare':'contact'}">${p.playerType||'Full-time'}</span>${sbadge(p.id)}</div>
-    </div>
-    <div class="m-list-right">
-      <button class="btn btn-secondary btn-sm" onclick="openPlayerModal('${p.id}')">Edit</button>
-      <button class="del-btn" onclick="deletePlayer('${p.id}')">✕</button>
-    </div></div>`).join('');}
-}
-
+  if(ml){
+    if(!list.length){ml.innerHTML='<div class="empty"><div class="icon">👤</div>No contacts found.</div>';}
+    else{
+      let html='';
+      if(goalies.length)html+=groupHeaderM('Goalies',goalies.length)+goalies.map(contactCard).join('');
+      if(players.length)html+=groupHeaderM('Players',players.length)+players.map(contactCard).join('');
+      if(contacts.length)html+=groupHeaderM('Contacts only',contacts.length)+contacts.map(contactCard).join('');
+      ml.innerHTML=html;
+    }
+  }
+  
 function openPlayerModal(id){
   editingPlayer=id||null;
   if(id){const p=getP(id);if(!p)return;
@@ -634,26 +663,17 @@ async function deletePlayer(id){
 function onContactSearch(val){
   clearTimeout(searchTimer);const dd=document.getElementById('contact-dd');
   if(val.length<2){dd.style.display='none';return;}
-  // Search local players first instantly
-  const local=S.players.filter(p=>p.name.toLowerCase().includes(val.toLowerCase())||p.email.toLowerCase().includes(val.toLowerCase())).slice(0,5);
-  if(local.length){
-    dd.style.display='block';
-    dd.innerHTML=local.map((c,i)=>`<div class="contact-opt" onclick="selectLocalContact('${c.id}')"><div class="co-name">${c.name} <span style="font-size:11px;color:var(--muted)">(existing)</span></div><div class="co-sub">${c.email}${c.phone?' · '+c.phone:''}</div></div>`).join('');
-    dd._local=local;
-  }
-  // Also search Google Contacts after delay
-  searchTimer=setTimeout(()=>doContactSearch(val),500);
+  dd.style.display='block';dd.innerHTML='<div class="contact-searching">Searching...</div>';
+  searchTimer=setTimeout(()=>doContactSearch(val),400);
 }
 async function doContactSearch(query){
   const dd=document.getElementById('contact-dd');
-  try{const results=await api('searchContacts',{query});
-    if(!Array.isArray(results)||!results.length){if(!dd._local?.length)dd.innerHTML='<div class="contact-searching">No contacts found — fill in manually.</div>';return;}
-    // Merge with local results, deduplicate by email
-    const localEmails=new Set((dd._local||[]).map(c=>c.email.toLowerCase()));
-    const newResults=results.filter(c=>!localEmails.has(c.email.toLowerCase()));
-    const allItems=[...(dd._local||[]).map((c,i)=>`<div class="contact-opt" onclick="selectLocalContact('${c.id}')"><div class="co-name">${c.name} <span style="font-size:11px;color:var(--muted)">(existing)</span></div><div class="co-sub">${c.email}${c.phone?' · '+c.phone:''}</div></div>`),...newResults.map((c,i)=>`<div class="contact-opt" onclick="selectGoogleContact(${i})"><div class="co-name">${c.name}</div><div class="co-sub">${c.email}${c.phone?' · '+c.phone:''}</div></div>`)];
-    dd._google=newResults;dd.style.display='block';dd.innerHTML=allItems.join('');
-  }catch(e){/* silent */}
+  try{
+    const results=await api('searchContacts',{query});
+    if(!Array.isArray(results)||!results.length){dd.innerHTML='<div class="contact-searching">No contacts found — fill in manually.</div>';return;}
+    dd._google=results;dd.style.display='block';
+    dd.innerHTML=results.map((c,i)=>`<div class="contact-opt" onclick="selectGoogleContact(${i})"><div class="co-name">${c.name}</div><div class="co-sub">${c.email}${c.phone?' · '+c.phone:''}</div></div>`).join('');
+  }catch(e){dd.innerHTML='<div class="contact-searching">Could not search — fill in manually.</div>';}
 }
 function selectLocalContact(id){
   const p=getP(id);if(!p)return;
@@ -673,43 +693,35 @@ function selectGoogleContact(i){
 document.addEventListener('click',e=>{const dd=document.getElementById('contact-dd');if(dd&&!dd.contains(e.target)&&e.target.id!=='pm-name')dd.style.display='none';});
 
 // ── Roster ────────────────────────────────────────────────────
-function setRV(v,btn){rosterView=v;document.querySelectorAll('.sub-tab').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderRoster();}
 function setRF(f,btn){rosterFilter=f;document.querySelectorAll('#drf .pill,#mrf .pill').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderRoster();}
 
 function renderRoster(){
   const s=getAS();
   ['dr-title','mr-title'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=s?s.label+' roster':'Season roster';});
-  let ents=s?S.roster.filter(r=>r.seasonId===s.id&&getP(r.playerId)):[];
-
-  // Split by view
-  if(rosterView==='goalies'){
-    ents=ents.filter(r=>{const p=getP(r.playerId);return p&&p.position==='Goalie';});
-  }else if(rosterView==='waitlist'){
-    ents=ents.filter(r=>r.status==='waitlist');
-  }else{
-    ents=ents.filter(r=>r.status!=='waitlist'&&getP(r.playerId)?.position!=='Goalie');
+  if(!s){
+    ['dr-list','mr-list'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML='<div class="empty"><div class="icon">📋</div>No active season.</div>';});
+    return;
   }
-  if(rosterFilter!=='all'&&rosterView!=='waitlist')ents=ents.filter(r=>r.status===rosterFilter);
+  let ents=S.roster.filter(r=>r.seasonId===s.id&&getP(r.playerId));
+  if(rosterFilter!=='all')ents=ents.filter(r=>r.status===rosterFilter);
   ents.sort((a,b)=>{const pa=getP(a.playerId);const pb2=getP(b.playerId);return(pa?.name||'').localeCompare(pb2?.name||'');});
   const fee=s?parseFloat(s.fee)||0:0;
   const sc={'in':'badge-in','pending':'badge-pending','out':'badge-out','waitlist':'badge-waitlist'};
 
-  const dl=document.getElementById('dr-list');
-  if(dl){if(!s){dl.innerHTML='<div class="empty"><div class="icon">📋</div>No active season.</div>';}
-  else if(!ents.length){dl.innerHTML='<div class="empty"><div class="icon">📋</div>No players match.</div>';}
-  else dl.innerHTML=`<table class="data-table"><thead><tr><th>Player</th><th>Position</th><th>Status</th><th>Payment</th><th></th></tr></thead><tbody>${ents.map(r=>{
+  const goalies=ents.filter(r=>getP(r.playerId)?.position==='Goalie'&&r.status!=='waitlist');
+  const skaters=ents.filter(r=>getP(r.playerId)?.position!=='Goalie'&&r.status!=='waitlist');
+  const waitlist=ents.filter(r=>r.status==='waitlist');
+
+  function rosterRowDesktop(r){
     const p=getP(r.playerId);if(!p)return'';
     const isG=p.position==='Goalie';const paid=getPaid(r.id);const pct=fee>0?Math.min(100,Math.round(paid/fee*100)):100;
     return`<tr><td style="font-weight:500;white-space:nowrap">${p.name}</td><td>${pb(p.position)}</td>
       <td><select class="btn btn-secondary btn-xs" style="padding:4px 8px;cursor:pointer" onchange="updateStatus('${r.id}',this.value)"><option value="pending" ${r.status==='pending'?'selected':''}>Pending</option><option value="in" ${r.status==='in'?'selected':''}>In</option><option value="waitlist" ${r.status==='waitlist'?'selected':''}>Waitlist</option><option value="out" ${r.status==='out'?'selected':''}>Out</option></select></td>
       <td style="min-width:130px">${isG?'<span class="badge badge-goalie">No fee</span>':`<div class="pay-bar"><div class="pay-track"><div class="pay-fill ${pct>=100?'full':pct>0?'partial':'none'}" style="width:${pct}%"></div></div><span class="pay-label">$${paid.toFixed(0)} / $${fee.toFixed(0)}</span></div>`}</td>
       <td style="white-space:nowrap">${!isG?`<button class="btn btn-secondary btn-xs" onclick="openPaymentModal('${r.id}')">+ Pay</button>`:''} <button class="del-btn" onclick="removeFromRoster('${r.id}')">✕</button></td></tr>`;
-  }).join('')}</tbody></table>`;}
+  }
 
-  const ml=document.getElementById('mr-list');
-  if(ml){if(!s){ml.innerHTML='<div class="empty"><div class="icon">📋</div>No active season.</div>';}
-  else if(!ents.length){ml.innerHTML='<div class="empty"><div class="icon">📋</div>No players match.</div>';}
-  else ml.innerHTML=ents.map(r=>{
+  function rosterRowMobile(r){
     const p=getP(r.playerId);if(!p)return'';
     const isG=p.position==='Goalie';const paid=getPaid(r.id);const pct=fee>0?Math.min(100,Math.round(paid/fee*100)):100;
     return`<div class="m-list-item">
@@ -723,12 +735,36 @@ function renderRoster(){
         ${!isG?`<button class="btn btn-secondary btn-sm" onclick="openPaymentModal('${r.id}')">+ Pay</button>`:''}
         <button class="del-btn" onclick="removeFromRoster('${r.id}')">✕</button>
       </div></div>`;
-  }).join('');}
+  }
+
+  function groupLabel(txt){return`<div class="roster-group-label">${txt}</div>`;}
+
+  function buildDesktop(groups){
+    if(!groups.some(g=>g.rows.length))return'<div class="empty"><div class="icon">📋</div>No players match.</div>';
+    return`<table class="data-table"><thead><tr><th>Player</th><th>Position</th><th>Status</th><th>Payment</th><th></th></tr></thead><tbody>`+
+      groups.filter(g=>g.rows.length).map(g=>`<tr><td colspan="5" style="padding:0"><div class="roster-group-label" style="margin:0;padding:10px 12px 6px">${g.label} (${g.rows.length})</div></td></tr>${g.rows.map(rosterRowDesktop).join('')}`).join('')+
+    `</tbody></table>`;
+  }
+
+  function buildMobile(groups){
+    if(!groups.some(g=>g.rows.length))return'<div class="empty"><div class="icon">📋</div>No players match.</div>';
+    return groups.filter(g=>g.rows.length).map(g=>`${groupLabel(g.label+' ('+g.rows.length+')')}${g.rows.map(rosterRowMobile).join('')}`).join('');
+  }
+
+  const groups=[
+    {label:'Goalies',rows:goalies},
+    {label:'Skaters',rows:skaters},
+    {label:'Waitlist',rows:waitlist}
+  ];
+
+  const dl=document.getElementById('dr-list');if(dl)dl.innerHTML=buildDesktop(groups);
+  const ml=document.getElementById('mr-list');if(ml)ml.innerHTML=buildMobile(groups);
 }
 
 function openRosterModal(){
   const s=getAS();if(!s){toast('Create and select a season first');return;}
-  const onRoster=new Set(S.roster.filter(r=>r.seasonId===s.id).map(r=>r.playerId));
+  // Only exclude players already on roster with a real (non-temp) id
+  const onRoster=new Set(S.roster.filter(r=>r.seasonId===s.id&&!r.id.toString().startsWith('tmp_')).map(r=>r.playerId));
   const avail=S.players.filter(p=>!onRoster.has(p.id)).sort((a,b)=>a.name.localeCompare(b.name));
   if(!avail.length){toast('All contacts are already on this roster');return;}
   document.getElementById('rm-player-list').innerHTML=avail.map(p=>`
