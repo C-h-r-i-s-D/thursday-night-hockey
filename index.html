@@ -240,9 +240,8 @@ body{font-family:'DM Sans',sans-serif;background:#eef1f5;color:var(--text);min-h
       <input class="search-box" placeholder="Search by name or email..." oninput="renderPlayers(this.value)">
       <div class="filter-row" id="dpf">
         <button class="pill active" onclick="setPF('all',this)">All</button>
-        <button class="pill" onclick="setPF('Full-time',this)">Full-time</button>
-        <button class="pill" onclick="setPF('Spare',this)">Spares</button>
-        <button class="pill" onclick="setPF('Contact-only',this)">Contacts only</button>
+        <button class="pill" onclick="setPF('Goalie',this)">Goalies</button>
+        <button class="pill" onclick="setPF('Player',this)">Players</button>
       </div>
       <div class="overflow-x"><div id="dp-list"></div></div>
     </div>
@@ -253,9 +252,10 @@ body{font-family:'DM Sans',sans-serif;background:#eef1f5;color:var(--text);min-h
       <div class="filter-row" id="drf">
         <button class="pill active" onclick="setRF('all',this)">All</button>
         <button class="pill" onclick="setRF('in',this)">In</button>
+        <button class="pill" onclick="setRF('spare',this)">Spare</button>
         <button class="pill" onclick="setRF('pending',this)">Pending</button>
-        <button class="pill" onclick="setRF('out',this)">Out</button>
         <button class="pill" onclick="setRF('waitlist',this)">Waitlist</button>
+        <button class="pill" onclick="setRF('out',this)">Out</button>
       </div>
       <div class="overflow-x"><div id="dr-list"></div></div>
     </div>
@@ -280,9 +280,8 @@ body{font-family:'DM Sans',sans-serif;background:#eef1f5;color:var(--text);min-h
       <input class="search-box" placeholder="Search..." oninput="renderPlayers(this.value)">
       <div class="filter-row" id="mpf">
         <button class="pill active" onclick="setPF('all',this)">All</button>
-        <button class="pill" onclick="setPF('Full-time',this)">Full-time</button>
-        <button class="pill" onclick="setPF('Spare',this)">Spares</button>
-        <button class="pill" onclick="setPF('Contact-only',this)">Contacts</button>
+        <button class="pill" onclick="setPF('Goalie',this)">Goalies</button>
+        <button class="pill" onclick="setPF('Player',this)">Players</button>
       </div>
       <div id="mp-list"></div>
     </div>
@@ -293,9 +292,10 @@ body{font-family:'DM Sans',sans-serif;background:#eef1f5;color:var(--text);min-h
       <div class="filter-row" id="mrf">
         <button class="pill active" onclick="setRF('all',this)">All</button>
         <button class="pill" onclick="setRF('in',this)">In</button>
+        <button class="pill" onclick="setRF('spare',this)">Spare</button>
         <button class="pill" onclick="setRF('pending',this)">Pending</button>
-        <button class="pill" onclick="setRF('out',this)">Out</button>
         <button class="pill" onclick="setRF('waitlist',this)">Waitlist</button>
+        <button class="pill" onclick="setRF('out',this)">Out</button>
       </div>
       <div id="mr-list"></div>
     </div>
@@ -334,7 +334,7 @@ body{font-family:'DM Sans',sans-serif;background:#eef1f5;color:var(--text);min-h
     <div class="field"><label>Full name</label><div style="position:relative"><input id="pm-name" placeholder="Type name to search contacts..." autocomplete="off" oninput="onContactSearch('name',this.value)"><div class="contact-dd" id="contact-dd-name"></div></div></div>
     <div class="field"><label>Email</label><div style="position:relative"><input id="pm-email" type="email" placeholder="email@example.com" autocomplete="off" oninput="onContactSearch('email',this.value)"><div class="contact-dd" id="contact-dd-email"></div></div></div>
     <div class="field"><label>Phone (optional)</label><input id="pm-phone" type="tel" placeholder="604-555-0100" oninput="sanitizePhone(this)"></div>
-    <div class="form-row"><div class="field"><label>Position</label><select id="pm-pos"><option value="Forward">Forward</option><option value="Defence">Defence</option><option value="Goalie">Goalie</option></select></div><div class="field"><label>Player type</label><select id="pm-type"><option value="Full-time">Full-time</option><option value="Spare">Spare</option><option value="Contact-only">Contact only</option></select></div></div>
+    <div class="field"><label>Position</label><select id="pm-pos"><option value="Forward">Forward</option><option value="Defence">Defence</option><option value="Goalie">Goalie</option></select></div>
     <div class="field"><label>Notes (optional)</label><textarea id="pm-notes" placeholder="e.g. reliable backup goalie"></textarea></div>
     <div class="btn-row"><button class="btn btn-primary" onclick="savePlayer()">Save</button><button class="btn btn-secondary" onclick="closePlayerModal()">Cancel</button></div>
   </div>
@@ -343,7 +343,7 @@ body{font-family:'DM Sans',sans-serif;background:#eef1f5;color:var(--text);min-h
 <div class="overlay" id="roster-overlay" style="display:none" onclick="if(event.target===this)closeRosterModal()">
   <div class="modal">
     <h2>Add to roster</h2>
-    <div class="field"><label>Default status</label><select id="rm-status"><option value="pending">Pending response</option><option value="in">In</option><option value="waitlist">Waitlist</option><option value="out">Out</option></select></div>
+    <div class="field"><label>Default status</label><select id="rm-status"><option value="in">In</option><option value="spare">Spare</option><option value="pending">Pending response</option><option value="waitlist">Waitlist</option><option value="out">Out</option></select></div>
     <div style="max-height:320px;overflow-y:auto;border:1px solid var(--border);border-radius:var(--radius);padding:8px 12px;" id="rm-player-list"></div>
     <div style="font-size:13px;color:var(--muted);margin-top:8px" id="rm-count">0 selected</div>
     <div class="btn-row"><button class="btn btn-primary" onclick="addToRoster()">Add selected</button><button class="btn btn-secondary" onclick="closeRosterModal()">Cancel</button></div>
@@ -500,10 +500,11 @@ function renderDashboard(){
     if(!s){aEl.innerHTML='<div class="alert alert-amber">No active season. Go to Seasons to create one.</div>';stEl.innerHTML='';pEl.innerHTML='';nrC.style.display='none';return;}
     aEl.innerHTML=s.emailSent==='true'?`<div class="alert alert-green">Season invite sent for ${s.label}.</div>`:`<div class="alert alert-amber">Season invite not yet sent for ${s.label}.</div>`;
     const validEnts=S.roster.filter(r=>r.seasonId===s.id&&getP(r.playerId));
-    const inAll=validEnts.filter(r=>r.status==='in');
+    const inAll=validEnts.filter(r=>r.status==='in'||r.status==='spare');
     const pending=validEnts.filter(r=>r.status==='pending');
     const waitlist=validEnts.filter(r=>r.status==='waitlist');
-    const skaters=inAll.filter(r=>getP(r.playerId)?.position!=='Goalie');
+    const skaters=validEnts.filter(r=>r.status==='in'&&getP(r.playerId)?.position!=='Goalie');
+    const sparesCount=validEnts.filter(r=>r.status==='spare'&&getP(r.playerId)?.position!=='Goalie');
     const goaliesIn=inAll.filter(r=>getP(r.playerId)?.position==='Goalie');
     const fee=parseFloat(s.fee)||0;
     const totalPaid=skaters.reduce((sum,r)=>sum+getPaid(r.id),0);
@@ -511,6 +512,7 @@ function renderDashboard(){
     const goalieSecured=s.goalieSecured==='true';
     stEl.innerHTML=`
       <div class="stat-card" onclick="showPageFiltered('roster','in')"><div class="stat-label">Skaters</div><div class="stat-value">${skaters.length}${s.targetSkaters&&s.targetSkaters!='0'?' / '+s.targetSkaters:''}</div></div>
+      <div class="stat-card" onclick="showPageFiltered('roster','spare')"><div class="stat-label">Spares</div><div class="stat-value">${sparesCount.length}</div></div>
       <div class="stat-card" onclick="toggleGoalieSecured()"><div class="stat-label">Goalies</div><div class="stat-value ${goalieSecured?'green':'amber'}">${goalieSecured?'✓':'?'}</div><div style="font-size:10px;color:var(--muted);margin-top:3px">${goaliesIn.length} on roster</div></div>
       <div class="stat-card" onclick="showPageFiltered('roster','pending')"><div class="stat-label">Pending</div><div class="stat-value ${pending.length>0?'amber':''}">${pending.length}</div></div>
       <div class="stat-card" onclick="showPageFiltered('roster','waitlist')"><div class="stat-label">Waitlist</div><div class="stat-value">${waitlist.length}</div></div>
@@ -548,14 +550,15 @@ function setPF(f,btn){
 
 function renderPlayers(search){
   let list=S.players.slice();
-  if(playerFilter!=='all')list=list.filter(p=>p.playerType===playerFilter);
+  if(playerFilter==='Goalie')list=list.filter(p=>p.position==='Goalie');
+  else if(playerFilter==='Player')list=list.filter(p=>p.position!=='Goalie');
   if(search)list=list.filter(p=>p.name.toLowerCase().includes(search.toLowerCase())||p.email.toLowerCase().includes(search.toLowerCase()));
   list.sort((a,b)=>a.name.localeCompare(b.name));
   list=list.map(p=>({...p,phone:cleanPhone(p.phone)}));
 
   const goalies=list.filter(p=>p.position==='Goalie');
-  const players=list.filter(p=>p.position!=='Goalie'&&p.playerType!=='Contact-only');
-  const contacts=list.filter(p=>p.playerType==='Contact-only');
+  const players=list.filter(p=>p.position!=='Goalie');
+  const contacts=[];
 
   function crow(p){
     return`<tr>
@@ -616,13 +619,11 @@ function openPlayerModal(id){
     document.getElementById('pm-email').value=p.email;
     document.getElementById('pm-phone').value=cleanPhone(p.phone);
     document.getElementById('pm-pos').value=p.position||'Forward';
-    document.getElementById('pm-type').value=p.playerType||'Full-time';
     document.getElementById('pm-notes').value=p.notes||'';
   }else{
     document.getElementById('pm-title').textContent='Add contact';
     ['pm-name','pm-email','pm-phone','pm-notes'].forEach(i=>document.getElementById(i).value='');
     document.getElementById('pm-pos').value='Forward';
-    document.getElementById('pm-type').value='Full-time';
     ['contact-dd-name','contact-dd-email'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='none';});
   }
   document.getElementById('player-overlay').style.display='flex';
@@ -636,7 +637,7 @@ async function savePlayer(){
   const phone=document.getElementById('pm-phone').value.trim().replace(/[^0-9+\-() ]/g,'');
   const existing=S.players.find(p=>p.email.toLowerCase()===email.toLowerCase()&&p.id!==editingPlayer);
   if(existing){toast('A contact with this email already exists');return;}
-  const data={id:editingPlayer||undefined,name,email,phone,position:document.getElementById('pm-pos').value,playerType:document.getElementById('pm-type').value,notes:document.getElementById('pm-notes').value.trim()};
+  const data={id:editingPlayer||undefined,name,email,phone,position:document.getElementById('pm-pos').value,notes:document.getElementById('pm-notes').value.trim()};
   const isNew=!editingPlayer;const tempId='tmp_'+Date.now();
   if(isNew){data.id=tempId;S.players.push({...data});}
   else{const idx=S.players.findIndex(p=>p.id===editingPlayer);if(idx>=0)S.players[idx]=Object.assign({},S.players[idx],data);}
@@ -717,25 +718,41 @@ function renderRoster(){
   if(rosterFilter!=='all')ents=ents.filter(r=>r.status===rosterFilter);
   ents.sort((a,b)=>(getP(a.playerId)?.name||'').localeCompare(getP(b.playerId)?.name||''));
   const fee=parseFloat(s.fee)||0;
-  const sc={'in':'badge-in','pending':'badge-pending','out':'badge-out','waitlist':'badge-waitlist'};
+  const sc={'in':'badge-in','spare':'badge-spare','pending':'badge-pending','out':'badge-out','waitlist':'badge-waitlist'};
 
   const goalies=ents.filter(r=>getP(r.playerId)?.position==='Goalie'&&r.status!=='waitlist');
-  const skaters=ents.filter(r=>getP(r.playerId)?.position!=='Goalie'&&r.status!=='waitlist');
+  const skaters=ents.filter(r=>getP(r.playerId)?.position!=='Goalie'&&r.status==='in');
+  const spares=ents.filter(r=>getP(r.playerId)?.position!=='Goalie'&&r.status==='spare');
+  const pending=ents.filter(r=>r.status==='pending');
   const waitlist=ents.filter(r=>r.status==='waitlist');
+  const out=ents.filter(r=>r.status==='out');
+
+  function statusSelect(r){
+    return`<select class="btn btn-secondary btn-xs" style="padding:4px 8px;cursor:pointer" onchange="updateStatus('${r.id}',this.value)">
+      <option value="in" ${r.status==='in'?'selected':''}>In</option>
+      <option value="spare" ${r.status==='spare'?'selected':''}>Spare</option>
+      <option value="pending" ${r.status==='pending'?'selected':''}>Pending</option>
+      <option value="waitlist" ${r.status==='waitlist'?'selected':''}>Waitlist</option>
+      <option value="out" ${r.status==='out'?'selected':''}>Out</option>
+    </select>`;
+  }
+  function statusSelectM(r){
+    return`<select class="btn btn-secondary btn-sm" style="cursor:pointer" onchange="updateStatus('${r.id}',this.value)">
+      <option value="in" ${r.status==='in'?'selected':''}>In</option>
+      <option value="spare" ${r.status==='spare'?'selected':''}>Spare</option>
+      <option value="pending" ${r.status==='pending'?'selected':''}>Pending</option>
+      <option value="waitlist" ${r.status==='waitlist'?'selected':''}>Waitlist</option>
+      <option value="out" ${r.status==='out'?'selected':''}>Out</option>
+    </select>`;
+  }
 
   function rosterRowD(r){
     const p=getP(r.playerId);if(!p)return'';
     const isG=p.position==='Goalie';const paid=getPaid(r.id);const pct=fee>0?Math.min(100,Math.round(paid/fee*100)):100;
-    const spare=p.playerType==='Spare'?'<span class="badge badge-spare" style="margin-left:4px;font-size:10px">Spare</span>':'';
     return`<tr>
-      <td style="font-weight:500;white-space:nowrap">${p.name}${spare}</td>
+      <td style="font-weight:500;white-space:nowrap">${p.name}</td>
       <td>${pb(p.position)}</td>
-      <td><select class="btn btn-secondary btn-xs" style="padding:4px 8px;cursor:pointer" onchange="updateStatus('${r.id}',this.value)">
-        <option value="pending" ${r.status==='pending'?'selected':''}>Pending</option>
-        <option value="in" ${r.status==='in'?'selected':''}>In</option>
-        <option value="waitlist" ${r.status==='waitlist'?'selected':''}>Waitlist</option>
-        <option value="out" ${r.status==='out'?'selected':''}>Out</option>
-      </select></td>
+      <td>${statusSelect(r)}</td>
       <td style="min-width:130px">${isG?'<span class="badge badge-goalie">No fee</span>':`<div class="pay-bar"><div class="pay-track"><div class="pay-fill ${pct>=100?'full':pct>0?'partial':'none'}" style="width:${pct}%"></div></div><span class="pay-label">$${paid.toFixed(0)} / $${fee.toFixed(0)}</span></div>`}</td>
       <td style="white-space:nowrap">${!isG?`<button class="btn btn-secondary btn-xs" onclick="openPaymentModal('${r.id}')">+ Pay</button>`:''} <button class="del-btn" onclick="removeFromRoster('${r.id}')">✕</button></td>
     </tr>`;
@@ -746,14 +763,15 @@ function renderRoster(){
     const isG=p.position==='Goalie';const paid=getPaid(r.id);const pct=fee>0?Math.min(100,Math.round(paid/fee*100)):100;
     return`<div class="m-list-item">
       <div style="flex:1;min-width:0">
-        <div class="m-list-name">${p.name}${p.playerType==='Spare'?'<span class="badge badge-spare" style="margin-left:6px;font-size:10px;vertical-align:middle">Spare</span>':''}</div>
+        <div class="m-list-name">${p.name}</div>
         <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap">${pb(p.position)}<span class="badge ${sc[r.status]||'badge-pending'}">${r.status.charAt(0).toUpperCase()+r.status.slice(1)}</span></div>
         ${!isG?`<div style="margin-top:8px"><div class="pay-bar"><div class="pay-track"><div class="pay-fill ${pct>=100?'full':pct>0?'partial':'none'}" style="width:${pct}%"></div></div><span class="pay-label">$${paid.toFixed(0)} / $${fee.toFixed(0)}</span></div></div>`:'<div style="margin-top:6px"><span class="badge badge-goalie">No fee</span></div>'}
       </div>
       <div class="m-list-right">
         <select class="btn btn-secondary btn-sm" style="cursor:pointer" onchange="updateStatus('${r.id}',this.value)">
-          <option value="pending" ${r.status==='pending'?'selected':''}>Pending</option>
           <option value="in" ${r.status==='in'?'selected':''}>In</option>
+          <option value="spare" ${r.status==='spare'?'selected':''}>Spare</option>
+          <option value="pending" ${r.status==='pending'?'selected':''}>Pending</option>
           <option value="waitlist" ${r.status==='waitlist'?'selected':''}>Waitlist</option>
           <option value="out" ${r.status==='out'?'selected':''}>Out</option>
         </select>
@@ -765,7 +783,7 @@ function renderRoster(){
   function ghD(txt,n){return`<tr><td colspan="5"><div class="roster-group-label" style="margin:0;padding:10px 12px 6px">${txt} (${n})</div></td></tr>`;}
   function ghM(txt,n){return`<div class="roster-group-label">${txt} (${n})</div>`;}
 
-  const groups=[{label:'Goalies',rows:goalies},{label:'Skaters',rows:skaters},{label:'Waitlist',rows:waitlist}];
+  const groups=[{label:'Goalies',rows:goalies},{label:'In',rows:skaters},{label:'Spare',rows:spares},{label:'Pending',rows:pending},{label:'Waitlist',rows:waitlist},{label:'Out',rows:out}];
   const hasAny=groups.some(g=>g.rows.length);
 
   const dl=document.getElementById('dr-list');
@@ -846,14 +864,14 @@ async function removeFromRoster(id){
 function setSF(f,btn){spareFilter=f;document.querySelectorAll('#dsf .pill').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderSpares();}
 function renderSpares(){
   const s=getAS();
-  const dtEl=document.getElementById('ds-title');if(dtEl)dtEl.textContent=s?s.label+' spares':'Spares list';
-  let list=S.players.filter(p=>p.playerType==='Spare');
-  if(spareFilter!=='all')list=list.filter(p=>p.position===spareFilter);
-  list.sort((a,b)=>a.name.localeCompare(b.name));
-  list=list.map(p=>({...p,phone:cleanPhone(p.phone)}));
+  const dtEl=document.getElementById('ds-title');if(dtEl)dtEl.textContent=s?s.label+' spares':'Spares';
+  let spareEntries=s?S.roster.filter(r=>r.seasonId===s.id&&r.status==='spare'&&getP(r.playerId)):[];
+  if(spareFilter!=='all')spareEntries=spareEntries.filter(r=>getP(r.playerId)?.position===spareFilter);
+  spareEntries.sort((a,b)=>(getP(a.playerId)?.name||'').localeCompare(getP(b.playerId)?.name||''));
+  const list=spareEntries.map(r=>({...getP(r.playerId),rosterId:r.id,phone:cleanPhone(getP(r.playerId)?.phone)}));
   const dl=document.getElementById('ds-list');
   if(dl){
-    if(!list.length){dl.innerHTML='<div class="empty"><div class="icon">🏒</div>No spares yet.</div>';}
+    if(!list.length){dl.innerHTML='<div class="empty"><div class="icon">🏒</div>No spares on roster yet.</div>';}
     else dl.innerHTML=`<table class="data-table"><thead><tr><th>Name</th><th>Position</th><th>Phone</th><th>Email</th><th>Notes</th></tr></thead><tbody>${list.map(p=>`<tr>
       <td style="font-weight:500;white-space:nowrap">${p.name}</td><td>${pb(p.position)}</td>
       <td style="font-size:13px;white-space:nowrap">${p.phone?`<a href="tel:${p.phone}" style="color:var(--accent);text-decoration:none">${p.phone}</a>`:'—'}</td>
@@ -863,14 +881,14 @@ function renderSpares(){
   }
   const msc=document.getElementById('ms-content');
   if(msc){msc.innerHTML=`<div class="card">
-    <div class="card-header"><span class="card-title">${s?s.label+' spares':'Spares list'}</span></div>
+    <div class="card-header"><span class="card-title">${s?s.label+' spares':'Spares'}</span></div>
     <div class="filter-row">
       <button class="pill ${spareFilter==='all'?'active':''}" onclick="setSFM('all',this)">All</button>
       <button class="pill ${spareFilter==='Forward'?'active':''}" onclick="setSFM('Forward',this)">Forwards</button>
       <button class="pill ${spareFilter==='Defence'?'active':''}" onclick="setSFM('Defence',this)">Defence</button>
       <button class="pill ${spareFilter==='Goalie'?'active':''}" onclick="setSFM('Goalie',this)">Goalies</button>
     </div>
-    ${!list.length?'<div class="empty"><div class="icon">🏒</div>No spares yet.</div>':list.map(p=>`
+    ${!list.length?'<div class="empty"><div class="icon">🏒</div>No spares on roster yet.</div>':list.map(p=>`
     <div class="m-list-item">
       <div style="flex:1;min-width:0"><div class="m-list-name">${p.name}</div><div style="margin-top:6px">${pb(p.position)}</div>
       <div class="m-list-sub" style="margin-top:4px">${p.email}</div>${p.notes?`<div style="font-size:13px;color:var(--muted);margin-top:3px;font-style:italic">${p.notes}</div>`:''}</div>
@@ -1015,9 +1033,18 @@ function copyEmailList(type){
   if(type==='all'){emails=S.players.map(p=>p.email).filter(Boolean);}
   else if(type==='roster'&&s){emails=S.roster.filter(r=>r.seasonId===s.id&&r.status==='in').map(r=>getP(r.playerId)?.email).filter(Boolean);}
   else if(type==='unpaid'&&s){emails=S.roster.filter(r=>r.seasonId===s.id&&r.status==='in').filter(r=>{const p=getP(r.playerId);return p&&p.position!=='Goalie'&&getPaid(r.id)<fee;}).map(r=>getP(r.playerId)?.email).filter(Boolean);}
-  else if(type==='spares-forward'){emails=S.players.filter(p=>p.playerType==='Spare'&&p.position==='Forward').map(p=>p.email).filter(Boolean);}
-  else if(type==='spares-defence'){emails=S.players.filter(p=>p.playerType==='Spare'&&p.position==='Defence').map(p=>p.email).filter(Boolean);}
-  else if(type==='spares-goalie'){emails=S.players.filter(p=>p.playerType==='Spare'&&p.position==='Goalie').map(p=>p.email).filter(Boolean);}
+  else if(type==='spares-forward'){
+    const s=getAS();
+    emails=s?S.roster.filter(r=>r.seasonId===s.id&&r.status==='spare').map(r=>getP(r.playerId)).filter(p=>p&&p.position==='Forward').map(p=>p.email).filter(Boolean):[];
+  }
+  else if(type==='spares-defence'){
+    const s=getAS();
+    emails=s?S.roster.filter(r=>r.seasonId===s.id&&r.status==='spare').map(r=>getP(r.playerId)).filter(p=>p&&p.position==='Defence').map(p=>p.email).filter(Boolean):[];
+  }
+  else if(type==='spares-goalie'){
+    const s=getAS();
+    emails=s?S.roster.filter(r=>r.seasonId===s.id&&r.status==='spare').map(r=>getP(r.playerId)).filter(p=>p&&p.position==='Goalie').map(p=>p.email).filter(Boolean):[];
+  }
   if(!emails.length){toast('No emails found for this list');return;}
   navigator.clipboard.writeText(emails.join(', ')).then(()=>toast('Copied '+emails.length+' email'+(emails.length>1?'s':''))).catch(()=>toast('Could not copy'));
 }
