@@ -635,5 +635,10 @@ async function saveSettings(){
   S.config.appName=name;await api('setConfig',{key:'appName',value:name});applyAppName();toast('Settings saved');
 }
 </script>
+<script>
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('/thursday-night-hockey/sw.js');
+}
+</script>
 </body>
 </html>
