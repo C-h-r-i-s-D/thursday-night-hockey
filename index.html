@@ -277,8 +277,14 @@ body{font-family:'DM Sans',sans-serif;background:#eef1f5;color:var(--text);min-h
   <div class="modal modal-sm">
     <h2 id="pay-name"></h2>
     <div class="text-muted" id="pay-sub" style="margin-bottom:16px"></div>
-    <div class="form-row"><div class="field"><label>Amount ($)</label><input id="pay-amount" type="number" placeholder="e.g. 100" min="0"></div><div class="field"><label>Date</label><input id="pay-date" type="date"></div></div>
-    <div class="btn-row"><button class="btn btn-green" onclick="recordPayment()">Record payment</button><button class="btn btn-secondary" onclick="closePaymentModal()">Cancel</button></div>
+    <div class="btn-row" style="margin-top:0">
+      <button class="btn btn-green" style="flex:1" onclick="recordFullPayment()">✓ Paid in full</button>
+      <button class="btn btn-secondary" style="flex:1" onclick="showPartialInput()">Partial payment</button>
+    </div>
+    <div id="partial-input" style="display:none;margin-top:14px">
+      <div class="field"><label>Amount ($)</label><input id="pay-amount" type="number" min="0"></div>
+      <div class="btn-row"><button class="btn btn-green" onclick="recordPayment()">Record</button><button class="btn btn-secondary" onclick="hidePartialInput()">Cancel</button></div>
+    </div>
     <hr class="divider">
     <div class="section-label">Payment history</div>
     <div id="pay-history"></div>
@@ -419,15 +425,21 @@ async function savePlayer(){
   const name=document.getElementById('pm-name').value.trim();const email=document.getElementById('pm-email').value.trim();
   if(!name||!email){toast('Name and email are required');return;}
   const data={id:editingPlayer||undefined,name,email,phone:document.getElementById('pm-phone').value.trim(),position:document.getElementById('pm-pos').value,playerType:document.getElementById('pm-type').value,notes:document.getElementById('pm-notes').value.trim()};
-  const result=await api('savePlayer',data);
-  if(!editingPlayer){data.id=result.inserted;S.players.push(data);}
+  const isNew=!editingPlayer;const tempId='tmp_'+Date.now();
+  if(isNew){data.id=tempId;S.players.push({...data});}
   else{const idx=S.players.findIndex(p=>p.id===editingPlayer);if(idx>=0)S.players[idx]=Object.assign({},S.players[idx],data);}
-  closePlayerModal();renderPlayers('');renderDashboard();toast(editingPlayer?'Player updated':'Player added');
+  closePlayerModal();renderPlayers('');renderDashboard();toast(isNew?'Player added':'Player updated');
+  try{const result=await api('savePlayer',{...data,id:isNew?undefined:data.id});
+    if(isNew){const idx=S.players.findIndex(p=>p.id===tempId);if(idx>=0)S.players[idx].id=result.inserted;}
+  }catch(e){if(isNew)S.players=S.players.filter(p=>p.id!==tempId);renderPlayers('');toast('Sync failed — please try again');}
 }
 async function deletePlayer(id){
   if(!confirm('Remove this player?'))return;
-  await api('deletePlayer',{id});S.players=S.players.filter(p=>p.id!==id);S.roster=S.roster.filter(r=>r.playerId!==id);
+  const removed=S.players.filter(p=>p.id===id);const removedRoster=S.roster.filter(r=>r.playerId===id);
+  S.players=S.players.filter(p=>p.id!==id);S.roster=S.roster.filter(r=>r.playerId!==id);
   renderPlayers('');renderRoster();renderDashboard();renderSpares();toast('Player removed');
+  try{await api('deletePlayer',{id});}
+  catch(e){S.players=[...S.players,...removed];S.roster=[...S.roster,...removedRoster];renderPlayers('');renderRoster();renderDashboard();renderSpares();toast('Sync failed — please try again');}
 }
 function onContactSearch(val){
   clearTimeout(searchTimer);const dd=document.getElementById('contact-dd');
@@ -484,13 +496,18 @@ async function addToRoster(){
   closeRosterModal();renderRoster();renderDashboard();toast('Added to roster');
 }
 async function updateStatus(rid,status){
-  await api('updateRosterStatus',{id:rid,status});const r=S.roster.find(x=>x.id===rid);if(r)r.status=status;
+  const r=S.roster.find(x=>x.id===rid);const prev=r?.status;if(r)r.status=status;
   renderDashboard();renderRoster();toast('Status updated');
+  try{await api('updateRosterStatus',{id:rid,status});}
+  catch(e){if(r)r.status=prev;renderDashboard();renderRoster();toast('Sync failed — please try again');}
 }
 async function removeFromRoster(id){
-  if(!confirm('Remove from roster?'))return;await api('removeFromRoster',{id});
+  if(!confirm('Remove from roster?'))return;
+  const removed=S.roster.filter(r=>r.id===id);const removedPay=S.payments.filter(p=>p.rosterId===id);
   S.roster=S.roster.filter(r=>r.id!==id);S.payments=S.payments.filter(p=>p.rosterId!==id);
   renderRoster();renderDashboard();toast('Removed');
+  try{await api('removeFromRoster',{id});}
+  catch(e){S.roster=[...S.roster,...removed];S.payments=[...S.payments,...removedPay];renderRoster();renderDashboard();toast('Sync failed — please try again');}
 }
 function setSF(f,btn){spareFilter=f;document.querySelectorAll('#dsf .pill').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderSpares();}
 function renderSpares(){
@@ -509,12 +526,47 @@ function setSFM(f,btn){spareFilter=f;document.querySelectorAll('#ms-content .pil
 function openPaymentModal(rid){
   payRosterId=rid;const r=S.roster.find(x=>x.id===rid);const p=r?getP(r.playerId):null;const s=r?S.seasons.find(x=>x.id===r.seasonId):null;
   const fee=parseFloat(s?.fee||0);const paid=getPaid(rid);
+  const remaining=Math.max(0,fee-paid);
   document.getElementById('pay-name').textContent=p?.name||'';
-  document.getElementById('pay-sub').textContent=`Fee: $${fee.toFixed(0)} · Paid: $${paid.toFixed(0)} · Remaining: $${Math.max(0,fee-paid).toFixed(0)}`;
-  document.getElementById('pay-amount').value='';document.getElementById('pay-date').value=new Date().toISOString().split('T')[0];
+  document.getElementById('pay-sub').textContent=`Fee: $${fee.toFixed(0)} · Paid: $${paid.toFixed(0)} · Remaining: $${remaining.toFixed(0)}`;
+  document.getElementById('partial-input').style.display='none';
+  const amtEl=document.getElementById('pay-amount');if(amtEl)amtEl.value=remaining.toFixed(0);
   renderPayHistory(rid);document.getElementById('pay-overlay').style.display='flex';
 }
+function showPartialInput(){document.getElementById('partial-input').style.display='block';}
+function hidePartialInput(){document.getElementById('partial-input').style.display='none';}
 function closePaymentModal(){document.getElementById('pay-overlay').style.display='none';}
+async function recordFullPayment(){
+  const r=S.roster.find(x=>x.id===payRosterId);const s=r?S.seasons.find(x=>x.id===r.seasonId):null;
+  const fee=parseFloat(s?.fee||0);const paid=getPaid(payRosterId);
+  const remaining=Math.max(0,fee-paid);
+  if(remaining<=0){toast('Already paid in full');return;}
+  const date=new Date().toISOString().split('T')[0];
+  const tempId='tmp_'+Date.now();
+  S.payments.push({id:tempId,rosterId:payRosterId,amount:String(remaining),date});
+  updatePaySub(payRosterId);renderPayHistory(payRosterId);renderDashboard();renderRoster();
+  closePaymentModal();toast('Payment recorded');
+  try{const result=await api('addPayment',{rosterId:payRosterId,amount:remaining,date});
+    const idx=S.payments.findIndex(p=>p.id===tempId);if(idx>=0)S.payments[idx].id=result.inserted;
+  }catch(e){S.payments=S.payments.filter(p=>p.id!==tempId);renderDashboard();renderRoster();toast('Sync failed — please try again');}
+}
+async function recordPayment(){
+  const amount=parseFloat(document.getElementById('pay-amount').value);
+  if(!amount||amount<=0){toast('Enter a valid amount');return;}
+  const date=new Date().toISOString().split('T')[0];
+  const tempId='tmp_'+Date.now();
+  S.payments.push({id:tempId,rosterId:payRosterId,amount:String(amount),date});
+  updatePaySub(payRosterId);renderPayHistory(payRosterId);renderDashboard();renderRoster();
+  hidePartialInput();toast('Payment recorded');
+  try{const result=await api('addPayment',{rosterId:payRosterId,amount,date});
+    const idx=S.payments.findIndex(p=>p.id===tempId);if(idx>=0)S.payments[idx].id=result.inserted;
+  }catch(e){S.payments=S.payments.filter(p=>p.id!==tempId);renderDashboard();renderRoster();toast('Sync failed — please try again');}
+}
+function updatePaySub(rid){
+  const r=S.roster.find(x=>x.id===rid);const s=r?S.seasons.find(x=>x.id===r.seasonId):null;
+  const fee=parseFloat(s?.fee||0);const paid=getPaid(rid);
+  const el=document.getElementById('pay-sub');if(el)el.textContent=`Fee: $${fee.toFixed(0)} · Paid: $${paid.toFixed(0)} · Remaining: $${Math.max(0,fee-paid).toFixed(0)}`;
+}
 function renderPayHistory(rid){
   const hist=S.payments.filter(p=>p.rosterId===rid).sort((a,b)=>new Date(b.date)-new Date(a.date));
   const el=document.getElementById('pay-history');
