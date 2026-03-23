@@ -2,14 +2,16 @@
   "name": "Thursday Night Hockey",
   "short_name": "TNH",
   "start_url": "/thursday-night-hockey/",
+  "scope": "/thursday-night-hockey/",
   "display": "standalone",
   "background_color": "#0d1b2a",
   "theme_color": "#0d1b2a",
- "icons": [
-  {
-    "src": "android-chrome-192x192.png",
-    "sizes": "192x192",
-    "type": "image/png"
-  }
-]
+  "icons": [
+    {
+      "src": "android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
 }
