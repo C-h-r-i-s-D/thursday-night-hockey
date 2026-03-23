@@ -303,7 +303,7 @@ async function api(action,data){
   try{
     const res=await fetch(SCRIPT_URL,{
       method:'POST',
-      headers:{'Content-Type':'application/json'},
+      headers:{'Content-Type':'text/plain'},
       body:JSON.stringify({action,data})
     });
     const json=await res.json();
