@@ -178,6 +178,23 @@ body{font-family:'DM Sans',sans-serif;background:#eef1f5;color:var(--text);min-h
 .batch-item:last-child{border-bottom:none;}
 .batch-item:active{background:#f9fafb;}
 .batch-cb{width:22px;height:22px;accent-color:var(--navy);cursor:pointer;flex-shrink:0;}
+.roster-summary{display:flex;gap:6px;flex-wrap:wrap;padding:0 0 14px;overflow-x:auto;scrollbar-width:none;}
+.roster-summary::-webkit-scrollbar{display:none;}
+.rs-btn{display:inline-flex;align-items:center;gap:5px;padding:6px 12px;border-radius:20px;font-size:13px;font-weight:600;cursor:pointer;border:1.5px solid transparent;transition:all 0.15s;font-family:'DM Sans',sans-serif;white-space:nowrap;}
+.rs-btn:active{transform:scale(0.97);}
+.rs-ft{background:var(--green-light);color:var(--green);border-color:var(--green-light);}
+.rs-ft.active{background:var(--green);color:white;border-color:var(--green);}
+.rs-goalie{background:var(--accent-light);color:#1a5c8a;border-color:var(--accent-light);}
+.rs-goalie.active{background:#1a5c8a;color:white;border-color:#1a5c8a;}
+.rs-spare{background:var(--amber-light);color:var(--amber);border-color:var(--amber-light);}
+.rs-spare.active{background:var(--amber);color:white;border-color:var(--amber);}
+.rs-pending{background:var(--gray);color:var(--muted);border-color:var(--border);}
+.rs-pending.active{background:var(--muted);color:white;border-color:var(--muted);}
+.rs-waitlist{background:var(--purple-light);color:var(--purple);border-color:var(--purple-light);}
+.rs-waitlist.active{background:var(--purple);color:white;border-color:var(--purple);}
+.rs-out{background:var(--red-light);color:var(--red);border-color:var(--red-light);}
+.rs-out.active{background:var(--red);color:white;border-color:var(--red);}
+.rs-num{font-size:12px;opacity:0.8;}
 .roster-group-label{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.6px;padding:9px 14px 5px;background:#f5f6f8;margin-bottom:0;}
 /* Mobile roster rows - zebra, compact, aligned */
 .r-row{display:flex;align-items:center;gap:8px;padding:10px 14px;}
@@ -289,14 +306,7 @@ body{font-family:'DM Sans',sans-serif;background:#eef1f5;color:var(--text);min-h
   <div class="d-page" id="dp-roster">
     <div class="card">
       <div class="card-header"><span class="card-title" id="dr-title">Season roster</span><button class="btn btn-primary btn-sm" onclick="openRosterModal()">+ Add players</button></div>
-      <div class="filter-row" id="drf">
-        <button class="pill active" onclick="setRF('all',this)">All</button>
-        <button class="pill" onclick="setRF('in',this)">In</button>
-        <button class="pill" onclick="setRF('spare',this)">Spare</button>
-        <button class="pill" onclick="setRF('pending',this)">Pending</button>
-        <button class="pill" onclick="setRF('waitlist',this)">Waitlist</button>
-        <button class="pill" onclick="setRF('out',this)">Out</button>
-      </div>
+      <div id="dr-summary"></div>
       <div class="overflow-x"><div id="dr-list"></div></div>
     </div>
   </div>
@@ -329,14 +339,7 @@ body{font-family:'DM Sans',sans-serif;background:#eef1f5;color:var(--text);min-h
   <div class="m-page" id="mp-roster">
     <div class="card">
       <div class="card-header"><span class="card-title" id="mr-title">Roster</span><button class="btn btn-primary btn-sm" onclick="openRosterModal()">+ Add</button></div>
-      <div class="filter-row" id="mrf">
-        <button class="pill active" onclick="setRF('all',this)">All</button>
-        <button class="pill" onclick="setRF('in',this)">In</button>
-        <button class="pill" onclick="setRF('spare',this)">Spare</button>
-        <button class="pill" onclick="setRF('pending',this)">Pending</button>
-        <button class="pill" onclick="setRF('waitlist',this)">Waitlist</button>
-        <button class="pill" onclick="setRF('out',this)">Out</button>
-      </div>
+      <div id="mr-summary"></div>
       <div id="mr-list"></div>
     </div>
   </div>
@@ -567,19 +570,12 @@ function showPage(name,btn){
   if(['email','calculator','seasons','settings'].includes(name))renderDynamic(name);
 }
 function showPageFiltered(name,filter){
-  if(filter){
-    rosterFilter=filter;
-  }
+  if(filter)rosterFilter=filter;
   showPage(name);
-  // Update filter pill active state after page shown
-  if(filter){
-    setTimeout(()=>{
-      document.querySelectorAll('#drf .pill,#mrf .pill').forEach(b=>{
-        const onclick=b.getAttribute('onclick')||'';
-        b.classList.toggle('active',onclick.includes("'"+filter+"'"));
-      });
-    },50);
-  }
+}
+function setRF(f){
+  rosterFilter=(rosterFilter===f)?'all':f;
+  renderRoster();
 }
 function openMoreMenu(){document.getElementById('more-sheet').classList.add('open');document.getElementById('more-overlay').classList.add('open');}
 function closeMoreMenu(){document.getElementById('more-sheet').classList.remove('open');document.getElementById('more-overlay').classList.remove('open');}
@@ -614,7 +610,7 @@ function renderDashboard(){
     stEl.innerHTML=`
       <div class="stat-card" onclick="showPageFiltered('roster','in')"><div class="stat-label">Skaters</div><div class="stat-value">${skatersAll.length}${s.targetSkaters&&s.targetSkaters!='0'?' / '+s.targetSkaters:''}</div></div>
       <div class="stat-card" onclick="showPageFiltered('roster','spare')"><div class="stat-label">Spares</div><div class="stat-value">${sparesCount.length}</div></div>
-      <div class="stat-card" onclick="toggleGoalieSecured()"><div class="stat-label">Goalies</div><div class="stat-value ${goalieSecured?'green':'amber'}">${goalieSecured?'✓':'?'}</div><div style="font-size:10px;color:var(--muted);margin-top:3px">${goaliesIn.length} on roster</div></div>
+      <div class="stat-card" onclick="showPageFiltered('roster','goalie')"><div class="stat-label">Goalies</div><div class="stat-value ${goalieSecured?'green':'amber'}">${goalieSecured?'✓':'?'}</div><div style="font-size:10px;color:var(--muted);margin-top:3px">${goaliesIn.length} on roster</div></div>
       <div class="stat-card" onclick="showPageFiltered('roster','pending')"><div class="stat-label">Pending</div><div class="stat-value ${pending.length>0?'amber':''}">${pending.length}</div></div>
       <div class="stat-card" onclick="showPageFiltered('roster','waitlist')"><div class="stat-label">Waitlist</div><div class="stat-value">${waitlist.length}</div></div>
       <div class="stat-card"><div class="stat-label">Collected</div><div class="stat-value green">$${totalPaid.toFixed(0)}</div></div>
@@ -672,33 +668,43 @@ function renderPlayers(search){
     return`<tr>
       <td style="font-weight:500;white-space:nowrap">${p.name}</td>
       <td>${posLabel(p)}</td>
-      <td style="color:var(--muted);font-size:13px">${p.email}</td>
-      <td style="color:var(--muted);font-size:13px;white-space:nowrap">${p.phone?`<a href="tel:${p.phone}" style="color:var(--accent);text-decoration:none">${p.phone}</a>`:'—'}</td>
+      <td style="font-size:13px;min-width:160px">
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:3px">
+          <span>📧</span>
+          <span class="inline-edit" title="Click to edit" onclick="inlineEditField('${p.id}','email','${p.email.replace(/'/g,"\\'")}',this)"
+            style="color:var(--muted);cursor:pointer;border-bottom:1px dashed var(--border)">${p.email}</span>
+        </div>
+        ${p.phone?`<div style="display:flex;align-items:center;gap:6px">
+          <span>📱</span>
+          <span class="inline-edit" title="Click to edit" onclick="inlineEditField('${p.id}','phone','${p.phone.replace(/'/g,"\\'")}',this)"
+            style="color:var(--muted);cursor:pointer;border-bottom:1px dashed var(--border)">${p.phone}</span>
+        </div>`:`<div style="display:flex;align-items:center;gap:6px;color:#ccc;font-size:12px"><span>📱</span><span onclick="inlineEditField('${p.id}','phone','',this)" style="cursor:pointer;border-bottom:1px dashed #eee">Add phone</span></div>`}
+      </td>
       <td>${sbadge(p.id)}</td>
       <td style="color:var(--muted);font-size:12px;max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${p.notes||'—'}</td>
       <td style="white-space:nowrap"><button class="btn btn-secondary btn-xs" onclick="openPlayerModal('${p.id}')">Edit</button> <button class="del-btn" onclick="deletePlayer('${p.id}')">✕</button></td>
     </tr>`;
   }
   function ccard(p){
-    return`<div class="m-list-item">
+    return`<div class="m-list-item" onclick="openPlayerModal('${p.id}')" style="cursor:pointer">
       <div style="flex:1;min-width:0">
         <div class="m-list-name">${p.name}</div>
-        <div class="m-list-sub">${p.email}${p.phone?' · '+p.phone:''}</div>
+        <div style="margin-top:5px;display:flex;align-items:center;gap:6px;font-size:14px;color:var(--muted)"><span>📧</span><span>${p.email}</span></div>
+        ${p.phone?`<div style="margin-top:3px;display:flex;align-items:center;gap:6px;font-size:14px;color:var(--muted)"><span>📱</span><span>${p.phone}</span></div>`:''}
         <div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap">${posLabel(p)}${sbadge(p.id)}</div>
       </div>
       <div class="m-list-right">
-        <button class="btn btn-secondary btn-sm" onclick="openPlayerModal('${p.id}')">Edit</button>
-        <button class="del-btn" onclick="deletePlayer('${p.id}')">✕</button>
+        <button class="del-btn" onclick="event.stopPropagation();deletePlayer('${p.id}')">✕</button>
       </div></div>`;
   }
-  function ghD(txt,n){return`<tr><td colspan="7"><div class="roster-group-label" style="margin:0;padding:10px 12px 6px">${txt} (${n})</div></td></tr>`;}
+  function ghD(txt,n){return`<tr><td colspan="6"><div class="roster-group-label" style="margin:0;padding:10px 12px 6px">${txt} (${n})</div></td></tr>`;}
   function ghM(txt,n){return`<div class="roster-group-label">${txt} (${n})</div>`;}
 
   const dl=document.getElementById('dp-list');
   if(dl){
     if(!list.length){dl.innerHTML='<div class="empty"><div class="icon">👤</div>No contacts found.</div>';}
     else{
-      let h=`<table class="data-table"><thead><tr><th>Name</th><th>Role</th><th>Email</th><th>Phone</th><th>Seasons</th><th>Notes</th><th></th></tr></thead><tbody>`;
+      let h=`<table class="data-table"><thead><tr><th>Name</th><th>Role</th><th>Email / Phone</th><th>Seasons</th><th>Notes</th><th></th></tr></thead><tbody>`;
       if(goalies.length)h+=ghD('Goalies',goalies.length)+goalies.map(crow).join('');
       if(players.length)h+=ghD('Players',players.length)+players.map(crow).join('');
       if(contacts.length)h+=ghD('Contacts only',contacts.length)+contacts.map(crow).join('');
@@ -718,7 +724,20 @@ function renderPlayers(search){
   }
 }
 
-function openPlayerModal(id){
+function inlineEditField(pid,field,currentVal,el){
+  const newVal=prompt(`Update ${field} for this contact:`,currentVal);
+  if(newVal===null)return; // cancelled
+  if(newVal.trim()===currentVal.trim())return; // no change
+  const label=field==='email'?'email address':'phone number';
+  const display=newVal.trim()||'(empty)';
+  if(!confirm(`Change ${label} to: ${display}?`))return;
+  const p=getP(pid);if(!p)return;
+  const cleaned=field==='phone'?newVal.trim().replace(/[^0-9+\-() ]/g,''):newVal.trim();
+  p[field]=cleaned;
+  renderPlayers('');
+  toast(`${field.charAt(0).toUpperCase()+field.slice(1)} updated`);
+  api('savePlayer',{...p}).catch(()=>toast('Sync failed'));
+}
   editingPlayer=id||null;
   if(id){
     const p=getP(id);if(!p)return;
@@ -820,33 +839,58 @@ function renderRoster(){
   const s=getAS();
   ['dr-title','mr-title'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=s?s.label+' roster':'Season roster';});
   if(!s){
+    ['dr-list','mr-list','dr-summary','mr-summary'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML='';});
     ['dr-list','mr-list'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML='<div class="empty"><div class="icon">📋</div>No active season.</div>';});return;
   }
-  let ents=S.roster.filter(r=>r.seasonId===s.id&&getP(r.playerId));
-  if(rosterFilter!=='all')ents=ents.filter(r=>r.status===rosterFilter);
-  ents.sort((a,b)=>(getP(a.playerId)?.name||'').localeCompare(getP(b.playerId)?.name||''));
+
+  // All entries for this season
+  const allEnts=S.roster.filter(r=>r.seasonId===s.id&&getP(r.playerId));
+  allEnts.sort((a,b)=>(getP(a.playerId)?.name||'').localeCompare(getP(b.playerId)?.name||''));
+
+  // Counts for summary (unfiltered) — goalie spares excluded from FT/Spare counts
+  const ftAll=allEnts.filter(r=>r.status==='in'&&getP(r.playerId)?.position!=='Goalie');
+  const goaliesAll=allEnts.filter(r=>getP(r.playerId)?.position==='Goalie'&&r.status!=='spare');
+  const sparesAll=allEnts.filter(r=>r.status==='spare'&&getP(r.playerId)?.position!=='Goalie');
+  const pendingAll=allEnts.filter(r=>r.status==='pending');
+  const waitlistAll=allEnts.filter(r=>r.status==='waitlist');
+  const outAll=allEnts.filter(r=>r.status==='out');
+
+  // Build summary bar HTML
+  function summaryBar(){
+    const btns=[
+      {f:'in',cls:'rs-ft',label:'FT',count:ftAll.length},
+      {f:'goalie',cls:'rs-goalie',label:'Goalies',count:goaliesAll.length},
+      {f:'spare',cls:'rs-spare',label:'Spare',count:sparesAll.length},
+      {f:'pending',cls:'rs-pending',label:'Pending',count:pendingAll.length},
+      {f:'waitlist',cls:'rs-waitlist',label:'Waitlist',count:waitlistAll.length},
+      {f:'out',cls:'rs-out',label:'Out',count:outAll.length},
+    ].filter(b=>b.count>0);
+    return`<div class="roster-summary">${btns.map(b=>`<button class="rs-btn ${b.cls}${rosterFilter===b.f?' active':''}" onclick="setRF('${b.f}')">${b.label} <span class="rs-num">${b.count}</span></button>`).join('')}</div>`;
+  }
+
+  // Apply filter — 'goalie' is a special filter for goalies only
+  let ents=allEnts.slice();
+  if(rosterFilter==='in')ents=ents.filter(r=>r.status==='in'&&getP(r.playerId)?.position!=='Goalie');
+  else if(rosterFilter==='goalie')ents=ents.filter(r=>getP(r.playerId)?.position==='Goalie');
+  else if(rosterFilter==='spare')ents=ents.filter(r=>r.status==='spare'&&getP(r.playerId)?.position!=='Goalie');
+  else if(rosterFilter!=='all')ents=ents.filter(r=>r.status===rosterFilter);
+
   const fee=parseFloat(s.fee)||0;
   const sc={'in':'badge-in','spare':'badge-spare','pending':'badge-pending','out':'badge-out','waitlist':'badge-waitlist'};
 
-  const goalies=ents.filter(r=>getP(r.playerId)?.position==='Goalie'&&r.status!=='waitlist');
+  // Groups: FT skaters, then goalies (FT first, spare goalies last), then spares, pending, waitlist, out
   const skaters=ents.filter(r=>getP(r.playerId)?.position!=='Goalie'&&r.status==='in');
+  const goaliesFT=ents.filter(r=>getP(r.playerId)?.position==='Goalie'&&r.status!=='spare');
+  const goaliesSpare=ents.filter(r=>getP(r.playerId)?.position==='Goalie'&&r.status==='spare');
+  const goalies=[...goaliesFT,...goaliesSpare];
   const spares=ents.filter(r=>getP(r.playerId)?.position!=='Goalie'&&r.status==='spare');
-  const pending=ents.filter(r=>r.status==='pending');
+  const pending=ents.filter(r=>r.status==='pending'&&getP(r.playerId)?.position!=='Goalie');
   const waitlist=ents.filter(r=>r.status==='waitlist');
   const out=ents.filter(r=>r.status==='out');
 
   function statusSelect(r){
     return`<select class="btn btn-secondary btn-xs" style="padding:4px 8px;cursor:pointer" onchange="updateStatus('${r.id}',this.value)">
-      <option value="in" ${r.status==='in'?'selected':''}>In</option>
-      <option value="spare" ${r.status==='spare'?'selected':''}>Spare</option>
-      <option value="pending" ${r.status==='pending'?'selected':''}>Pending</option>
-      <option value="waitlist" ${r.status==='waitlist'?'selected':''}>Waitlist</option>
-      <option value="out" ${r.status==='out'?'selected':''}>Out</option>
-    </select>`;
-  }
-  function statusSelectM(r){
-    return`<select class="btn btn-secondary btn-sm" style="cursor:pointer" onchange="updateStatus('${r.id}',this.value)">
-      <option value="in" ${r.status==='in'?'selected':''}>In</option>
+      <option value="in" ${r.status==='in'?'selected':''}>FT</option>
       <option value="spare" ${r.status==='spare'?'selected':''}>Spare</option>
       <option value="pending" ${r.status==='pending'?'selected':''}>Pending</option>
       <option value="waitlist" ${r.status==='waitlist'?'selected':''}>Waitlist</option>
@@ -887,12 +931,12 @@ function renderRoster(){
     const isFull=pct>=100;const isPartial=pct>0&&pct<100;
     return`<div class="r-row">
       <span class="r-name">${p.name}</span>
-      ${nf
-        ?`<span class="r-nofee">No fee</span>`
-        :`<div class="r-pay"><div class="r-pay-bar"><div class="${isFull?'r-pay-fill-g':isPartial?'r-pay-fill-a':'r-pay-fill-g'}" style="width:${pct}%"></div></div><span class="r-pay-lbl">$${paid.toFixed(0)}</span></div>`
-      }
+      <div class="r-pay">${nf
+        ?`<span style="font-size:11px;color:#9ca3af;width:100%;text-align:right">No fee</span>`
+        :`<div class="r-pay-bar"><div class="${isFull?'r-pay-fill-g':isPartial?'r-pay-fill-a':'r-pay-fill-g'}" style="width:${pct}%"></div></div><span class="r-pay-lbl">$${paid.toFixed(0)}</span>`
+      }</div>
       <button class="${pillClass(r.status)}" onclick="openStatusSheet('${r.id}','${r.status}')">${pillLabel(r.status)}</button>
-      ${!nf?`<button class="r-x" onclick="openPaymentModal('${r.id}')">$</button>`:''}
+      ${!nf?`<button class="r-x" onclick="openPaymentModal('${r.id}')">$</button>`:`<span style="width:18px;display:inline-block"></span>`}
       <button class="r-x" onclick="removeFromRoster('${r.id}')">✕</button>
     </div>`;
   }
@@ -900,21 +944,23 @@ function renderRoster(){
   function ghD(txt,n){return`<tr><td colspan="5"><div class="roster-group-label" style="margin:0;padding:8px 12px 5px">${txt} (${n})</div></td></tr>`;}
   function ghM(txt,n){return`<div class="roster-group-label">${txt} (${n})</div>`;}
 
-  // Summary line: FT count + Goalie count
+  // Summary line shown at top of list (unfiltered view)
   const summaryLine=`<div style="padding:10px 14px;font-size:13px;color:var(--muted);background:#f5f6f8;border-bottom:1px solid var(--border);">
-    <span style="font-weight:600;color:var(--text)">${skaters.length} FT</span>
+    <span style="font-weight:600;color:var(--text)">${ftAll.length} FT</span>
     <span style="margin:0 8px;color:#ddd">·</span>
-    <span style="font-weight:600;color:var(--text)">${goalies.length} Goalie${goalies.length!==1?'s':''}</span>
-    ${spares.length?`<span style="margin:0 8px;color:#ddd">·</span><span style="font-weight:600;color:var(--text)">${spares.length} Spare${spares.length!==1?'s':''}</span>`:''}
+    <span style="font-weight:600;color:var(--text)">${goaliesAll.length} Goalie${goaliesAll.length!==1?'s':''}</span>
+    ${sparesAll.length?`<span style="margin:0 8px;color:#ddd">·</span><span style="font-weight:600;color:var(--text)">${sparesAll.length} Spare${sparesAll.length!==1?'s':''}</span>`:''}
   </div>`;
 
-  // Mobile: Skaters first, then Spares, then Goalies at bottom; Pending/Waitlist/Out only when filtered
   const showAll=rosterFilter==='all';
   const mobileGroups=showAll
     ?[{label:'Full-time',rows:skaters},{label:'Spare',rows:spares},{label:'Pending',rows:pending},{label:'Waitlist',rows:waitlist},{label:'Out',rows:out},{label:'Goalies',rows:goalies}]
-    :groups;
+    :[{label:'Full-time',rows:skaters},{label:'Spare',rows:spares},{label:'Pending',rows:pending},{label:'Waitlist',rows:waitlist},{label:'Out',rows:out},{label:'Goalies',rows:goalies}];
   const groups=[{label:'Full-time',rows:skaters},{label:'Spare',rows:spares},{label:'Pending',rows:pending},{label:'Waitlist',rows:waitlist},{label:'Out',rows:out},{label:'Goalies',rows:goalies}];
   const hasAny=groups.some(g=>g.rows.length);
+
+  // Render summary bars
+  ['dr-summary','mr-summary'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=summaryBar();});
 
   const dl=document.getElementById('dr-list');
   if(dl){
