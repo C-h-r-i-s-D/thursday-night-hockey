@@ -738,7 +738,8 @@ function inlineEditField(pid,field,currentVal,el){
   toast(`${field.charAt(0).toUpperCase()+field.slice(1)} updated`);
   api('savePlayer',{...p}).catch(()=>toast('Sync failed'));
 }
-  editingPlayer=id||null;
+
+function openPlayerModal(id){
   if(id){
     const p=getP(id);if(!p)return;
     document.getElementById('pm-title').textContent='Edit contact';
