@@ -216,8 +216,8 @@ body{font-family:'DM Sans',sans-serif;background:#eef1f5;color:var(--text);min-h
 .r-x{background:none;border:none;cursor:pointer;color:#d1d5db;font-size:12px;padding:0;line-height:1;flex-shrink:0;}
 .r-x:active{color:var(--red);}
 /* Status bottom sheet */
-.status-sheet-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.35);z-index:400;display:none;}
-.status-sheet-overlay.open{display:block;}
+.status-sheet-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.35);z-index:400;display:none;pointer-events:none;}
+.status-sheet-overlay.open{display:block;pointer-events:all;}
 .status-sheet{position:fixed;bottom:0;left:0;right:0;background:white;border-radius:20px 20px 0 0;z-index:401;padding-bottom:env(safe-area-inset-bottom,16px);transform:translateY(100%);transition:transform 0.28s cubic-bezier(0.32,0.72,0,1);}
 .status-sheet.open{transform:translateY(0);}
 .status-sheet-handle{width:36px;height:4px;background:#ddd;border-radius:2px;margin:12px auto 4px;}
@@ -927,12 +927,11 @@ function renderRoster(){
     const isFull=pct>=100;const isPartial=pct>0&&pct<100;
     return`<div class="r-row">
       <span class="r-name">${p.name}</span>
-      <div class="r-pay">${nf
+      <div class="r-pay" ${!nf?`onclick="openPaymentModal('${r.id}')" style="cursor:pointer"`:''}>${nf
         ?`<span style="font-size:11px;color:#9ca3af;width:100%;text-align:right">No fee</span>`
         :`<div class="r-pay-bar"><div class="${isFull?'r-pay-fill-g':isPartial?'r-pay-fill-a':'r-pay-fill-g'}" style="width:${pct}%"></div></div><span class="r-pay-lbl">$${paid.toFixed(0)}</span>`
       }</div>
       <button class="${pillClass(r.status)}" onclick="openStatusSheet('${r.id}','${r.status}')">${pillLabel(r.status)}</button>
-      ${!nf?`<button class="r-x" onclick="openPaymentModal('${r.id}')">$</button>`:`<span style="width:18px;display:inline-block"></span>`}
       <button class="r-x" onclick="removeFromRoster('${r.id}')">✕</button>
     </div>`;
   }
@@ -1000,7 +999,7 @@ function toggleBatchItem(id,row){
   const total=document.querySelectorAll('#rm-player-list .batch-item.selected').length;
   document.getElementById('rm-count').textContent=total+' selected';
 }
-function closeRosterModal(){document.getElementById('roster-overlay').style.display='none';}
+function closeRosterModal(){document.getElementById('roster-overlay').style.display='none';showPage('roster');}
 
 async function addToRoster(){
   const s=getAS();const status=document.getElementById('rm-status').value;
@@ -1015,6 +1014,7 @@ async function addToRoster(){
       const idx=S.roster.findIndex(r=>r.id===entry.id);if(idx>=0)S.roster[idx].id=result.inserted;
     }catch(e){S.roster=S.roster.filter(r=>r.id!==entry.id);toast('Sync failed for one player');}
   }
+  renderRoster();renderDashboard();
 }
 
 async function updateStatus(rid,status){
