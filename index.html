@@ -740,6 +740,7 @@ function inlineEditField(pid,field,currentVal,el){
 }
 
 function openPlayerModal(id){
+  editingPlayer=id||null;
   if(id){
     const p=getP(id);if(!p)return;
     document.getElementById('pm-title').textContent='Edit contact';
@@ -897,11 +898,15 @@ function renderRoster(){
   function rosterRowD(r){
     const p=getP(r.playerId);if(!p)return'';
     const nf=isNoFee(r);const paid=getPaid(r.id);const pct=!nf&&fee>0?Math.min(100,Math.round(paid/fee*100)):100;
+    const isFull=pct>=100;const isPartial=pct>0&&pct<100;
     return`<tr>
       <td style="font-weight:500;white-space:nowrap">${p.name}</td>
       <td>${pb(p.position)}</td>
-      <td>${statusSelect(r)}</td>
-      <td style="min-width:130px">${nf?'<span class="badge badge-goalie">No fee</span>':`<div class="pay-bar"><div class="pay-track"><div class="pay-fill ${pct>=100?'full':pct>0?'partial':'none'}" style="width:${pct}%"></div></div><span class="pay-label">$${paid.toFixed(0)} / $${fee.toFixed(0)}</span></div>`}</td>
+      <td><button class="${pillClass(r.status)}" onclick="openStatusSheet('${r.id}','${r.status}')" style="font-size:12px;padding:4px 10px">${pillLabel(r.status)}</button></td>
+      <td style="min-width:120px">${nf
+        ?'<span class="badge badge-goalie">No fee</span>'
+        :`<div class="pay-bar" onclick="openPaymentModal('${r.id}')" style="cursor:pointer"><div class="pay-track"><div class="pay-fill ${isFull?'full':isPartial?'partial':'none'}" style="width:${pct}%"></div></div><span class="pay-label">$${paid.toFixed(0)} / $${fee.toFixed(0)}</span></div>`
+      }</td>
       <td style="white-space:nowrap">${!nf?`<button class="btn btn-secondary btn-xs" onclick="openPaymentModal('${r.id}')">+ Pay</button>`:''} <button class="del-btn" onclick="removeFromRoster('${r.id}')">✕</button></td>
     </tr>`;
   }
