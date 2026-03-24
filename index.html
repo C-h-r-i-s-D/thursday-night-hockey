@@ -829,11 +829,6 @@ document.addEventListener('click',e=>{
 });
 
 // ── Roster ────────────────────────────────────────────────────
-function setRF(f,btn){
-  rosterFilter=f;
-  document.querySelectorAll('#drf .pill,#mrf .pill').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');renderRoster();
-}
 
 function renderRoster(){
   const s=getAS();
