@@ -127,11 +127,11 @@ body{font-family:'DM Sans',sans-serif;background:#eef1f5;color:var(--text);min-h
 .data-table tr:last-child td{border-bottom:none;}
 .data-table tr:hover td{background:#fafbfc;}
 .overflow-x{overflow-x:auto;-webkit-overflow-scrolling:touch;}
-.m-list-item{display:flex;align-items:flex-start;justify-content:space-between;padding:16px 0;border-bottom:1px solid #f0f0f0;gap:12px;}
+.m-list-item{display:flex;align-items:flex-start;justify-content:space-between;padding:18px 0;border-bottom:1px solid #f0f0f0;gap:12px;}
 .m-list-item:last-child{border-bottom:none;}
-.m-list-name{font-size:17px;font-weight:500;}
-.m-list-sub{font-size:14px;color:var(--muted);margin-top:3px;}
-.m-list-right{display:flex;flex-direction:column;align-items:flex-end;gap:8px;flex-shrink:0;}
+.m-list-name{font-size:18px;font-weight:600;letter-spacing:-0.2px;}
+.m-list-sub{font-size:14px;color:var(--muted);margin-top:4px;}
+.m-list-right{display:flex;flex-direction:column;align-items:flex-end;gap:8px;flex-shrink:0;padding-top:2px;}
 .filter-row{display:flex;gap:8px;flex-wrap:nowrap;overflow-x:auto;margin-bottom:16px;padding-bottom:4px;scrollbar-width:none;}
 .filter-row::-webkit-scrollbar{display:none;}
 .pill{padding:8px 16px;border-radius:20px;font-size:14px;border:1px solid var(--border);background:white;cursor:pointer;color:var(--muted);transition:all 0.15s;white-space:nowrap;font-family:'DM Sans',sans-serif;}
@@ -178,7 +178,12 @@ body{font-family:'DM Sans',sans-serif;background:#eef1f5;color:var(--text);min-h
 .batch-item:last-child{border-bottom:none;}
 .batch-item:active{background:#f9fafb;}
 .batch-cb{width:22px;height:22px;accent-color:var(--navy);cursor:pointer;flex-shrink:0;}
-.roster-group-label{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.6px;padding:12px 0 6px;border-bottom:1px solid var(--border);margin-bottom:4px;}
+.roster-group-label{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.6px;padding:14px 0 6px;border-bottom:1px solid var(--border);margin-bottom:4px;}
+@media(max-width:767px){
+  .m-list-item{background:white;border-radius:14px;padding:16px;margin-bottom:10px;border:1px solid var(--border);box-shadow:var(--shadow);}
+  .m-list-item:last-child{border-bottom:1px solid var(--border);}
+  .card .m-list-item{margin-left:-4px;margin-right:-4px;}
+}
 .chk-label{display:flex;align-items:center;gap:10px;cursor:pointer;font-size:15px;}
 .chk-label input{width:20px;height:20px;cursor:pointer;accent-color:var(--navy);}
 .divider{border:none;border-top:1px solid var(--border);margin:16px 0;}
@@ -421,11 +426,10 @@ window.onload=async function(){
     }
     await new Promise(r=>setTimeout(r,200));
     setStep('ls-contacts');
-    // Sync fresh contacts in background
+    // Sync fresh contacts in background (saved + other contacts)
     api('getAllContacts').then(results=>{
       if(Array.isArray(results)&&results.length){
         GC=results;
-        // Save updated cache to sheet in background
         api('saveContactsCache',{contacts:results}).catch(()=>{});
       }
     }).catch(()=>{});
@@ -495,8 +499,19 @@ function showPage(name,btn){
   if(['email','calculator','seasons','settings'].includes(name))renderDynamic(name);
 }
 function showPageFiltered(name,filter){
-  if(filter)rosterFilter=filter;
+  if(filter){
+    rosterFilter=filter;
+  }
   showPage(name);
+  // Update filter pill active state after page shown
+  if(filter){
+    setTimeout(()=>{
+      document.querySelectorAll('#drf .pill,#mrf .pill').forEach(b=>{
+        const onclick=b.getAttribute('onclick')||'';
+        b.classList.toggle('active',onclick.includes("'"+filter+"'"));
+      });
+    },50);
+  }
 }
 function openMoreMenu(){document.getElementById('more-sheet').classList.add('open');document.getElementById('more-overlay').classList.add('open');}
 function closeMoreMenu(){document.getElementById('more-sheet').classList.remove('open');document.getElementById('more-overlay').classList.remove('open');}
@@ -520,23 +535,24 @@ function renderDashboard(){
     const validEnts=S.roster.filter(r=>r.seasonId===s.id&&getP(r.playerId));
     const pending=validEnts.filter(r=>r.status==='pending');
     const waitlist=validEnts.filter(r=>r.status==='waitlist');
-    const skaters=validEnts.filter(r=>r.status==='in'&&!isNoFee(r));
-    const sparesCount=validEnts.filter(r=>r.status==='spare'&&!isNoFee(r));
+    const skatersAll=validEnts.filter(r=>r.status==='in'&&getP(r.playerId)?.position!=='Goalie');
+    const payingSkaters=skatersAll.filter(r=>!isNoFee(r));
+    const sparesCount=validEnts.filter(r=>r.status==='spare'&&getP(r.playerId)?.position!=='Goalie');
     const goaliesIn=validEnts.filter(r=>getP(r.playerId)?.position==='Goalie'&&r.status!=='waitlist'&&r.status!=='out');
     const fee=parseFloat(s.fee)||0;
-    const totalPaid=skaters.reduce((sum,r)=>sum+getPaid(r.id),0);
-    const outstanding=Math.max(0,skaters.length*fee-totalPaid);
+    const totalPaid=payingSkaters.reduce((sum,r)=>sum+getPaid(r.id),0);
+    const outstanding=Math.max(0,payingSkaters.length*fee-totalPaid);
     const goalieSecured=s.goalieSecured==='true';
     stEl.innerHTML=`
-      <div class="stat-card" onclick="showPageFiltered('roster','in')"><div class="stat-label">Skaters</div><div class="stat-value">${skaters.length}${s.targetSkaters&&s.targetSkaters!='0'?' / '+s.targetSkaters:''}</div></div>
+      <div class="stat-card" onclick="showPageFiltered('roster','in')"><div class="stat-label">Skaters</div><div class="stat-value">${skatersAll.length}${s.targetSkaters&&s.targetSkaters!='0'?' / '+s.targetSkaters:''}</div></div>
       <div class="stat-card" onclick="showPageFiltered('roster','spare')"><div class="stat-label">Spares</div><div class="stat-value">${sparesCount.length}</div></div>
       <div class="stat-card" onclick="toggleGoalieSecured()"><div class="stat-label">Goalies</div><div class="stat-value ${goalieSecured?'green':'amber'}">${goalieSecured?'✓':'?'}</div><div style="font-size:10px;color:var(--muted);margin-top:3px">${goaliesIn.length} on roster</div></div>
       <div class="stat-card" onclick="showPageFiltered('roster','pending')"><div class="stat-label">Pending</div><div class="stat-value ${pending.length>0?'amber':''}">${pending.length}</div></div>
       <div class="stat-card" onclick="showPageFiltered('roster','waitlist')"><div class="stat-label">Waitlist</div><div class="stat-value">${waitlist.length}</div></div>
       <div class="stat-card"><div class="stat-label">Collected</div><div class="stat-value green">$${totalPaid.toFixed(0)}</div></div>
-      <div class="stat-card" onclick="${outstanding>0?`showPageFiltered('roster','in')`:``}"><div class="stat-label">Outstanding</div><div class="stat-value ${outstanding>0?'amber':'green'}">$${outstanding.toFixed(0)}</div></div>`;
-    if(!skaters.length){pEl.innerHTML='<div class="empty"><div class="icon">💰</div>No confirmed skaters yet.</div>';}
-    else{pEl.innerHTML=`<div class="overflow-x"><table class="data-table"><thead><tr><th>Player</th><th>Owing</th><th>Paid</th><th>Status</th><th></th></tr></thead><tbody>${skaters.map(r=>{
+      <div class="stat-card" onclick="showPageFiltered('roster','in')"><div class="stat-label">Outstanding</div><div class="stat-value ${outstanding>0?'amber':'green'}">$${outstanding.toFixed(0)}</div></div>`;
+    if(!payingSkaters.length){pEl.innerHTML='<div class="empty"><div class="icon">💰</div>No confirmed paying skaters yet.</div>';}
+    else{pEl.innerHTML=`<div class="overflow-x"><table class="data-table"><thead><tr><th>Player</th><th>Owing</th><th>Paid</th><th>Status</th><th></th></tr></thead><tbody>${payingSkaters.map(r=>{
       const p=getP(r.playerId);if(!p)return'';
       const paid=getPaid(r.id);const pct=fee>0?Math.min(100,Math.round(paid/fee*100)):100;
       const st=paid>=fee?'paid':paid>0?'partial':'unpaid';
@@ -1001,11 +1017,11 @@ function emailHTML(){
     <div class="card-title" style="margin-bottom:12px">Quick copy email lists</div>
     <div class="copy-btn-row">
       <button class="copy-pill" onclick="copyEmailList('all')">All contacts</button>
-      <button class="copy-pill" onclick="copyEmailList('roster')">Season roster</button>
+      <button class="copy-pill" onclick="copyEmailList('roster-fw')">Latest F/W roster</button>
+      <button class="copy-pill" onclick="copyEmailList('roster-spring')">Latest Spring roster</button>
+      <button class="copy-pill" onclick="copyEmailList('goalies')">Goalies</button>
       <button class="copy-pill" onclick="copyEmailList('unpaid')">Unpaid skaters</button>
-      <button class="copy-pill" onclick="copyEmailList('spares-forward')">Forward spares</button>
-      <button class="copy-pill" onclick="copyEmailList('spares-defence')">Defence spares</button>
-      <button class="copy-pill" onclick="copyEmailList('spares-goalie')">Goalie spares</button>
+      <button class="copy-pill" onclick="copyEmailList('spares')">Spares</button>
     </div>
   </div>
   <div class="card">
@@ -1047,20 +1063,25 @@ function emailHTML(){
 function copyEmailList(type){
   const s=getAS();const fee=s?parseFloat(s.fee)||0:0;
   let emails=[];
-  if(type==='all'){emails=S.players.map(p=>p.email).filter(Boolean);}
-  else if(type==='roster'&&s){emails=S.roster.filter(r=>r.seasonId===s.id&&r.status==='in').map(r=>getP(r.playerId)?.email).filter(Boolean);}
-  else if(type==='unpaid'&&s){emails=S.roster.filter(r=>r.seasonId===s.id&&r.status==='in').filter(r=>{const p=getP(r.playerId);return p&&p.position!=='Goalie'&&getPaid(r.id)<fee;}).map(r=>getP(r.playerId)?.email).filter(Boolean);}
-  else if(type==='spares-forward'){
-    const s=getAS();
-    emails=s?S.roster.filter(r=>r.seasonId===s.id&&r.status==='spare').map(r=>getP(r.playerId)).filter(p=>p&&p.position==='Forward').map(p=>p.email).filter(Boolean):[];
-  }
-  else if(type==='spares-defence'){
-    const s=getAS();
-    emails=s?S.roster.filter(r=>r.seasonId===s.id&&r.status==='spare').map(r=>getP(r.playerId)).filter(p=>p&&p.position==='Defence').map(p=>p.email).filter(Boolean):[];
-  }
-  else if(type==='spares-goalie'){
-    const s=getAS();
-    emails=s?S.roster.filter(r=>r.seasonId===s.id&&r.status==='spare').map(r=>getP(r.playerId)).filter(p=>p&&p.position==='Goalie').map(p=>p.email).filter(Boolean):[];
+  if(type==='all'){
+    emails=S.players.map(p=>p.email).filter(Boolean);
+  }else if(type==='roster-fw'){
+    const fw=S.seasons.filter(s=>s.type==='Fall/Winter').sort((a,b)=>b.year.localeCompare(a.year))[0];
+    if(!fw){toast('No Fall/Winter season found');return;}
+    emails=S.roster.filter(r=>r.seasonId===fw.id&&(r.status==='in'||r.status==='spare')).map(r=>getP(r.playerId)?.email).filter(Boolean);
+  }else if(type==='roster-spring'){
+    const sp=S.seasons.filter(s=>s.type==='Spring').sort((a,b)=>b.year.localeCompare(a.year))[0];
+    if(!sp){toast('No Spring season found');return;}
+    emails=S.roster.filter(r=>r.seasonId===sp.id&&(r.status==='in'||r.status==='spare')).map(r=>getP(r.playerId)?.email).filter(Boolean);
+  }else if(type==='goalies'){
+    emails=S.players.filter(p=>p.position==='Goalie').map(p=>p.email).filter(Boolean);
+  }else if(type==='unpaid'&&s){
+    emails=S.roster.filter(r=>r.seasonId===s.id&&r.status==='in').filter(r=>{
+      if(isNoFee(r))return false;
+      const p=getP(r.playerId);return p&&getPaid(r.id)<fee;
+    }).map(r=>getP(r.playerId)?.email).filter(Boolean);
+  }else if(type==='spares'&&s){
+    emails=S.roster.filter(r=>r.seasonId===s.id&&r.status==='spare').map(r=>getP(r.playerId)?.email).filter(Boolean);
   }
   if(!emails.length){toast('No emails found for this list');return;}
   navigator.clipboard.writeText(emails.join(', ')).then(()=>toast('Copied '+emails.length+' email'+(emails.length>1?'s':''))).catch(()=>toast('Could not copy'));
