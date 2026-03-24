@@ -334,7 +334,7 @@ body{font-family:'DM Sans',sans-serif;background:#eef1f5;color:var(--text);min-h
     <div class="field"><label>Full name</label><div style="position:relative"><input id="pm-name" placeholder="Type name to search contacts..." autocomplete="off" oninput="onContactSearch('name',this.value)"><div class="contact-dd" id="contact-dd-name"></div></div></div>
     <div class="field"><label>Email</label><div style="position:relative"><input id="pm-email" type="email" placeholder="email@example.com" autocomplete="off" oninput="onContactSearch('email',this.value)"><div class="contact-dd" id="contact-dd-email"></div></div></div>
     <div class="field"><label>Phone (optional)</label><input id="pm-phone" type="tel" placeholder="604-555-0100" oninput="sanitizePhone(this)"></div>
-    <div class="field"><label>Position</label><select id="pm-pos"><option value="Forward">Forward</option><option value="Defence">Defence</option><option value="Goalie">Goalie</option></select></div>
+    <div class="field"><label>Position</label><select id="pm-pos"><option value="Forward">Player</option><option value="Goalie">Goalie</option></select></div>
     <div class="field"><label>Notes (optional)</label><textarea id="pm-notes" placeholder="e.g. reliable backup goalie"></textarea></div>
     <div class="btn-row"><button class="btn btn-primary" onclick="savePlayer()">Save</button><button class="btn btn-secondary" onclick="closePlayerModal()">Cancel</button></div>
   </div>
@@ -408,16 +408,28 @@ function setStep(id){
 window.onload=async function(){
   try{
     setStep('ls-connect');
-    const [allData]=await Promise.all([api('getAll')]);
+    const [allData, cachedContacts]=await Promise.all([
+      api('getAll'),
+      api('getContactsCache')
+    ]);
     setStep('ls-data');
     S=allData;
     activeSeason=S.config.activeSeason||(S.seasons[0]?S.seasons[0].id:null);
+    // Load cached contacts instantly
+    if(cachedContacts&&Array.isArray(cachedContacts.contacts)&&cachedContacts.contacts.length){
+      GC=cachedContacts.contacts;
+    }
     await new Promise(r=>setTimeout(r,200));
     setStep('ls-contacts');
-    try{
-      const contacts=await api('getAllContacts');
-      if(Array.isArray(contacts))GC=contacts;
-    }catch(e){}
+    // Sync fresh contacts in background
+    api('getAllContacts').then(results=>{
+      if(Array.isArray(results)&&results.length){
+        GC=results;
+        // Save updated cache to sheet in background
+        api('saveContactsCache',{contacts:results}).catch(()=>{});
+      }
+    }).catch(()=>{});
+    await new Promise(r=>setTimeout(r,200));
     setStep('ls-ready');
     await new Promise(r=>setTimeout(r,400));
     document.getElementById('loading-screen').style.display='none';
@@ -439,10 +451,17 @@ function getPaid(rid){return S.payments.filter(p=>p.rosterId===rid).reduce((s,p)
 function getAppName(){return S.config.appName||'Thursday Night Hockey';}
 function pb(pos){
   if(pos==='Goalie')return'<span class="badge badge-goalie">Goalie</span>';
-  if(pos==='Defence')return'<span class="badge badge-defence">Defence</span>';
-  return'<span class="badge badge-forward">Forward</span>';
+  return'<span class="badge badge-player">Player</span>';
 }
 function posLabel(p){return p.position==='Goalie'?'<span class="badge badge-goalie">Goalie</span>':'<span class="badge badge-player">Player</span>';}
+function isNoFee(r){
+  const p=getP(r.playerId);
+  if(!p)return false;
+  if(p.position==='Goalie')return true;
+  if(p.name==='Christopher David')return true;
+  if(r.noFee==='true')return true;
+  return false;
+}
 function sanitizePhone(input){input.value=input.value.replace(/[^0-9+\-() ]/g,'');}
 function cleanPhone(v){return(v&&v.toString().includes('ERROR'))?'':v||'';}
 
@@ -499,12 +518,11 @@ function renderDashboard(){
     if(!s){aEl.innerHTML='<div class="alert alert-amber">No active season. Go to Seasons to create one.</div>';stEl.innerHTML='';pEl.innerHTML='';nrC.style.display='none';return;}
     aEl.innerHTML=s.emailSent==='true'?`<div class="alert alert-green">Season invite sent for ${s.label}.</div>`:`<div class="alert alert-amber">Season invite not yet sent for ${s.label}.</div>`;
     const validEnts=S.roster.filter(r=>r.seasonId===s.id&&getP(r.playerId));
-    const inAll=validEnts.filter(r=>r.status==='in'||r.status==='spare');
     const pending=validEnts.filter(r=>r.status==='pending');
     const waitlist=validEnts.filter(r=>r.status==='waitlist');
-    const skaters=validEnts.filter(r=>r.status==='in'&&getP(r.playerId)?.position!=='Goalie');
-    const sparesCount=validEnts.filter(r=>r.status==='spare'&&getP(r.playerId)?.position!=='Goalie');
-    const goaliesIn=inAll.filter(r=>getP(r.playerId)?.position==='Goalie');
+    const skaters=validEnts.filter(r=>r.status==='in'&&!isNoFee(r));
+    const sparesCount=validEnts.filter(r=>r.status==='spare'&&!isNoFee(r));
+    const goaliesIn=validEnts.filter(r=>getP(r.playerId)?.position==='Goalie'&&r.status!=='waitlist'&&r.status!=='out');
     const fee=parseFloat(s.fee)||0;
     const totalPaid=skaters.reduce((sum,r)=>sum+getPaid(r.id),0);
     const outstanding=Math.max(0,skaters.length*fee-totalPaid);
@@ -747,24 +765,24 @@ function renderRoster(){
 
   function rosterRowD(r){
     const p=getP(r.playerId);if(!p)return'';
-    const isG=p.position==='Goalie';const paid=getPaid(r.id);const pct=fee>0?Math.min(100,Math.round(paid/fee*100)):100;
+    const nf=isNoFee(r);const paid=getPaid(r.id);const pct=!nf&&fee>0?Math.min(100,Math.round(paid/fee*100)):100;
     return`<tr>
       <td style="font-weight:500;white-space:nowrap">${p.name}</td>
       <td>${pb(p.position)}</td>
       <td>${statusSelect(r)}</td>
-      <td style="min-width:130px">${isG?'<span class="badge badge-goalie">No fee</span>':`<div class="pay-bar"><div class="pay-track"><div class="pay-fill ${pct>=100?'full':pct>0?'partial':'none'}" style="width:${pct}%"></div></div><span class="pay-label">$${paid.toFixed(0)} / $${fee.toFixed(0)}</span></div>`}</td>
-      <td style="white-space:nowrap">${!isG?`<button class="btn btn-secondary btn-xs" onclick="openPaymentModal('${r.id}')">+ Pay</button>`:''} <button class="del-btn" onclick="removeFromRoster('${r.id}')">✕</button></td>
+      <td style="min-width:130px">${nf?'<span class="badge badge-goalie">No fee</span>':`<div class="pay-bar"><div class="pay-track"><div class="pay-fill ${pct>=100?'full':pct>0?'partial':'none'}" style="width:${pct}%"></div></div><span class="pay-label">$${paid.toFixed(0)} / $${fee.toFixed(0)}</span></div>`}</td>
+      <td style="white-space:nowrap">${!nf?`<button class="btn btn-secondary btn-xs" onclick="openPaymentModal('${r.id}')">+ Pay</button>`:''} <button class="del-btn" onclick="removeFromRoster('${r.id}')">✕</button></td>
     </tr>`;
   }
 
   function rosterRowM(r){
     const p=getP(r.playerId);if(!p)return'';
-    const isG=p.position==='Goalie';const paid=getPaid(r.id);const pct=fee>0?Math.min(100,Math.round(paid/fee*100)):100;
+    const nf=isNoFee(r);const paid=getPaid(r.id);const pct=!nf&&fee>0?Math.min(100,Math.round(paid/fee*100)):100;
     return`<div class="m-list-item">
       <div style="flex:1;min-width:0">
         <div class="m-list-name">${p.name}</div>
         <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap">${pb(p.position)}<span class="badge ${sc[r.status]||'badge-pending'}">${r.status.charAt(0).toUpperCase()+r.status.slice(1)}</span></div>
-        ${!isG?`<div style="margin-top:8px"><div class="pay-bar"><div class="pay-track"><div class="pay-fill ${pct>=100?'full':pct>0?'partial':'none'}" style="width:${pct}%"></div></div><span class="pay-label">$${paid.toFixed(0)} / $${fee.toFixed(0)}</span></div></div>`:'<div style="margin-top:6px"><span class="badge badge-goalie">No fee</span></div>'}
+        ${!nf?`<div style="margin-top:8px"><div class="pay-bar"><div class="pay-track"><div class="pay-fill ${pct>=100?'full':pct>0?'partial':'none'}" style="width:${pct}%"></div></div><span class="pay-label">$${paid.toFixed(0)} / $${fee.toFixed(0)}</span></div></div>`:'<div style="margin-top:6px"><span class="badge badge-goalie">No fee</span></div>'}
       </div>
       <div class="m-list-right">
         <select class="btn btn-secondary btn-sm" style="cursor:pointer" onchange="updateStatus('${r.id}',this.value)">
@@ -774,7 +792,7 @@ function renderRoster(){
           <option value="waitlist" ${r.status==='waitlist'?'selected':''}>Waitlist</option>
           <option value="out" ${r.status==='out'?'selected':''}>Out</option>
         </select>
-        ${!isG?`<button class="btn btn-secondary btn-sm" onclick="openPaymentModal('${r.id}')">+ Pay</button>`:''}
+        ${!nf?`<button class="btn btn-secondary btn-sm" onclick="openPaymentModal('${r.id}')">+ Pay</button>`:''}
         <button class="del-btn" onclick="removeFromRoster('${r.id}')">✕</button>
       </div></div>`;
   }
@@ -813,7 +831,7 @@ function openRosterModal(){
   document.getElementById('rm-player-list').innerHTML=avail.map(p=>`
     <div class="batch-item" onclick="toggleBatchItem('${p.id}',this)">
       <input type="checkbox" class="batch-cb" id="bc_${p.id}" onclick="event.stopPropagation();toggleBatchItem('${p.id}',this.closest('.batch-item'))">
-      <div><div style="font-weight:500;font-size:15px">${p.name}</div><div style="font-size:13px;color:var(--muted)">${p.position||'Forward'} · ${p.playerType||'Full-time'}</div></div>
+      <div><div style="font-weight:500;font-size:15px">${p.name}</div><div style="font-size:13px;color:var(--muted)">${p.position==='Goalie'?'Goalie':'Player'}</div></div>
     </div>`).join('');
   document.getElementById('rm-count').textContent='0 selected';
   document.getElementById('roster-overlay').style.display='flex';
