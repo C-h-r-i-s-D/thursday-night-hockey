@@ -184,12 +184,12 @@ body{font-family:'DM Sans',sans-serif;background:#eef1f5;color:var(--text);min-h
 .r-row:nth-child(odd){background:white;}
 .r-row:nth-child(even){background:#fafbfc;}
 .r-name{font-size:15px;font-weight:500;color:var(--text);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.r-pay{display:flex;align-items:center;gap:4px;width:88px;flex-shrink:0;}
+.r-pay{display:flex;align-items:center;gap:4px;width:60px;flex-shrink:0;}
 .r-pay-bar{height:4px;background:#e5e7eb;border-radius:2px;overflow:hidden;flex:1;}
 .r-pay-fill-g{height:100%;border-radius:2px;background:var(--green);}
 .r-pay-fill-a{height:100%;border-radius:2px;background:var(--amber);}
 .r-pay-lbl{font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;width:26px;text-align:right;}
-.r-nofee{font-size:11px;color:#9ca3af;width:88px;text-align:right;flex-shrink:0;}
+.r-nofee{font-size:11px;color:#9ca3af;width:60px;text-align:right;flex-shrink:0;}
 .r-pill{border:none;border-radius:20px;font-size:11px;font-weight:700;padding:3px 9px;cursor:pointer;flex-shrink:0;font-family:'DM Sans',sans-serif;}
 .r-pill-ft{background:var(--green);color:white;}
 .r-pill-spare{background:var(--amber);color:white;}
@@ -900,12 +900,20 @@ function renderRoster(){
   function ghD(txt,n){return`<tr><td colspan="5"><div class="roster-group-label" style="margin:0;padding:8px 12px 5px">${txt} (${n})</div></td></tr>`;}
   function ghM(txt,n){return`<div class="roster-group-label">${txt} (${n})</div>`;}
 
-  // Mobile: show FT/Spare/Goalies always; Pending/Waitlist/Out only when filtered
+  // Summary line: FT count + Goalie count
+  const summaryLine=`<div style="padding:10px 14px;font-size:13px;color:var(--muted);background:#f5f6f8;border-bottom:1px solid var(--border);">
+    <span style="font-weight:600;color:var(--text)">${skaters.length} FT</span>
+    <span style="margin:0 8px;color:#ddd">·</span>
+    <span style="font-weight:600;color:var(--text)">${goalies.length} Goalie${goalies.length!==1?'s':''}</span>
+    ${spares.length?`<span style="margin:0 8px;color:#ddd">·</span><span style="font-weight:600;color:var(--text)">${spares.length} Spare${spares.length!==1?'s':''}</span>`:''}
+  </div>`;
+
+  // Mobile: Skaters first, then Spares, then Goalies at bottom; Pending/Waitlist/Out only when filtered
   const showAll=rosterFilter==='all';
   const mobileGroups=showAll
-    ?[{label:'Goalies',rows:goalies},{label:'Full-time',rows:skaters},{label:'Spare',rows:spares},{label:'Pending',rows:pending},{label:'Waitlist',rows:waitlist},{label:'Out',rows:out}]
+    ?[{label:'Full-time',rows:skaters},{label:'Spare',rows:spares},{label:'Pending',rows:pending},{label:'Waitlist',rows:waitlist},{label:'Out',rows:out},{label:'Goalies',rows:goalies}]
     :groups;
-  const groups=[{label:'Goalies',rows:goalies},{label:'Full-time',rows:skaters},{label:'Spare',rows:spares},{label:'Pending',rows:pending},{label:'Waitlist',rows:waitlist},{label:'Out',rows:out}];
+  const groups=[{label:'Full-time',rows:skaters},{label:'Spare',rows:spares},{label:'Pending',rows:pending},{label:'Waitlist',rows:waitlist},{label:'Out',rows:out},{label:'Goalies',rows:goalies}];
   const hasAny=groups.some(g=>g.rows.length);
 
   const dl=document.getElementById('dr-list');
@@ -922,6 +930,7 @@ function renderRoster(){
     if(!hasAny){ml.innerHTML='<div class="empty"><div class="icon">📋</div>No players match.</div>';}
     else{
       let h='<div style="border-radius:var(--radius-lg);overflow:hidden;border:1px solid var(--border);background:white;">';
+      if(showAll)h+=summaryLine;
       mobileGroups.filter(g=>g.rows.length).forEach(g=>{h+=ghM(g.label,g.rows.length)+g.rows.map(rosterRowM).join('');});
       h+='</div>';
       ml.innerHTML=h;
