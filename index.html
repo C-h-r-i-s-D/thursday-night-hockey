@@ -290,7 +290,7 @@ body{font-family:'DM Sans',sans-serif;background:#eef1f5;color:var(--text);min-h
     <button class="d-nav-btn" onclick="showPage('seasons',this)">Seasons</button>
     <button class="d-nav-btn" onclick="showPage('settings',this)">Settings</button>
   </div>
-  <div class="d-page active" id="dp-dashboard"><div id="dd-alerts"></div><div class="stats-grid" id="dd-stats"></div><div class="card"><div class="card-header"><span class="card-title">Payment tracker</span></div><div id="dd-pay"></div></div><div class="card" id="dd-nr-card" style="display:none"><div class="card-header"><span class="card-title">No response yet</span></div><div id="dd-nr"></div></div></div>
+  <div class="d-page active" id="dp-dashboard"><div id="dd-season-card"></div><div id="dd-pay-card"></div><div class="card" id="dd-nr-card" style="display:none"><div class="card-header"><span class="card-title">No response yet</span></div><div id="dd-nr"></div></div></div>
   <div class="d-page" id="dp-contacts">
     <div class="card">
       <div class="card-header"><span class="card-title">Contact list</span><button class="btn btn-primary btn-sm" onclick="openPlayerModal()">+ Add contact</button></div>
@@ -323,7 +323,7 @@ body{font-family:'DM Sans',sans-serif;background:#eef1f5;color:var(--text);min-h
     <span class="m-topbar-title" id="mt-title">Thursday Night Hockey</span>
     <span class="m-season-btn" id="mt-season" onclick="openSeasonPicker()">Select season</span>
   </div>
-  <div class="m-page active" id="mp-dashboard"><div id="md-alerts"></div><div class="stats-grid" id="md-stats"></div><div class="card"><div class="card-header"><span class="card-title">Payment tracker</span><span class="saving-dot" id="sd-m"></span></div><div id="md-pay"></div></div><div class="card" id="md-nr-card" style="display:none"><div class="card-header"><span class="card-title">No response yet</span></div><div id="md-nr"></div></div></div>
+  <div class="m-page active" id="mp-dashboard"><div id="md-season-card"></div><div id="md-pay-card"></div><div class="card" id="md-nr-card" style="display:none"><div class="card-header"><span class="card-title">No response yet</span></div><div id="md-nr"></div></div></div>
   <div class="m-page" id="mp-contacts">
     <div class="card">
       <div class="card-header"><span class="card-title">Contacts</span><button class="btn btn-primary btn-sm" onclick="openPlayerModal()">+ Add</button></div>
@@ -415,6 +415,8 @@ body{font-family:'DM Sans',sans-serif;background:#eef1f5;color:var(--text);min-h
   <div class="modal"><h2>Edit season</h2>
     <input type="hidden" id="se-id">
     <div class="form-row cols3"><div class="field"><label>Skater fee ($)</label><input id="se-fee" type="number"></div><div class="field"><label>Spare drop-in ($)</label><input id="se-sf" type="number"></div><div class="field"><label>Target skaters</label><input id="se-tgt" type="number"></div></div>
+    <div class="form-row"><div class="field"><label>Rink / arena</label><input id="se-rink" placeholder="e.g. Gardens Ice Centre"></div><div class="field"><label>Ice time</label><input id="se-icetime" placeholder="e.g. 7:30 – 8:45pm"></div></div>
+    <div class="form-row"><div class="field"><label>Start date</label><input id="se-startdate" placeholder="e.g. Apr 2"></div><div class="field"><label>End date</label><input id="se-enddate" placeholder="e.g. Jun 25, 2026"></div></div>
     <div class="field"><label>Season notes</label><textarea id="se-notes"></textarea></div>
     <div class="btn-row"><button class="btn btn-primary" onclick="saveSeasonEdit()">Save</button><button class="btn btn-secondary" onclick="closeSeasonEdit()">Cancel</button></div>
   </div>
@@ -604,12 +606,14 @@ function sbadge(pid){
 // ── Dashboard ─────────────────────────────────────────────────
 function renderDashboard(){
   const s=getAS();
-  [['dd-alerts','dd-stats','dd-pay','dd-nr-card','dd-nr'],['md-alerts','md-stats','md-pay','md-nr-card','md-nr']].forEach(([aId,stId,pId,nrCId,nrId])=>{
-    const aEl=document.getElementById(aId);if(!aEl)return;
-    const stEl=document.getElementById(stId);const pEl=document.getElementById(pId);
+  [['dd-season-card','dd-pay-card','dd-nr-card','dd-nr'],['md-season-card','md-pay-card','md-nr-card','md-nr']].forEach(([scId,pcId,nrCId,nrId])=>{
+    const scEl=document.getElementById(scId);if(!scEl)return;
+    const pcEl=document.getElementById(pcId);
     const nrC=document.getElementById(nrCId);const nrEl=document.getElementById(nrId);
-    if(!s){aEl.innerHTML='<div class="alert alert-amber">No active season. Go to Seasons to create one.</div>';stEl.innerHTML='';pEl.innerHTML='';nrC.style.display='none';return;}
-    aEl.innerHTML=s.emailSent==='true'?`<div class="alert alert-green">Season invite sent for ${s.label}.</div>`:`<div class="alert alert-amber">Season invite not yet sent for ${s.label}.</div>`;
+    if(!s){
+      scEl.innerHTML='<div class="alert alert-amber" style="margin-bottom:12px">No active season. Go to Seasons to create one.</div>';
+      if(pcEl)pcEl.innerHTML='';nrC.style.display='none';return;
+    }
     const validEnts=S.roster.filter(r=>r.seasonId===s.id&&getP(r.playerId));
     const pending=validEnts.filter(r=>r.status==='pending');
     const waitlist=validEnts.filter(r=>r.status==='waitlist');
@@ -621,31 +625,62 @@ function renderDashboard(){
     const totalPaid=payingSkaters.reduce((sum,r)=>sum+getPaid(r.id),0);
     const outstanding=Math.max(0,payingSkaters.length*fee-totalPaid);
     const goalieSecured=s.goalieSecured==='true';
-    stEl.innerHTML=`
-      <div class="stat-card" onclick="showPageFiltered('roster','in')"><div class="stat-label">Skaters</div><div class="stat-value">${skatersAll.length}${s.targetSkaters&&s.targetSkaters!='0'?' / '+s.targetSkaters:''}</div></div>
-      <div class="stat-card" onclick="showPageFiltered('roster','spare')"><div class="stat-label">Spares</div><div class="stat-value">${sparesCount.length}</div></div>
-      <div class="stat-card" onclick="showPageFiltered('roster','goalie')"><div class="stat-label">Goalies</div><div class="stat-value ${goalieSecured?'green':'amber'}">${goalieSecured?'✓':'?'}</div><div style="font-size:10px;color:var(--muted);margin-top:3px">${goaliesIn.length} on roster</div></div>
-      <div class="stat-card" onclick="showPageFiltered('roster','pending')"><div class="stat-label">Pending</div><div class="stat-value ${pending.length>0?'amber':''}">${pending.length}</div></div>
-      <div class="stat-card" onclick="showPageFiltered('roster','waitlist')"><div class="stat-label">Waitlist</div><div class="stat-value">${waitlist.length}</div></div>
-      <div class="stat-card"><div class="stat-label">Collected</div><div class="stat-value green">$${totalPaid.toFixed(0)}</div></div>
-      <div class="stat-card" onclick="showPageFiltered('roster','in')"><div class="stat-label">Outstanding</div><div class="stat-value ${outstanding>0?'amber':'green'}">$${outstanding.toFixed(0)}</div></div>`;
-    if(!payingSkaters.length){pEl.innerHTML='<div class="empty"><div class="icon">💰</div>No confirmed paying skaters yet.</div>';}
-    else{
-      const sorted=[...payingSkaters].sort((a,b)=>{
-        const pA=getP(a.playerId);const pB=getP(b.playerId);
-        const paidA=getPaid(a.id)>=fee?1:0;const paidB=getPaid(b.id)>=fee?1:0;
-        if(paidA!==paidB)return paidA-paidB;
-        return(pA?.name||'').localeCompare(pB?.name||'');
-      });
-      pEl.innerHTML=`<div class="overflow-x"><table class="data-table"><thead><tr><th>Player</th><th>Owing</th><th>Paid</th><th>Status</th><th></th></tr></thead><tbody>${sorted.map(r=>{
-        const p=getP(r.playerId);if(!p)return'';
-        const paid=getPaid(r.id);const pct=fee>0?Math.min(100,Math.round(paid/fee*100)):100;
-        const st=paid>=fee?'paid':paid>0?'partial':'unpaid';
-        return`<tr><td style="font-weight:500">${p.name}</td><td class="mono">$${fee.toFixed(0)}</td>
-          <td><div class="pay-bar"><div class="pay-track"><div class="pay-fill ${pct>=100?'full':pct>0?'partial':'none'}" style="width:${pct}%"></div></div><span class="pay-label">$${paid.toFixed(0)}</span></div></td>
-          <td><span class="badge badge-${st}">${st==='paid'?'Paid':st==='partial'?'Partial':'Unpaid'}</span></td>
-          <td><button class="btn btn-secondary btn-xs" onclick="openPaymentModal('${r.id}')">+ Pay</button></td></tr>`;
-      }).join('')}</tbody></table></div>`;}
+    const sent=s.emailSent==='true';
+
+    // Season detail line
+    const details=[];
+    if(s.rink)details.push(s.rink);
+    if(s.iceTime)details.push(s.iceTime);
+    if(s.startDate&&s.endDate)details.push(`${s.startDate} – ${s.endDate}`);
+    else if(s.startDate)details.push(s.startDate);
+
+    scEl.innerHTML=`
+      <div style="background:var(--navy);border-radius:var(--radius-lg) var(--radius-lg) 0 0;padding:14px 16px;">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:${details.length?'10px':'0'}">
+          <span style="font-size:16px;font-weight:600;color:white">${s.label}</span>
+          <span style="background:${sent?'#d4f0e2':'#fef0d0'};color:${sent?'#1a7a4a':'#c47a1a'};font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;white-space:nowrap">${sent?'Invite sent':'Invite pending'}</span>
+        </div>
+        ${details.length?`<div style="display:flex;gap:20px;flex-wrap:wrap">${details.map(d=>`<span style="font-size:13px;color:rgba(255,255,255,0.7)">${d}</span>`).join('')}</div>`:''}
+      </div>
+      <div style="background:white;border:1px solid var(--border);border-top:none;padding:12px 16px;border-radius:0 0 var(--radius-lg) var(--radius-lg);margin-bottom:12px;">
+        <div class="stats-grid" style="margin-bottom:0">
+          <div class="stat-card" onclick="showPageFiltered('roster','in')"><div class="stat-label">Skaters</div><div class="stat-value">${skatersAll.length}${s.targetSkaters&&s.targetSkaters!='0'?' / '+s.targetSkaters:''}</div></div>
+          <div class="stat-card" onclick="showPageFiltered('roster','spare')"><div class="stat-label">Spares</div><div class="stat-value">${sparesCount.length}</div></div>
+          <div class="stat-card" onclick="showPageFiltered('roster','goalie')"><div class="stat-label">Goalies</div><div class="stat-value ${goalieSecured?'green':'amber'}">${goalieSecured?'✓':'?'}</div><div style="font-size:10px;color:var(--muted);margin-top:2px">${goaliesIn.length} on roster</div></div>
+          <div class="stat-card" onclick="showPageFiltered('roster','pending')"><div class="stat-label">Pending</div><div class="stat-value ${pending.length>0?'amber':''}">${pending.length}</div></div>
+          <div class="stat-card" onclick="showPageFiltered('roster','waitlist')"><div class="stat-label">Waitlist</div><div class="stat-value">${waitlist.length}</div></div>
+          <div class="stat-card"><div class="stat-label">Collected</div><div class="stat-value green">$${totalPaid.toFixed(0)}</div></div>
+          <div class="stat-card" onclick="showPageFiltered('roster','in')"><div class="stat-label">Outstanding</div><div class="stat-value ${outstanding>0?'amber':'green'}">$${outstanding.toFixed(0)}</div></div>
+        </div>
+      </div>`;
+
+    if(pcEl){
+      if(!payingSkaters.length){
+        pcEl.innerHTML='<div class="card"><div class="empty"><div class="icon">💰</div>No confirmed paying skaters yet.</div></div>';
+      }else{
+        const sorted=[...payingSkaters].sort((a,b)=>{
+          const paidA=getPaid(a.id)>=fee?1:0;const paidB=getPaid(b.id)>=fee?1:0;
+          if(paidA!==paidB)return paidA-paidB;
+          return(getP(a.playerId)?.name||'').localeCompare(getP(b.playerId)?.name||'');
+        });
+        pcEl.innerHTML=`<div class="card"><div class="card-header"><span class="card-title">Payment tracker</span></div>`+
+          sorted.map(r=>{
+            const p=getP(r.playerId);if(!p)return'';
+            const paid=getPaid(r.id);const pct=fee>0?Math.min(100,Math.round(paid/fee*100)):100;
+            const isFull=pct>=100;const isPartial=pct>0&&pct<100;
+            const bg=isFull?'#d4f0e2':isPartial?'#fef0d0':'#fde8e8';
+            const fg=isFull?'#1a7a4a':isPartial?'#c47a1a':'#c0392b';
+            return`<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:0.5px solid var(--border);">
+              <span style="font-size:14px;font-weight:500;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${p.name}</span>
+              <div style="width:80px;flex-shrink:0;height:4px;border-radius:2px;background:#e5e7eb;overflow:hidden;">
+                <div style="height:100%;border-radius:2px;background:${fg};width:${pct}%"></div>
+              </div>
+              <button onclick="openPaymentModal('${r.id}')" style="background:${bg};color:${fg};border:none;border-radius:8px;font-size:11px;font-weight:700;padding:5px 0;cursor:pointer;font-family:'DM Mono',monospace;flex-shrink:0;width:60px;text-align:center">$${paid.toFixed(0)}</button>
+            </div>`;
+          }).join('')+'<div style="height:4px"></div></div>';
+      }
+    }
+
     if(pending.length){nrC.style.display='block';nrEl.innerHTML=pending.map(r=>{const p=getP(r.playerId);if(!p)return'';return`<div class="m-list-item"><div><div class="m-list-name">${p.name}</div><div class="m-list-sub">${p.email}</div></div></div>`;}).join('');}
     else nrC.style.display='none';
   });
@@ -1360,7 +1395,9 @@ function seasonsHTML(){
     <div class="card-title" style="margin-bottom:16px">Create new season</div>
     <div class="form-row"><div class="field"><label>Season type</label><select id="ns-type"><option value="Fall/Winter">Fall/Winter (Sept – March)</option><option value="Spring">Spring (April – June)</option></select></div><div class="field"><label>Start year</label><input id="ns-year" type="number" placeholder="e.g. 2025"></div></div>
     <div class="form-row cols3"><div class="field"><label>Skater fee ($)</label><input id="ns-fee" type="number" placeholder="e.g. 250"></div><div class="field"><label>Spare drop-in ($)</label><input id="ns-sf" type="number" placeholder="e.g. 20"></div><div class="field"><label>Target skaters</label><input id="ns-tgt" type="number" placeholder="e.g. 20"></div></div>
-    <div class="field"><label>Season notes (optional)</label><textarea id="ns-notes" placeholder="e.g. Richmond Ice Centre, pad 2."></textarea></div>
+    <div class="form-row"><div class="field"><label>Rink / arena</label><input id="ns-rink" placeholder="e.g. Gardens Ice Centre"></div><div class="field"><label>Ice time</label><input id="ns-icetime" placeholder="e.g. 7:30 – 8:45pm"></div></div>
+    <div class="form-row"><div class="field"><label>Start date</label><input id="ns-startdate" placeholder="e.g. Apr 2"></div><div class="field"><label>End date</label><input id="ns-enddate" placeholder="e.g. Jun 25, 2026"></div></div>
+    <div class="field"><label>Season notes (optional)</label><textarea id="ns-notes" placeholder="e.g. Pad 2"></textarea></div>
     <div class="btn-row"><button class="btn btn-primary" onclick="createSeason()">Create season</button></div>
   </div>
   <div class="card">
@@ -1370,7 +1407,8 @@ function seasonsHTML(){
       <div>
         <div style="font-weight:500;font-size:15px">${s.label} ${s.id===activeSeason?'<span class="badge badge-in" style="font-size:11px">Active</span>':''}</div>
         <div style="font-size:13px;color:var(--muted);margin-top:3px">$${s.fee}/skater · $${s.spareFee||0}/spare · ${S.roster.filter(r=>r.seasonId===s.id).length} on roster</div>
-        ${s.notes?`<div style="font-size:12px;color:var(--muted);margin-top:3px;font-style:italic">${s.notes}</div>`:''}
+        ${s.rink||s.iceTime?`<div style="font-size:12px;color:var(--muted);margin-top:3px">${[s.rink,s.iceTime,s.startDate&&s.endDate?s.startDate+' – '+s.endDate:''].filter(Boolean).join(' · ')}</div>`:''}
+        ${s.notes?`<div style="font-size:12px;color:var(--muted);margin-top:2px;font-style:italic">${s.notes}</div>`:''}
       </div>
       <div style="display:flex;gap:8px;flex-wrap:wrap">
         <button class="btn btn-secondary btn-sm" onclick="switchSeason('${s.id}')">Set active</button>
@@ -1384,7 +1422,12 @@ function seasonsHTML(){
 async function createSeason(){
   const type=document.getElementById('ns-type')?.value;const year=document.getElementById('ns-year')?.value.trim();const fee=document.getElementById('ns-fee')?.value;
   if(!year){toast('Enter a year');return;}if(!fee){toast('Enter a skater fee');return;}
-  const data={type,year,fee:parseFloat(fee),spareFee:parseFloat(document.getElementById('ns-sf')?.value)||0,targetSkaters:parseInt(document.getElementById('ns-tgt')?.value)||0,notes:document.getElementById('ns-notes')?.value.trim()};
+  const data={type,year,fee:parseFloat(fee),spareFee:parseFloat(document.getElementById('ns-sf')?.value)||0,targetSkaters:parseInt(document.getElementById('ns-tgt')?.value)||0,
+    rink:document.getElementById('ns-rink')?.value.trim()||'',
+    iceTime:document.getElementById('ns-icetime')?.value.trim()||'',
+    startDate:document.getElementById('ns-startdate')?.value.trim()||'',
+    endDate:document.getElementById('ns-enddate')?.value.trim()||'',
+    notes:document.getElementById('ns-notes')?.value.trim()};
   const result=await api('saveSeason',data);
   S.seasons.push({id:result.inserted,label:result.label,...data,emailSent:'false'});
   if(!activeSeason)await switchSeason(result.inserted,true);
@@ -1404,15 +1447,28 @@ async function deleteSeason(id){
 }
 function openSeasonEdit(id){
   const s=S.seasons.find(x=>x.id===id);if(!s)return;
-  document.getElementById('se-id').value=s.id;document.getElementById('se-fee').value=s.fee;
-  document.getElementById('se-sf').value=s.spareFee||'';document.getElementById('se-tgt').value=s.targetSkaters||'';document.getElementById('se-notes').value=s.notes||'';
+  document.getElementById('se-id').value=s.id;
+  document.getElementById('se-fee').value=s.fee;
+  document.getElementById('se-sf').value=s.spareFee||'';
+  document.getElementById('se-tgt').value=s.targetSkaters||'';
+  document.getElementById('se-rink').value=s.rink||'';
+  document.getElementById('se-icetime').value=s.iceTime||'';
+  document.getElementById('se-startdate').value=s.startDate||'';
+  document.getElementById('se-enddate').value=s.endDate||'';
+  document.getElementById('se-notes').value=s.notes||'';
   document.getElementById('se-overlay').style.display='flex';
 }
 function closeSeasonEdit(){document.getElementById('se-overlay').style.display='none';}
 async function saveSeasonEdit(){
   const id=document.getElementById('se-id').value;const s=S.seasons.find(x=>x.id===id);if(!s)return;
-  s.fee=document.getElementById('se-fee').value;s.spareFee=document.getElementById('se-sf').value;
-  s.targetSkaters=document.getElementById('se-tgt').value;s.notes=document.getElementById('se-notes').value.trim();
+  s.fee=document.getElementById('se-fee').value;
+  s.spareFee=document.getElementById('se-sf').value;
+  s.targetSkaters=document.getElementById('se-tgt').value;
+  s.rink=document.getElementById('se-rink').value.trim();
+  s.iceTime=document.getElementById('se-icetime').value.trim();
+  s.startDate=document.getElementById('se-startdate').value.trim();
+  s.endDate=document.getElementById('se-enddate').value.trim();
+  s.notes=document.getElementById('se-notes').value.trim();
   closeSeasonEdit();renderDynamic('seasons');renderDashboard();toast('Season updated');
   try{await api('saveSeason',s);}catch(e){toast('Sync failed');}
 }
