@@ -178,7 +178,42 @@ body{font-family:'DM Sans',sans-serif;background:#eef1f5;color:var(--text);min-h
 .batch-item:last-child{border-bottom:none;}
 .batch-item:active{background:#f9fafb;}
 .batch-cb{width:22px;height:22px;accent-color:var(--navy);cursor:pointer;flex-shrink:0;}
-.roster-group-label{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.6px;padding:14px 0 6px;border-bottom:1px solid var(--border);margin-bottom:4px;}
+.roster-group-label{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.6px;padding:9px 14px 5px;background:#f5f6f8;margin-bottom:0;}
+/* Mobile roster rows - zebra, compact, aligned */
+.r-row{display:flex;align-items:center;gap:8px;padding:10px 14px;}
+.r-row:nth-child(odd){background:white;}
+.r-row:nth-child(even){background:#fafbfc;}
+.r-name{font-size:15px;font-weight:500;color:var(--text);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.r-pay{display:flex;align-items:center;gap:4px;width:88px;flex-shrink:0;}
+.r-pay-bar{height:4px;background:#e5e7eb;border-radius:2px;overflow:hidden;flex:1;}
+.r-pay-fill-g{height:100%;border-radius:2px;background:var(--green);}
+.r-pay-fill-a{height:100%;border-radius:2px;background:var(--amber);}
+.r-pay-lbl{font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;width:26px;text-align:right;}
+.r-nofee{font-size:11px;color:#9ca3af;width:88px;text-align:right;flex-shrink:0;}
+.r-pill{border:none;border-radius:20px;font-size:11px;font-weight:700;padding:3px 9px;cursor:pointer;flex-shrink:0;font-family:'DM Sans',sans-serif;}
+.r-pill-ft{background:var(--green);color:white;}
+.r-pill-spare{background:var(--amber);color:white;}
+.r-pill-pending{background:#e5e7eb;color:#6b7280;}
+.r-pill-waitlist{background:var(--purple-light);color:var(--purple);}
+.r-pill-out{background:var(--red-light);color:var(--red);}
+.r-x{background:none;border:none;cursor:pointer;color:#d1d5db;font-size:12px;padding:0;line-height:1;flex-shrink:0;}
+.r-x:active{color:var(--red);}
+/* Status bottom sheet */
+.status-sheet-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.35);z-index:400;display:none;}
+.status-sheet-overlay.open{display:block;}
+.status-sheet{position:fixed;bottom:0;left:0;right:0;background:white;border-radius:20px 20px 0 0;z-index:401;padding-bottom:env(safe-area-inset-bottom,16px);transform:translateY(100%);transition:transform 0.28s cubic-bezier(0.32,0.72,0,1);}
+.status-sheet.open{transform:translateY(0);}
+.status-sheet-handle{width:36px;height:4px;background:#ddd;border-radius:2px;margin:12px auto 4px;}
+.status-sheet-title{font-size:13px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;padding:8px 20px 10px;}
+.status-opt{padding:16px 20px;font-size:17px;font-weight:500;cursor:pointer;border-top:1px solid #f3f4f6;color:var(--text);}
+.status-opt:active{background:#f9fafb;}
+.status-opt.danger{color:var(--red);}
+.status-opt.active-status{font-weight:700;}
+/* Fix batch item — full row is tappable */
+.batch-item{display:flex;align-items:center;gap:12px;padding:13px 4px;border-bottom:1px solid #f3f4f6;cursor:pointer;-webkit-user-select:none;user-select:none;}
+.batch-item:last-child{border-bottom:none;}
+.batch-item.selected{background:var(--accent-light);}
+.batch-cb{width:22px;height:22px;accent-color:var(--navy);cursor:pointer;flex-shrink:0;pointer-events:none;}
 @media(max-width:767px){
   .m-list-item{background:white;border-radius:14px;padding:16px;margin-bottom:10px;border:1px solid var(--border);box-shadow:var(--shadow);}
   .m-list-item:last-child{border-bottom:1px solid var(--border);}
@@ -348,7 +383,7 @@ body{font-family:'DM Sans',sans-serif;background:#eef1f5;color:var(--text);min-h
 <div class="overlay" id="roster-overlay" style="display:none" onclick="if(event.target===this)closeRosterModal()">
   <div class="modal">
     <h2>Add to roster</h2>
-    <div class="field"><label>Default status</label><select id="rm-status"><option value="in">In</option><option value="spare">Spare</option><option value="pending">Pending response</option><option value="waitlist">Waitlist</option><option value="out">Out</option></select></div>
+    <div class="field"><label>Default status</label><select id="rm-status"><option value="in">Full-time (FT)</option><option value="spare">Spare</option><option value="pending">Pending response</option><option value="waitlist">Waitlist</option><option value="out">Out</option></select></div>
     <div style="max-height:320px;overflow-y:auto;border:1px solid var(--border);border-radius:var(--radius);padding:8px 12px;" id="rm-player-list"></div>
     <div style="font-size:13px;color:var(--muted);margin-top:8px" id="rm-count">0 selected</div>
     <div class="btn-row"><button class="btn btn-primary" onclick="addToRoster()">Add selected</button><button class="btn btn-secondary" onclick="closeRosterModal()">Cancel</button></div>
@@ -384,12 +419,45 @@ body{font-family:'DM Sans',sans-serif;background:#eef1f5;color:var(--text);min-h
 
 <div class="toast" id="toast"></div>
 
+<!-- Status picker sheet -->
+<div class="status-sheet-overlay" id="status-sheet-overlay" onclick="closeStatusSheet()"></div>
+<div class="status-sheet" id="status-sheet">
+  <div class="status-sheet-handle"></div>
+  <div class="status-sheet-title">Change status</div>
+  <div class="status-opt" id="sopt-in" onclick="pickStatus('in')">Full-time (FT)</div>
+  <div class="status-opt" id="sopt-spare" onclick="pickStatus('spare')">Spare</div>
+  <div class="status-opt" id="sopt-pending" onclick="pickStatus('pending')">Pending</div>
+  <div class="status-opt" id="sopt-waitlist" onclick="pickStatus('waitlist')">Waitlist</div>
+  <div class="status-opt danger" id="sopt-out" onclick="pickStatus('out')">Out</div>
+</div>
+
 <script>
 const SCRIPT_URL='https://restless-thunder-384c.christopher-robert-david.workers.dev';
 let S={players:[],seasons:[],roster:[],payments:[],config:{}};
 let GC=[]; // Google Contacts cache
 let activeSeason=null,rosterFilter='all',playerFilter='all',spareFilter='all';
-let editingPlayer=null,payRosterId=null,contactSearchTimer=null;
+let editingPlayer=null,payRosterId=null,contactSearchTimer=null,activeStatusRid=null;
+
+function openStatusSheet(rid,currentStatus){
+  activeStatusRid=rid;
+  ['in','spare','pending','waitlist','out'].forEach(s=>{
+    const el=document.getElementById('sopt-'+s);
+    if(el)el.classList.toggle('active-status',s===currentStatus);
+  });
+  document.getElementById('status-sheet-overlay').classList.add('open');
+  document.getElementById('status-sheet').classList.add('open');
+}
+function closeStatusSheet(){
+  document.getElementById('status-sheet-overlay').classList.remove('open');
+  document.getElementById('status-sheet').classList.remove('open');
+  activeStatusRid=null;
+}
+async function pickStatus(status){
+  if(!activeStatusRid)return;
+  const rid=activeStatusRid;
+  closeStatusSheet();
+  await updateStatus(rid,status);
+}
 
 // ── API ───────────────────────────────────────────────────────
 async function api(action,data){
@@ -552,15 +620,22 @@ function renderDashboard(){
       <div class="stat-card"><div class="stat-label">Collected</div><div class="stat-value green">$${totalPaid.toFixed(0)}</div></div>
       <div class="stat-card" onclick="showPageFiltered('roster','in')"><div class="stat-label">Outstanding</div><div class="stat-value ${outstanding>0?'amber':'green'}">$${outstanding.toFixed(0)}</div></div>`;
     if(!payingSkaters.length){pEl.innerHTML='<div class="empty"><div class="icon">💰</div>No confirmed paying skaters yet.</div>';}
-    else{pEl.innerHTML=`<div class="overflow-x"><table class="data-table"><thead><tr><th>Player</th><th>Owing</th><th>Paid</th><th>Status</th><th></th></tr></thead><tbody>${payingSkaters.map(r=>{
-      const p=getP(r.playerId);if(!p)return'';
-      const paid=getPaid(r.id);const pct=fee>0?Math.min(100,Math.round(paid/fee*100)):100;
-      const st=paid>=fee?'paid':paid>0?'partial':'unpaid';
-      return`<tr><td style="font-weight:500">${p.name}</td><td class="mono">$${fee.toFixed(0)}</td>
-        <td><div class="pay-bar"><div class="pay-track"><div class="pay-fill ${pct>=100?'full':pct>0?'partial':'none'}" style="width:${pct}%"></div></div><span class="pay-label">$${paid.toFixed(0)}</span></div></td>
-        <td><span class="badge badge-${st}">${st==='paid'?'Paid':st==='partial'?'Partial':'Unpaid'}</span></td>
-        <td><button class="btn btn-secondary btn-xs" onclick="openPaymentModal('${r.id}')">+ Pay</button></td></tr>`;
-    }).join('')}</tbody></table></div>`;}
+    else{
+      const sorted=[...payingSkaters].sort((a,b)=>{
+        const pA=getP(a.playerId);const pB=getP(b.playerId);
+        const paidA=getPaid(a.id)>=fee?1:0;const paidB=getPaid(b.id)>=fee?1:0;
+        if(paidA!==paidB)return paidA-paidB;
+        return(pA?.name||'').localeCompare(pB?.name||'');
+      });
+      pEl.innerHTML=`<div class="overflow-x"><table class="data-table"><thead><tr><th>Player</th><th>Owing</th><th>Paid</th><th>Status</th><th></th></tr></thead><tbody>${sorted.map(r=>{
+        const p=getP(r.playerId);if(!p)return'';
+        const paid=getPaid(r.id);const pct=fee>0?Math.min(100,Math.round(paid/fee*100)):100;
+        const st=paid>=fee?'paid':paid>0?'partial':'unpaid';
+        return`<tr><td style="font-weight:500">${p.name}</td><td class="mono">$${fee.toFixed(0)}</td>
+          <td><div class="pay-bar"><div class="pay-track"><div class="pay-fill ${pct>=100?'full':pct>0?'partial':'none'}" style="width:${pct}%"></div></div><span class="pay-label">$${paid.toFixed(0)}</span></div></td>
+          <td><span class="badge badge-${st}">${st==='paid'?'Paid':st==='partial'?'Partial':'Unpaid'}</span></td>
+          <td><button class="btn btn-secondary btn-xs" onclick="openPaymentModal('${r.id}')">+ Pay</button></td></tr>`;
+      }).join('')}</tbody></table></div>`;}
     if(pending.length){nrC.style.display='block';nrEl.innerHTML=pending.map(r=>{const p=getP(r.playerId);if(!p)return'';return`<div class="m-list-item"><div><div class="m-list-name">${p.name}</div><div class="m-list-sub">${p.email}</div></div></div>`;}).join('');}
     else nrC.style.display='none';
   });
@@ -791,32 +866,46 @@ function renderRoster(){
     </tr>`;
   }
 
+  function pillClass(status){
+    if(status==='in')return'r-pill r-pill-ft';
+    if(status==='spare')return'r-pill r-pill-spare';
+    if(status==='pending')return'r-pill r-pill-pending';
+    if(status==='waitlist')return'r-pill r-pill-waitlist';
+    return'r-pill r-pill-out';
+  }
+  function pillLabel(status){
+    if(status==='in')return'FT ▾';
+    if(status==='spare')return'Spare ▾';
+    if(status==='pending')return'Pending ▾';
+    if(status==='waitlist')return'Wait ▾';
+    return'Out ▾';
+  }
+
   function rosterRowM(r){
     const p=getP(r.playerId);if(!p)return'';
     const nf=isNoFee(r);const paid=getPaid(r.id);const pct=!nf&&fee>0?Math.min(100,Math.round(paid/fee*100)):100;
-    return`<div class="m-list-item">
-      <div style="flex:1;min-width:0">
-        <div class="m-list-name">${p.name}</div>
-        <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap">${pb(p.position)}<span class="badge ${sc[r.status]||'badge-pending'}">${r.status.charAt(0).toUpperCase()+r.status.slice(1)}</span></div>
-        ${!nf?`<div style="margin-top:8px"><div class="pay-bar"><div class="pay-track"><div class="pay-fill ${pct>=100?'full':pct>0?'partial':'none'}" style="width:${pct}%"></div></div><span class="pay-label">$${paid.toFixed(0)} / $${fee.toFixed(0)}</span></div></div>`:'<div style="margin-top:6px"><span class="badge badge-goalie">No fee</span></div>'}
-      </div>
-      <div class="m-list-right">
-        <select class="btn btn-secondary btn-sm" style="cursor:pointer" onchange="updateStatus('${r.id}',this.value)">
-          <option value="in" ${r.status==='in'?'selected':''}>In</option>
-          <option value="spare" ${r.status==='spare'?'selected':''}>Spare</option>
-          <option value="pending" ${r.status==='pending'?'selected':''}>Pending</option>
-          <option value="waitlist" ${r.status==='waitlist'?'selected':''}>Waitlist</option>
-          <option value="out" ${r.status==='out'?'selected':''}>Out</option>
-        </select>
-        ${!nf?`<button class="btn btn-secondary btn-sm" onclick="openPaymentModal('${r.id}')">+ Pay</button>`:''}
-        <button class="del-btn" onclick="removeFromRoster('${r.id}')">✕</button>
-      </div></div>`;
+    const isFull=pct>=100;const isPartial=pct>0&&pct<100;
+    return`<div class="r-row">
+      <span class="r-name">${p.name}</span>
+      ${nf
+        ?`<span class="r-nofee">No fee</span>`
+        :`<div class="r-pay"><div class="r-pay-bar"><div class="${isFull?'r-pay-fill-g':isPartial?'r-pay-fill-a':'r-pay-fill-g'}" style="width:${pct}%"></div></div><span class="r-pay-lbl">$${paid.toFixed(0)}</span></div>`
+      }
+      <button class="${pillClass(r.status)}" onclick="openStatusSheet('${r.id}','${r.status}')">${pillLabel(r.status)}</button>
+      ${!nf?`<button class="r-x" onclick="openPaymentModal('${r.id}')">$</button>`:''}
+      <button class="r-x" onclick="removeFromRoster('${r.id}')">✕</button>
+    </div>`;
   }
 
-  function ghD(txt,n){return`<tr><td colspan="5"><div class="roster-group-label" style="margin:0;padding:10px 12px 6px">${txt} (${n})</div></td></tr>`;}
+  function ghD(txt,n){return`<tr><td colspan="5"><div class="roster-group-label" style="margin:0;padding:8px 12px 5px">${txt} (${n})</div></td></tr>`;}
   function ghM(txt,n){return`<div class="roster-group-label">${txt} (${n})</div>`;}
 
-  const groups=[{label:'Goalies',rows:goalies},{label:'In',rows:skaters},{label:'Spare',rows:spares},{label:'Pending',rows:pending},{label:'Waitlist',rows:waitlist},{label:'Out',rows:out}];
+  // Mobile: show FT/Spare/Goalies always; Pending/Waitlist/Out only when filtered
+  const showAll=rosterFilter==='all';
+  const mobileGroups=showAll
+    ?[{label:'Goalies',rows:goalies},{label:'Full-time',rows:skaters},{label:'Spare',rows:spares},{label:'Pending',rows:pending},{label:'Waitlist',rows:waitlist},{label:'Out',rows:out}]
+    :groups;
+  const groups=[{label:'Goalies',rows:goalies},{label:'Full-time',rows:skaters},{label:'Spare',rows:spares},{label:'Pending',rows:pending},{label:'Waitlist',rows:waitlist},{label:'Out',rows:out}];
   const hasAny=groups.some(g=>g.rows.length);
 
   const dl=document.getElementById('dr-list');
@@ -832,8 +921,9 @@ function renderRoster(){
   if(ml){
     if(!hasAny){ml.innerHTML='<div class="empty"><div class="icon">📋</div>No players match.</div>';}
     else{
-      let h='';
-      groups.filter(g=>g.rows.length).forEach(g=>{h+=ghM(g.label,g.rows.length)+g.rows.map(rosterRowM).join('');});
+      let h='<div style="border-radius:var(--radius-lg);overflow:hidden;border:1px solid var(--border);background:white;">';
+      mobileGroups.filter(g=>g.rows.length).forEach(g=>{h+=ghM(g.label,g.rows.length)+g.rows.map(rosterRowM).join('');});
+      h+='</div>';
       ml.innerHTML=h;
     }
   }
@@ -845,24 +935,25 @@ function openRosterModal(){
   const avail=S.players.filter(p=>!onRoster.has(p.id)).sort((a,b)=>a.name.localeCompare(b.name));
   if(!avail.length){toast('All contacts are already on this roster');return;}
   document.getElementById('rm-player-list').innerHTML=avail.map(p=>`
-    <div class="batch-item" onclick="toggleBatchItem('${p.id}',this)">
-      <input type="checkbox" class="batch-cb" id="bc_${p.id}" onclick="event.stopPropagation();toggleBatchItem('${p.id}',this.closest('.batch-item'))">
+    <div class="batch-item" data-pid="${p.id}" onclick="toggleBatchItem('${p.id}',this)">
+      <input type="checkbox" class="batch-cb">
       <div><div style="font-weight:500;font-size:15px">${p.name}</div><div style="font-size:13px;color:var(--muted)">${p.position==='Goalie'?'Goalie':'Player'}</div></div>
     </div>`).join('');
   document.getElementById('rm-count').textContent='0 selected';
   document.getElementById('roster-overlay').style.display='flex';
 }
 function toggleBatchItem(id,row){
-  const cb=row.querySelector('.batch-cb');cb.checked=!cb.checked;
-  row.style.background=cb.checked?'var(--accent-light)':'';
-  const total=document.querySelectorAll('#rm-player-list .batch-cb:checked').length;
+  row.classList.toggle('selected');
+  const cb=row.querySelector('.batch-cb');
+  cb.checked=row.classList.contains('selected');
+  const total=document.querySelectorAll('#rm-player-list .batch-item.selected').length;
   document.getElementById('rm-count').textContent=total+' selected';
 }
 function closeRosterModal(){document.getElementById('roster-overlay').style.display='none';}
 
 async function addToRoster(){
   const s=getAS();const status=document.getElementById('rm-status').value;
-  const checked=[...document.querySelectorAll('#rm-player-list .batch-cb:checked')].map(cb=>cb.id.replace('bc_',''));
+  const checked=[...document.querySelectorAll('#rm-player-list .batch-item.selected')].map(row=>row.dataset.pid);
   if(!checked.length){toast('Select at least one player');return;}
   const tempEntries=checked.map(pid=>({id:'tmp_'+Date.now()+'_'+pid,seasonId:s.id,playerId:pid,status}));
   S.roster.push(...tempEntries);
