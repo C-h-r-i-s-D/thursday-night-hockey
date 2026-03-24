@@ -414,11 +414,10 @@ window.onload=async function(){
     activeSeason=S.config.activeSeason||(S.seasons[0]?S.seasons[0].id:null);
     await new Promise(r=>setTimeout(r,200));
     setStep('ls-contacts');
-    // Load Google Contacts in background — don't block app load
-    api('getAllContacts').then(results=>{
-      if(Array.isArray(results))GC=results;
-    }).catch(()=>{});
-    await new Promise(r=>setTimeout(r,200));
+    try{
+      const contacts=await api('getAllContacts');
+      if(Array.isArray(contacts))GC=contacts;
+    }catch(e){}
     setStep('ls-ready');
     await new Promise(r=>setTimeout(r,400));
     document.getElementById('loading-screen').style.display='none';
