@@ -416,7 +416,7 @@ body{font-family:'DM Sans',sans-serif;background:#eef1f5;color:var(--text);min-h
     <input type="hidden" id="se-id">
     <div class="form-row cols3"><div class="field"><label>Skater fee ($)</label><input id="se-fee" type="number"></div><div class="field"><label>Spare drop-in ($)</label><input id="se-sf" type="number"></div><div class="field"><label>Target skaters</label><input id="se-tgt" type="number"></div></div>
     <div class="form-row"><div class="field"><label>Rink / arena</label><input id="se-rink" placeholder="e.g. Gardens Ice Centre"></div><div class="field"><label>Ice time</label><input id="se-icetime" placeholder="e.g. 7:30 – 8:45pm"></div></div>
-    <div class="form-row"><div class="field"><label>Start date</label><input id="se-startdate" placeholder="e.g. Apr 2"></div><div class="field"><label>End date</label><input id="se-enddate" placeholder="e.g. Jun 25, 2026"></div></div>
+    <div class="form-row"><div class="field"><label>Start date</label><input id="se-startdate" type="date"></div><div class="field"><label>End date</label><input id="se-enddate" type="date"></div></div>
     <div class="field"><label>Season notes</label><textarea id="se-notes"></textarea></div>
     <div class="btn-row"><button class="btn btn-primary" onclick="saveSeasonEdit()">Save</button><button class="btn btn-secondary" onclick="closeSeasonEdit()">Cancel</button></div>
   </div>
@@ -539,6 +539,17 @@ function isNoFee(r){
   if(r.noFee==='true')return true;
   return false;
 }
+function formatSeasonDate(val,includeYear){
+  if(!val)return'';
+  // If already a plain text string (not ISO), return as-is
+  const d=new Date(val);
+  if(isNaN(d.getTime()))return val;
+  const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const m=months[d.getUTCMonth()];
+  const day=d.getUTCDate();
+  const yr=d.getUTCFullYear();
+  return includeYear?`${m} ${day}, ${yr}`:`${m} ${day}`;
+}
 function formatPhone(v){
   if(!v)return'';
   const digits=v.replace(/\D/g,'');
@@ -631,8 +642,8 @@ function renderDashboard(){
     const details=[];
     if(s.rink)details.push(s.rink);
     if(s.iceTime)details.push(s.iceTime);
-    if(s.startDate&&s.endDate)details.push(`${s.startDate} – ${s.endDate}`);
-    else if(s.startDate)details.push(s.startDate);
+    if(s.startDate&&s.endDate)details.push(`${formatSeasonDate(s.startDate,false)} – ${formatSeasonDate(s.endDate,true)}`);
+    else if(s.startDate)details.push(formatSeasonDate(s.startDate,true));
 
     scEl.innerHTML=`
       <div style="background:var(--navy);border-radius:var(--radius-lg) var(--radius-lg) 0 0;padding:14px 16px;">
@@ -1396,7 +1407,7 @@ function seasonsHTML(){
     <div class="form-row"><div class="field"><label>Season type</label><select id="ns-type"><option value="Fall/Winter">Fall/Winter (Sept – March)</option><option value="Spring">Spring (April – June)</option></select></div><div class="field"><label>Start year</label><input id="ns-year" type="number" placeholder="e.g. 2025"></div></div>
     <div class="form-row cols3"><div class="field"><label>Skater fee ($)</label><input id="ns-fee" type="number" placeholder="e.g. 250"></div><div class="field"><label>Spare drop-in ($)</label><input id="ns-sf" type="number" placeholder="e.g. 20"></div><div class="field"><label>Target skaters</label><input id="ns-tgt" type="number" placeholder="e.g. 20"></div></div>
     <div class="form-row"><div class="field"><label>Rink / arena</label><input id="ns-rink" placeholder="e.g. Gardens Ice Centre"></div><div class="field"><label>Ice time</label><input id="ns-icetime" placeholder="e.g. 7:30 – 8:45pm"></div></div>
-    <div class="form-row"><div class="field"><label>Start date</label><input id="ns-startdate" placeholder="e.g. Apr 2"></div><div class="field"><label>End date</label><input id="ns-enddate" placeholder="e.g. Jun 25, 2026"></div></div>
+    <div class="form-row"><div class="field"><label>Start date</label><input id="ns-startdate" type="date"></div><div class="field"><label>End date</label><input id="ns-enddate" type="date"></div></div>
     <div class="field"><label>Season notes (optional)</label><textarea id="ns-notes" placeholder="e.g. Pad 2"></textarea></div>
     <div class="btn-row"><button class="btn btn-primary" onclick="createSeason()">Create season</button></div>
   </div>
@@ -1407,7 +1418,7 @@ function seasonsHTML(){
       <div>
         <div style="font-weight:500;font-size:15px">${s.label} ${s.id===activeSeason?'<span class="badge badge-in" style="font-size:11px">Active</span>':''}</div>
         <div style="font-size:13px;color:var(--muted);margin-top:3px">$${s.fee}/skater · $${s.spareFee||0}/spare · ${S.roster.filter(r=>r.seasonId===s.id).length} on roster</div>
-        ${s.rink||s.iceTime?`<div style="font-size:12px;color:var(--muted);margin-top:3px">${[s.rink,s.iceTime,s.startDate&&s.endDate?s.startDate+' – '+s.endDate:''].filter(Boolean).join(' · ')}</div>`:''}
+        ${s.rink||s.iceTime?`<div style="font-size:12px;color:var(--muted);margin-top:3px">${[s.rink,s.iceTime,s.startDate&&s.endDate?formatSeasonDate(s.startDate,false)+' – '+formatSeasonDate(s.endDate,true):''].filter(Boolean).join(' · ')}</div>`:''}
         ${s.notes?`<div style="font-size:12px;color:var(--muted);margin-top:2px;font-style:italic">${s.notes}</div>`:''}
       </div>
       <div style="display:flex;gap:8px;flex-wrap:wrap">
@@ -1445,6 +1456,13 @@ async function deleteSeason(id){
   renderDynamic('seasons');renderDashboard();toast('Season deleted');
   try{await api('deleteSeason',{id});}catch(e){}
 }
+function toDateInput(val){
+  if(!val)return'';
+  const d=new Date(val);
+  if(isNaN(d.getTime()))return'';
+  return d.toISOString().split('T')[0];
+}
+
 function openSeasonEdit(id){
   const s=S.seasons.find(x=>x.id===id);if(!s)return;
   document.getElementById('se-id').value=s.id;
@@ -1453,8 +1471,8 @@ function openSeasonEdit(id){
   document.getElementById('se-tgt').value=s.targetSkaters||'';
   document.getElementById('se-rink').value=s.rink||'';
   document.getElementById('se-icetime').value=s.iceTime||'';
-  document.getElementById('se-startdate').value=s.startDate||'';
-  document.getElementById('se-enddate').value=s.endDate||'';
+  document.getElementById('se-startdate').value=toDateInput(s.startDate);
+  document.getElementById('se-enddate').value=toDateInput(s.endDate);
   document.getElementById('se-notes').value=s.notes||'';
   document.getElementById('se-overlay').style.display='flex';
 }
